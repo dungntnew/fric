@@ -64,6 +64,22 @@
             </ion-content>
         </div> <!-- end sticker -->
 
+
+       <!-- text setting button -->
+       <div>
+       </div ng-if="!isMobile()">
+       <div class="action-panel fadein fadeout text-setting" ng-controller="TextSettingActionCtrl" ng-show="shouldShowAction('text-setting')" >
+
+            <button class="col-100 text-setting-btn button button-full button-balanced" ng-click="showTextSettingPanel()" ng-if="isTyping">
+            テキスト設定
+            </button>
+
+
+        </div> 
+        </div>
+        <!-- end text setting button -->
+
+
     </div> <!-- end action panel -->
 
 
