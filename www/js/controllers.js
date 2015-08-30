@@ -365,7 +365,7 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
     Caman.Event.listen("processStart", function(job) {
         if (!$scope.filterProcessing ) {
              $scope.filterProcessing  = true;
-             $scope.showProcessingLoading('filtering');
+             $scope.showProcessingLoading('処理中');
         }
     });
 
