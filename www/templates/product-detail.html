@@ -54,12 +54,15 @@
     <!-- sticker -->
        <div class="action-panel fadein fadeout sticker-buttons" ng-controller="StickerActionCtrl" ng-show="shouldShowAction('sticker')">
             <div class="background"></div>
-            <div class="tabs tabs-icon-only">
-                <a ng-repeat="sticker in getStickers()" ng-click="addSticker(sticker.id)" class="tab-item" href="#">
-                    <img  ng-src="{{sticker.src}}" title="{{sticker.name}}"/>
-                </a>
-            </div>
-       </div> <!-- end sticker -->
+             <ion-content class="content-x">
+              <ion-scroll direction="x" class="wide-as-needed">
+             
+                  <img ng-repeat="sticker in getStickers()" ng-click="addSticker(sticker.id)" ng-src="{{sticker.src}}" title="{{sticker.name}}"/>
+
+              </ion-scroll>
+            
+            </ion-content>
+        </div> <!-- end sticker -->
 
     </div> <!-- end action panel -->
 

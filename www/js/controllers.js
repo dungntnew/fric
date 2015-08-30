@@ -252,7 +252,6 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
                 $scope.actionName = newAction;
             });
         })
-        console.log("action is changed to : " + newAction);
     }
 
     $scope.shouldShowAction = function(actionName){
@@ -278,7 +277,6 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
         // handler if tab current tab
         if ($scope.activeTabIndex != index) {
             var tab = tabContentViews[index];
-            console.log("tab changed to: " + tab.name);
             $scope.preActiveTabIndex = $scope.activeTabIndex;
             $scope.activeTabIndex = index;
             setDefaultActionForTab();
