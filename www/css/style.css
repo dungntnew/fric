@@ -179,6 +179,10 @@ body {
 	height: 47px !important;
 }
 
+.sticker-buttons .tab-item {
+	display: inline-block !important;
+}
+
 .sticker-categories p, h2{
 	text-align: center;
 	font-size: 12px !important;
