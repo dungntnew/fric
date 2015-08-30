@@ -110,15 +110,32 @@ body {
 	background-color: transparent !important;
 }
 .frame-buttons .background {
-	background-color: #ff5a69;
+	background-color: black;
 	display:block;
 	width: 100%;
 	height: 100%;
-	opacity: 0.8;
+	opacity: 1;
 
 } 
 
 .frame-buttons img {
+	width: 47px !important;
+	height: 47px !important;
+}
+
+.filter-buttons .tabs{
+	background-color: transparent !important;
+}
+
+.filter-buttons .background {
+	background-color: black;
+	display:block;
+	width: 100%;
+	height: 100%;
+	opacity: 1;
+
+} 
+.filter-buttons img {
 	width: 47px !important;
 	height: 47px !important;
 }
