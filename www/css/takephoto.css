@@ -1,0 +1,29 @@
+
+.webcam-wrapper {
+	background-color:white;
+	text-align: center;
+	display: block;
+}
+
+#take-picture-video { 
+	visibility:hidden;
+    position: absolute;	
+}
+
+#take-picture-input {
+/*	visibility:hidden;
+    position: absolute;	*/
+}
+
+.frame-wrapper {
+   min-height: 240px;
+   margin: 0;
+   padding: 0;
+   text-align: center;
+}
+
+.take-picture-frame {
+	display: block;
+    text-align: center;
+    margin: 0 auto;
+}

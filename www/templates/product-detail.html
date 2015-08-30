@@ -1,0 +1,90 @@
+<!--
+  This template loads for the 'tab.friend-detail' state (app.js)
+  'friend' is a $scope variable created in the FriendsCtrl controller (controllers.js)
+  The FriendsCtrl pulls data from the Friends service (service.js)
+  The Friends service returns an array of friend data
+-->
+<ion-view view-title="{{product.name}}" ng-controller="AppContentCtrl">
+  <ion-content class="">
+        <ion-slide-box on-slide-changed="slideHasChanged($index)" does-continue="false" show-pager="false">
+            <ion-slide ng-repeat="view in contentViews">
+                 <div class="" ng-include="view.url"></div>
+            </ion-slide>
+      </ion-slide-box>    
+  </ion-content> 
+
+  <div>
+    <!-- action panel -->
+
+    <div class="bar bar-subfooter action-bar">
+        <div style="position:relative; width=100%"></div>
+        <!-- camera -->
+        <div class="action-panel fadein fadeout camera-buttons" ng-controller="TakePictureActionCtrl" ng-show="shouldShowAction('takePicture')">
+            <div ng-if="!isMobile()" class="row action-panel">
+               <button class="col-50 button icon ion-camera button-full button-assertive" ng-click="takePicture()"></button>
+               <button id="upload-picture-btn" class="col-50 button icon ion-settings button-full button-energized" ng-click="uploadPicture()"></button>
+            </div>
+             <button class="col-100 button icon ion-camera button-full button-energized" ng-if="isMobile()" ng-click="poolPicture()"></button>
+        </div> 
+        <!-- end camera-->
+
+        <!-- filter -->
+         <div class="action-panel fadein fadeout filter-buttons" ng-controller="FilterActionCtrl" ng-show="shouldShowAction('filter')">
+            <div class="background"></div>
+            <div class="tabs tabs-icon-only">
+                <a ng-repeat="filter in filters" ng-click="applyFilter($index)" class="tab-item" href="#" ng-class="{active: activeFilterIndex == $index}">
+                    <img  ng-src="{{filter.src}}" title="{{filter.name}}"/>
+                </a>
+                
+            </div>
+       </div> 
+        <!-- end filter-->
+
+       <!-- frame -->
+       <div class="action-panel fadein fadeout frame-buttons" ng-controller="FrameActionCtrl" ng-show="shouldShowAction('frame')">
+            <div class="background"></div>
+            <div class="tabs tabs-icon-only">
+                <a ng-repeat="frame in frames" ng-click="applyFrame($index)" class="tab-item" href="#" ng-class="{active: activeFrameIndex == $index}">
+                    <img  ng-src="{{frame.src}}" title="{{frame.name}}"/>
+                </a>
+                
+            </div>
+       </div> <!-- end frame -->
+
+    <!-- sticker -->
+       <div class="action-panel fadein fadeout sticker-buttons" ng-controller="StickerActionCtrl" ng-show="shouldShowAction('sticker')">
+            <div class="background"></div>
+            <div class="tabs tabs-icon-only">
+                <a ng-repeat="sticker in getStickers()" ng-click="addSticker(sticker.id)" class="tab-item" href="#">
+                    <img  ng-src="{{sticker.src}}" title="{{sticker.name}}"/>
+                </a>
+            </div>
+       </div> <!-- end sticker -->
+
+    </div> <!-- end action panel -->
+
+
+     
+    <!-- footer bar --> 
+    <div class="bar bar-footer">
+        <ion-tabs class="tabs-positive tabs-icon-top">
+
+        <ion-tab title="カメラ" icon-on="ion-camera" icon-off="ion-camera" ng-click="selectTabWithIndex(0)">
+        </ion-tab>
+
+        <ion-tab title="フレーム" icon-on="ion-ios-crop-strong" icon-off="ion-ios-crop" ng-click="selectTabWithIndex(1)">
+        </ion-tab>
+
+        <ion-tab title="スタンプ" icon-on="ion-ios-star" icon-off="ion-ios-star" ng-click="selectTabWithIndex(2)">
+        </ion-tab>
+        <ion-tab title="文字入れ" icon-on="ion-social-tumblr" icon-off="ion-social-tumblr-outline" ng-click="selectTabWithIndex(3)">
+         
+        </ion-tab>
+        <ion-tab title="完成地図" icon-on="ion-eye" icon-off="ion-eye" ng-click="selectTabWithIndex(4)">
+        </ion-tab>
+        </ion-tabs>
+   </div>
+   <!--end footer bar -->
+ </div>
+
+</ion-view>

@@ -1,0 +1,124 @@
+  <script id="templates/tabs.html.back" type="text/ng-template">
+      <ion-tabs class="tabs-icon-top tabs-positive">
+
+        <ion-tab title="Home" icon="ion-home" href="#/tab/home">
+          <ion-nav-view name="home-tab"></ion-nav-view>
+        </ion-tab>
+
+        <ion-tab title="About" icon="ion-ios-information" href="#/tab/about">
+          <ion-nav-view name="about-tab"></ion-nav-view>
+        </ion-tab>
+
+        <ion-tab title="Contact" icon="ion-ios-world" ui-sref="tabs.contact">
+          <ion-nav-view name="contact-tab"></ion-nav-view>
+        </ion-tab>
+
+      </ion-tabs>
+    </script>
+
+        
+     <script id="templates/tabs.html" type="text/ng-template">
+
+     <ion-nav-view name="home-tab" href="#/tab/home"></ion-nav-view>
+      <ion-nav-view name="about-tab" href="#/tab/about"></ion-nav-view>
+     <ion-nav-view name="contact-tab" ui-sref="tabs.contact"></ion-nav-view>
+     
+
+    </script>
+
+
+    <script id="templates/home.html" type="text/ng-template">
+      <ion-view view-title="Home">
+        <ion-content>
+          <p>
+            <a class="button icon icon-right ion-chevron-right" href="#/tab/facts">Scientific Facts</a>
+          </p>
+           <!-- product page  here -->
+           <div> This is product page </div>
+           
+           <div class="list"  ng-controller="ProductListCtrl">
+
+            <a ng-repeat="item in items" 
+               ui-sref="tabs.facts({item: $index})"
+               href="#/tab/facts/{{item.id}}"
+               class="item item-thumbnail-left">
+
+              <img ng-src="{{ item.image }}">
+              <h2>{{ item.album }}</h2>
+              <h4>{{ item.artist }}</h4>
+            </a>
+            <!-- end product -->
+
+        </ion-content>
+      </ion-view>
+    </script>
+
+    <script id="templates/facts.html" type="text/ng-template">
+      <ion-view view-title="Facts">
+        <ion-content scroll="false">
+
+          <!-- this is draw page -->
+          <div ng-controller="DrawAppCtrl"> 
+               <canvas id="c" width="400" height="400" style="border:1px solid"></canvas>
+          </div>
+          <!-- end draw -->
+        </ion-content>
+
+
+    <div class="bar bar-subfooter bar-positive action-bar">
+      <h3 class="title">Action Bar Here</h3>
+    </div>
+
+        <div class="bar bar-footer">
+
+          <ion-tabs class="tabs-icon-top tabs-positive">
+          <ion-tab title="Home" icon="ion-home" href="">
+            <ion-nav-view name="home-tab"></ion-nav-view>
+          </ion-tab>
+
+          <ion-tab title="About" icon="ion-ios-information" href="">
+            <ion-nav-view name="about-tab"></ion-nav-view>
+          </ion-tab>
+
+          <ion-tab title="Contact" icon="ion-ios-world">
+            <ion-nav-view name="contact-tab"></ion-nav-view>
+          </ion-tab>
+        </ion-tabs>
+      
+       </div>
+
+      </ion-view>
+      
+    </script>
+
+    <script id="templates/facts2.html" type="text/ng-template">
+      <ion-view view-title="Also Factual">
+        <ion-content>
+            Comming soon!
+        </ion-content>
+      </ion-view>
+    </script>
+
+    <script id="templates/about.html" type="text/ng-template">
+      <ion-view view-title="About">
+        <ion-content>
+            Comming soon!
+        </ion-content>
+      </ion-view>
+    </script>
+
+    <script id="templates/nav-stack.html" type="text/ng-template">
+      <ion-view view-title="Tab Nav Stack">
+        <ion-content>
+            Comming soon!
+        </ion-content>
+      </ion-view>
+    </script>
+
+    <script id="templates/contact.html" type="text/ng-template">
+      <ion-view title="Contact">
+        <ion-content>
+            Comming soon!
+        </ion-content>
+      </ion-view>
+    </script>

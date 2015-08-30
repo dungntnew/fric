@@ -1,0 +1,46 @@
+<!-- draw region -->
+<!-- <img ng-src="{{product.thumbnail}}" style="width: 64px; height: 64px">
+
+<p>
+  {{product.detail}}
+</p>
+<h2>Page width: {{w}}px </h2>
+<h2>Page height: {{h}}px </h2>
+<input type="file" accept="image/*;capture=camera">
+<input type="file" accept="video/*;capture=camcorder"> -->
+<!-- end raw region -->
+<div ng-controller="WebcamCtrl" class="webcam-wrapper">
+    <div class="frame-wrapper row">
+        
+		<video id="take-picture-video" src=""></video>
+		<canvas id="take-picture-canvas" class="take-picture-frame">
+		</canvas>
+	</div>
+    
+    <div class="frame-action row" ng-show="isWaitForTake">
+		<button id="take-picture-btn" class="col-100 button button-full button-balanced" ng-click="takePhoto()">
+			撮影
+		</button>
+
+	</div>
+
+	<div class="frame-action row" ng-show="isTaken">
+		<button id="retake-picture-btn" class="col-50 button button-full button-balanced" ng-click="retakePhoto()">
+			再撮影
+		</button>
+		<button id="decided-picture-btn" class="col-50 button button-full button-assertive" ng-click="deciedPhoto()">
+			決定
+		</button>
+	</div>
+
+
+   
+	<div class="row" ng-if="debug">
+	<button id="uploadme-picture-btn" class="col-100 button button-full button-balanced" ng-click="startUpload()">
+		UPLOAD
+	</button>
+	</div>
+	<div class="row">
+		<input type="file" id="take-picture-input" accept="image/*">
+	</div>
+</div>

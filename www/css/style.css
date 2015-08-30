@@ -1,0 +1,244 @@
+/* Empty. Add your own CSS if you like */
+/* @font-face kit by Fonts2u (http://www.fonts2u.com) */ 
+@font-face {
+	font-family:"PT Sans";
+	src:url("PTS55F.eot?") 
+	format("eot"),url("PTS55F.woff") 
+	format("woff"),url("PTS55F.ttf") 
+	format("truetype"),url("PTS55F.svg#PTSans-Regular")
+	format("svg");font-weight:normal;font-style:normal;
+}
+
+body {
+  cursor: url('http://ionicframework.com/img/finger.png'), auto;
+  font-size: 62.5%;
+  color: #5c5c5c;
+  font-family:  "PT Sans", sans-serif;
+  line-height: 1.5;
+}
+
+
+.header-bar-color {
+	background-color: #ff5a69 !important;
+}
+
+
+.my-back-button {
+	content: url('/img/assets/btn/goBack.png');
+	width: 55px;
+}
+
+
+.bar.bar-assertive .title{
+	font-weight: bold !important;
+} 
+
+.button-icon .icon {
+  display: block; 
+  font-size: 36px;
+  margin-bottom: 3px;
+}
+
+.bar-footer {
+	padding: 0 !important;
+}
+
+.bar-subfooter {
+   bottom: 50px !important;
+}
+
+.action-bar {
+	position: absolute !important;
+	height: 50px !important;
+	padding: 0 !important;
+}
+
+.action-panel {
+	text-align: center;
+	padding: 0 !important;
+	position: absolute !important;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+.display-none {
+	display: none;
+}
+
+.frame-list-thumb {
+    padding: 2px 2px 2px 2px;
+    height: 60px;
+}
+
+.camera-buttons  button {
+	display: inline-block !important;
+	height: 60px;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.fadein {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  -o-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
+
+.fadeout {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  -o-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
+
+.fadein.ng-hide-remove,
+.fadeout.ng-hide-add.ng-hide-add-active {
+  opacity: 0;
+  display: block !important;
+  top: 50px !important;
+}
+
+.fadeout.ng-hide-add,
+.fadein.ng-hide-remove.ng-hide-remove-active {
+  opacity: 1;
+  top: 0px !important;
+  display: block !important;
+}
+
+.frame-buttons .tabs{
+	background-color: transparent !important;
+}
+.frame-buttons .background {
+	background-color: #ff5a69;
+	display:block;
+	width: 100%;
+	height: 100%;
+	opacity: 0.8;
+
+} 
+
+.frame-buttons img {
+	width: 47px !important;
+	height: 47px !important;
+}
+
+.stickers-buttons img {
+	width: 47px !important;
+	height: 47px !important;
+}
+
+.sticker-categories p, h2{
+	text-align: center;
+	font-size: 12px !important;
+    color: #ff5a69 !important;
+    font-weight: bold !important;
+}
+
+.sticker-categories hr {
+	text-align: center;
+	height: 1px;
+	display: block;
+	border: 0;
+	border-top: thin solid #ff5a69 !important;
+}
+
+.sticker-categories .item {
+	border: none !important;
+}
+
+/*.ion-camera:before {
+	content: url('/img/assets/btn/tab-camera.png');
+}
+.ion-star:before {
+	content: url('/img/assets/btn/tab-frame.png');
+}
+.ion-ionic:before {
+	content: url('/img/assets/btn/tab-stamp.png');
+}
+.ion-arrow-shrink:before {
+	content: url('/img/assets/btn/tab-text.png');
+}
+.ion-gear-a:before {
+	content: url('/img/assets/btn/tab-review.png');
+}
+*/
+
+
+
+/*  Product List Page */
+.product-item , .product-item .item-content {
+	min-height: 120px;
+	max-height: 120px;
+	padding-left: 160px;
+	padding-right: 5px;
+
+
+}
+
+.product-item .item, .product-item .item h1, .product-item .item h2, .product-item .item h3, .product-item .item h4, .product-item .item h5, .product-item .item h6, .product-item .item p, .product-item .item-content, .product-item .item-content h1, .product-item .item-content h2, .product-item .item-content h3, .product-item .item-content h4, .product-item .item-content h5, .product-item .item-content h6, .product-item .item-content p {
+	white-space: normal !important;
+    padding-bottom: 5px !important;
+    max-height: 40px !important;
+
+}
+.product-item .product-name {
+	font-size: 12px !important;
+    color: #ff5a69 !important;
+    font-weight: bold !important;
+}
+.product-item .product-detail {
+	color: #6a6a6a !important;
+}
+
+.product-item img:first-child, .product-item .item-image, .product-item .item-content > img:first-child, .product-item .item-content .item-image {
+	max-width: 138px !important;
+	max-height: 98px !important;
+}
+
+.product-item .ion-chevron-right {
+	float: right !important;
+    margin-right: 10px !important;
+    margin-top: 10px !important;
+} 
+/* product list end */
+
+
+/* example */
+.slide-animate-container {
+  position:relative;
+  background:white;
+  border:1px solid black;
+  height:40px;
+  overflow:hidden;
+}
+
+.slide-animate {
+  padding:10px;
+}
+
+.slide-animate.ng-enter, .slide-animate.ng-leave {
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  display:block;
+  padding:10px;
+}
+
+.slide-animate.ng-enter {
+  top:-50px;
+}
+.slide-animate.ng-enter.ng-enter-active {
+  top:0;
+}
+
+.slide-animate.ng-leave {
+  top:0;
+}
+.slide-animate.ng-leave.ng-leave-active {
+  top:50px;
+}
