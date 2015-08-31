@@ -24,7 +24,7 @@ body {
 
 
 .my-back-button {
-	content: url('/img/assets/btn/goBack.png');
+	content: url('../img/assets/btn/goBack.png');
 	width: 55px;
 }
 

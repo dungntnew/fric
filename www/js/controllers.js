@@ -131,7 +131,7 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
             showBackdrop: true,
             maxWidth: 200,
             showDelay: 0
-        });   
+        });
     }
 
     $scope.hideProcessingLoading = function() {
@@ -191,34 +191,42 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
         name: "main-app-view",
     }];
 
-    var actionNames = ['takePicture', 'filter', 'frame', 'sticker'];
+    var actionNames = ['takePicture',
+        'filter', 'frame',
+        'sticker', 'text-setting'
+    ];
 
     var tabContentViews = [{
         id: 0,
         name: "take photo",
         view: 0,
-        actionIds: [0, 1]
+        actionIds: [0, 1],
+        onSelectedHanlders: []
     }, {
         id: 1,
         name: "fames",
         view: 0,
-        actionIds: [2]
+        actionIds: [2],
+        onSelectedHanlders: []
     }, {
         id: 2,
         name: "stickers",
         view: 0,
         action: $scope.showStickers,
-        actionIds: [3]
+        actionIds: [3],
+        onSelectedHanlders: []
     }, {
         id: 3,
         name: "text",
         view: 0,
-        actionIds: []
+        actionIds: [4],
+        onSelectedHanlders: []
     }, {
         id: 4,
         name: "review",
         view: 0,
-        actionIds: []
+        actionIds: [],
+        onSelectedHanlders: []
     }]
 
     var setDefaultActionForTab = function() {
@@ -226,15 +234,15 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
         var tab = tabContentViews[activeTabIndex];
 
         if (tab.actionIds.length > 0) {
-            $scope.actionName = actionNames[tab.actionIds[0]]; 
+            $scope.actionName = actionNames[tab.actionIds[0]];
         }
     }
 
     var isValidActionName = function(actionName) {
         var activeTabIndex = $scope.activeTabIndex;
-        var tab = tabContentViews[activeTabIndex];  
+        var tab = tabContentViews[activeTabIndex];
         var index = actionNames.indexOf(actionName);
-       
+
 
         if (index == -1) return false;
 
@@ -242,20 +250,20 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
     }
 
     $scope.changeToAction = function(newAction) {
-        if (!isValidActionName(newAction)){
+        if (!isValidActionName(newAction)) {
             console.log("warning.. action: " + newAction + " is Invalid!!!!");
             return;
         }
 
-        setTimeout(function(){
-            $scope.$apply(function(){
+        setTimeout(function() {
+            $scope.$apply(function() {
                 $scope.actionName = newAction;
             });
         })
     }
 
-    $scope.shouldShowAction = function(actionName){
-        
+    $scope.shouldShowAction = function(actionName) {
+
         if ($scope.actionName == '') {
             setDefaultActionForTab();
         }
@@ -273,6 +281,8 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
 
     }
 
+    $scope.tabData = tabContentViews;
+
     $scope.selectTabWithIndex = function(index) {
         // handler if tab current tab
         if ($scope.activeTabIndex != index) {
@@ -286,6 +296,9 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
             if (tab.action) {
                 tab.action();
             }
+            tab.onSelectedHanlders.forEach(function(f) {
+                if (f) f();
+            });
         }
     }
 })
@@ -363,18 +376,18 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
 .controller('FilterActionCtrl', function($scope) {
     $scope.filterProcessing = false;
     Caman.Event.listen("processStart", function(job) {
-        if (!$scope.filterProcessing ) {
-             $scope.filterProcessing  = true;
-             $scope.showProcessingLoading('処理中');
+        if (!$scope.filterProcessing) {
+            $scope.filterProcessing = true;
+            $scope.showProcessingLoading('処理中');
         }
     });
 
     Caman.Event.listen("processComplete", function(job) {
-        
+
     });
 
-    Caman.Event.listen("renderFinished", function(job){
-        $scope.filterProcessing  = false;
+    Caman.Event.listen("renderFinished", function(job) {
+        $scope.filterProcessing = false;
         $scope.hideProcessingLoading();
     });
 
@@ -403,21 +416,21 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
 
     $scope.applyFilter = function(index) {
         var imageCanvas = $("#take-picture-canvas")[0];
-        var metadata_id = $(imageCanvas).attr('data-caman-id'); 
+        var metadata_id = $(imageCanvas).attr('data-caman-id');
 
         // ignore filter 
         if (metadata_id && $scope.activeFilterIndex == index) {
             $scope.activeFilterIndex = -1;
-            Caman(imageCanvas, function(){
+            Caman(imageCanvas, function() {
                 this.revert();
             });
-           return;
+            return;
         }
 
         $scope.activeFilterIndex = index;
-        
+
         var effect = filterNames[index];
-        
+
 
         Caman("#take-picture-canvas", function() {
             // If such an effect exists, use it:
@@ -451,6 +464,21 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
     }
 
 })
+
+.controller('TextSettingActionCtrl', function($scope) {
+    var tabId = 3;
+
+    $scope.tabData[tabId].onSelectedHanlders.push(function() {
+        $scope.isTyping = true;
+    });
+
+
+
+    $scope.showTextSettingPanel = function() {
+        $scope.isTyping = false;
+    }
+})
+
 
 .controller('DrawAppCtrl', function($scope, $itemId) {
     // don't be scared by the image value, its just datauri
