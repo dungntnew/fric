@@ -1,11 +1,7 @@
-angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives'])
+angular.module('app.controllers', ['app.services', 'app.directives'])
 
 
 .controller('AppCtrl', function($scope, $window, $timeout, $ionicLoading, $ionicPopup) {
-
-    ionic.Platform.ready(function() {
-        // will execute when device is ready, or immediately if the device is already ready.
-    });
 
     // config device type
     $scope.isInitialized = false;
@@ -37,6 +33,8 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
     $scope.config = $scope.config || {}
     $scope.config.widthToHeight = 4 / 3;
     $scope.config.maxHeight = 425;
+    console.log("[app config] ratio: " + $scope.config.widthToHeight);
+    console.log("[app config] Max Height: " + $scope.config.maxHeight + " px");
 
     // detect brower support camera
     navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
@@ -71,13 +69,6 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
     // method whenever everything is ready or loaded.
     $timeout(function() {
         $ionicLoading.hide();
-        $scope.stooges = [{
-            name: 'Moe'
-        }, {
-            name: 'Larry'
-        }, {
-            name: 'Curly'
-        }];
     }, 0);
 
 
@@ -137,10 +128,7 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
     $scope.hideProcessingLoading = function() {
         $ionicLoading.hide();
     }
-
 })
-
-.controller('StartupCtrl', ['$scope', function($scope) {}])
 
 .controller('ProductListCtrl', function($scope, Products) {
     // With the new view caching in Ionic, Controllers are only called
@@ -158,327 +146,790 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
     $scope.product = Products.get($stateParams.productId);
 })
 
-.controller('AppContentCtrl', function($scope, $ionicTabsDelegate, $ionicModal, $ionicSlideBoxDelegate) {
+.controller('EditImageAppCtrl', function($scope, $window, 
+    $ionicTabsDelegate, $ionicModal,
+     $ionicSlideBoxDelegate, $ionicLoading, $ionicPopup) {
 
-    /** register scope function  */
-    $scope.showStickers = function() {
-        $scope.showModal('templates/sticker-categories-popover.html');
-    }
-
-    $scope.showModal = function(templateUrl) {
-
-        $ionicModal.fromTemplateUrl(templateUrl, {
-            scope: $scope,
-            animation: 'slide-in-up'
-        }).then(function(modal) {
-            $scope.modal = modal;
-            $scope.modal.show();
-        });
-    }
-
-    $scope.closeModal = function() {
-        $scope.modal.hide();
-        $scope.modal.remove()
-    };
-
-    /** register scope variable */
-    $scope.actionName = '';
-    $scope.activeTabIndex = 0;
-    $scope.prevActiveTabIndex = -1;
-    $scope.contentViews = [{
-        id: 0,
-        url: "templates/template1.html",
-        name: "main-app-view",
-    }];
-
-    var actionNames = ['takePicture',
-        'filter', 'frame',
-        'sticker', 'text-setting'
-    ];
-
-    var tabContentViews = [{
-        id: 0,
-        name: "take photo",
-        view: 0,
-        actionIds: [0, 1],
-        onSelectedHanlders: []
-    }, {
-        id: 1,
-        name: "fames",
-        view: 0,
-        actionIds: [2],
-        onSelectedHanlders: []
-    }, {
-        id: 2,
-        name: "stickers",
-        view: 0,
-        action: $scope.showStickers,
-        actionIds: [3],
-        onSelectedHanlders: []
-    }, {
-        id: 3,
-        name: "text",
-        view: 0,
-        actionIds: [4],
-        onSelectedHanlders: []
-    }, {
-        id: 4,
-        name: "review",
-        view: 0,
-        actionIds: [],
-        onSelectedHanlders: []
-    }]
-
-    var setDefaultActionForTab = function() {
-        var activeTabIndex = $scope.activeTabIndex;
-        var tab = tabContentViews[activeTabIndex];
-
-        if (tab.actionIds.length > 0) {
-            $scope.actionName = actionNames[tab.actionIds[0]];
-        }
-    }
-
-    var isValidActionName = function(actionName) {
-        var activeTabIndex = $scope.activeTabIndex;
-        var tab = tabContentViews[activeTabIndex];
-        var index = actionNames.indexOf(actionName);
-
-
-        if (index == -1) return false;
-
-        return tab.actionIds.indexOf(index) >= 0;
-    }
-
-    $scope.changeToAction = function(newAction) {
-        if (!isValidActionName(newAction)) {
-            console.log("warning.. action: " + newAction + " is Invalid!!!!");
-            return;
-        }
-
-        setTimeout(function() {
-            $scope.$apply(function() {
-                $scope.actionName = newAction;
-            });
-        })
-    }
-
-    $scope.shouldShowAction = function(actionName) {
-
-        if ($scope.actionName == '') {
-            setDefaultActionForTab();
-        }
-        return $scope.actionName == actionName;
-    }
-
-    $scope.showContentViewFor = function(tabIndex) {
-        var viewId = tabContentViews[tabIndex].view
-        $ionicSlideBoxDelegate.slide(viewId);
-    }
-
-    $scope.slideHasChanged = function(index) {
-        var view = $scope.contentViews[index];
-        console.log("content view changed to: " + view.name);
-
-    }
-
-    $scope.tabData = tabContentViews;
-
-    $scope.selectTabWithIndex = function(index) {
-        // handler if tab current tab
-        if ($scope.activeTabIndex != index) {
-            var tab = tabContentViews[index];
-            $scope.preActiveTabIndex = $scope.activeTabIndex;
-            $scope.activeTabIndex = index;
-            setDefaultActionForTab();
-            $ionicTabsDelegate.select(index);
-            $scope.showContentViewFor(index);
-
-            if (tab.action) {
-                tab.action();
-            }
-            tab.onSelectedHanlders.forEach(function(f) {
-                if (f) f();
+        /** register scope function  */
+        $scope.showModal = function(templateUrl) {
+          
+            $ionicModal.fromTemplateUrl(templateUrl, {
+                scope: $scope,
+                animation: 'slide-in-up'
+            }).then(function(modal) {
+                $scope.modal = modal;
+                $scope.modal.show();
             });
         }
-    }
-})
 
-.controller('StickerActionCtrl', function($scope) {
-
-    $scope.stickerCategories = [];
-    var stickerCategoriesNames = [
-        'コメント', 'マーク1', 'マーク2',
-        '仮装', '数字'
-    ];
-
-    for (var i = 0; i < 5; i++) {
-        var category = {
-            id: i,
-            name: stickerCategoriesNames[i],
-            src: 'img/assets/stickers/categories/' + (i + 1) + '.png',
-            stickers: []
+        $scope.closeModal = function() {
+            $scope.modal.hide();
+            $scope.modal.remove()
         };
 
-        for (var j = 0; j < 10; j++) {
-            category.stickers.push({
-                id: j,
-                name: 'sticker-' + (i + 1) + '-' + (j + 1),
-                src: 'img/assets/stickers/thumbnails/' + (i + 1) + '/' + (j + 1) + '.png'
-            });
+        $scope.showStickers = function() {
+            $scope.showModal('templates/sticker-categories-popover.html');
         }
 
-        $scope.stickerCategories.push(category);
-    }
+        /** register scope variable */
+        $scope.actionName = '';
+        $scope.activeTabIndex = 0;
+        $scope.prevActiveTabIndex = -1;
+        $scope.contentViews = [{
+            id: 0,
+            url: "templates/template1.html",
+            name: "main-app-view",
+        }];
 
-    $scope.activeStickerCategoryIndex = 0;
-    $scope.category = $scope.stickerCategories[0];
-    $scope.stickers = $scope.category.stickers;
+        var actionNames = ['takePicture',
+            'filter', 'frame',
+            'sticker', 'text-setting'
+        ];
 
-    $scope.selectCategory = function(index) {
-        $scope.activeStickerCategoryIndex = index;
-        $scope.category = $scope.stickerCategories[index];
-        $scope.stickers = $scope.category.stickers;
+        var tabContentViews = [{
+            id: 0,
+            name: "take photo",
+            view: 0,
+            actionIds: [0, 1],
+            multipleTab: false,
+            onSelectedHanlders: []
+        }, {
+            id: 1,
+            name: "fames",
+            view: 0,
+            actionIds: [2],
+            multipleTab: false,
+            onSelectedHanlders: []
+        }, {
+            id: 2,
+            name: "stickers",
+            view: 0,
+            actionIds: [3],
+            multipleTab: false,
+            onSelectedHanlders: []
+        }, {
+            id: 3,
+            name: "text",
+            view: 0,
+            actionIds: [4],
+            multipleTab: false,
+            onSelectedHanlders: []
+        }, {
+            id: 4,
+            name: "review",
+            view: 0,
+            actionIds: [],
+            multipleTab: false,
+            onSelectedHanlders: []
+        }]
 
-        $scope.stickers.forEach(function(e) {
-            //console.log("add -> " + e.name);
-        });
-    }
+        var setDefaultActionForTab = function() {
+            var activeTabIndex = $scope.activeTabIndex;
+            var tab = tabContentViews[activeTabIndex];
 
-    $scope.addSticker = function(index) {
-        console.log("addSticker: " + $scope.stickers[index].name);
-    }
-
-    $scope.getStickers = function() {
-        $scope.stickers.forEach(function(e) {
-            // console.log(e.name);
-        });
-        return $scope.stickers;
-    }
-})
-
-.controller('FrameActionCtrl', function($scope) {
-
-    $scope.activeFrameIndex = -1;
-    $scope.frames = [];
-    for (var i = 0; i < 5; i++) {
-        $scope.frames.push({
-            id: i,
-            name: 'frame-' + (i + 1),
-            src: 'img/assets/frames/thumbnails/' + (i + 1) + '.png'
-        });
-    }
-
-    $scope.applyFrame = function(index) {
-        $scope.activeFrameIndex = index;
-    }
-})
-
-.controller('FilterActionCtrl', function($scope) {
-    $scope.filterProcessing = false;
-    Caman.Event.listen("processStart", function(job) {
-        if (!$scope.filterProcessing) {
-            $scope.filterProcessing = true;
-            $scope.showProcessingLoading('処理中');
+            if (tab.actionIds.length > 0) {
+                $scope.actionName = actionNames[tab.actionIds[0]];
+                console.log("[current] action name -> " + $scope.actionName);         
+            }
         }
-    });
 
-    Caman.Event.listen("processComplete", function(job) {
+        var isValidActionName = function(actionName) {
+            var activeTabIndex = $scope.activeTabIndex;
+            var tab = tabContentViews[activeTabIndex];
+            var index = actionNames.indexOf(actionName);
 
-    });
 
-    Caman.Event.listen("renderFinished", function(job) {
+            if (index == -1) return false;
+
+            return tab.actionIds.indexOf(index) >= 0;
+        }
+
+        this.addTabselectedHandler = function(tabId, handler) {
+            $scope.tabData[tabId].onSelectedHanlders.push(handler);
+        };
+
+        $scope.changeToAction = function(newAction) {
+            if (!isValidActionName(newAction)) {
+                console.log("warning.. action: " + newAction + " is Invalid!!!!");
+                return;
+            }
+
+            setTimeout(function() {
+                $scope.$apply(function() {
+                    $scope.actionName = newAction;
+                });
+            })
+        }
+
+        this.shouldShowAction = function(actionName) {
+
+            if ($scope.actionName == '') {
+                setDefaultActionForTab();
+            }
+            return $scope.actionName == actionName;
+        }
+        $scope.shouldShowAction = this.shouldShowAction;
+
+        $scope.showContentViewFor = function(tabIndex) {
+            var viewId = tabContentViews[tabIndex].view
+            $ionicSlideBoxDelegate.slide(viewId);
+        }
+
+        $scope.slideHasChanged = function(index) {
+            var view = $scope.contentViews[index];
+            console.log("content view changed to: " + view.name);
+        }
+
+        $scope.tabData = tabContentViews;
+
+        $scope.frameWidth = 0;
+        $scope.frameHeight = 0;
+        $scope.selectTabWithIndex = function(index) {
+            // handler if tab current tab
+            var tab = tabContentViews[$scope.activeTabIndex];
+            if ($scope.activeTabIndex != index || tab.multipleTab) {
+                
+                $scope.preActiveTabIndex = $scope.activeTabIndex;
+                $scope.activeTabIndex = index;
+                setDefaultActionForTab();
+                $ionicTabsDelegate.select(index);
+                $scope.showContentViewFor(index);
+
+                if (tab.action) {
+                    tab.action();
+                }
+                tab.onSelectedHanlders.forEach(function(f) {
+                    if (f) f();
+                });
+            }
+        }
+
+        var calculateFrameSize = function(frame) {
+            console.log("config in child: " + $scope.config);
+            var config = $scope.config || {
+                widthToHeight: 1,
+                maxHeight: 425
+            };
+
+            var widthToHeight = config.widthToHeight;
+            var maxHeight = config.maxHeight;
+
+            var canvasRatio = $(frame).height() / $(frame).width();
+            var newWidth = $window.innerWidth;
+            var newHeight = $window.innerHeight;
+            var newWidthToHeight = newWidth / newHeight;
+
+            newHeight = newWidth / widthToHeight;
+            if (newHeight > maxHeight) {
+                newHeight = maxHeight;
+                newWidth = newHeight * widthToHeight;
+            }
+
+            console.log("frame size: " + newWidth + " x " + newHeight);
+            size = {
+                width: newWidth,
+                height: newHeight
+            }
+            console.log(size.width + " = = " + size.height);
+            return {
+                width: newWidth,
+                height: newHeight
+            }
+        };
+
+        /* @region - camera */
+        var initPictureHandler = function() {
+
+            $scope.isWebcamReady = false;
+            $scope.isPhotoTaken = false;
+            $scope.isWaitForTake = false;
+            $scope.isLastTaken = true; // Other is uploadPhoto
+
+            var video, picture, input, ctx,
+                isStreaming = false,
+                snapshoot = false,
+                webcamInterval = null,
+                w, h;
+
+            var isWebcamInitizalied = false;
+
+            var validateWebcamInit = function() {
+                if (!isWebcamInitizalied) {
+                    console.log("Please initWebcam before continue!..");
+                    return false;
+                }
+                return true;
+            }
+
+            var initWebcam = function() {
+
+                // init canvas element - wait for document ready
+                video = $('#take-picture-video')[0],
+                    picture = $('#take-picture-canvas')[0],
+                    input = $('#take-picture-input')[0],
+                    ctx = picture.getContext('2d');
+
+
+                var size = calculateFrameSize(picture);
+                $(picture).width(size.width);
+                $(picture).height(size.height);
+                w = size.width;
+                h = size.height;
+                picture.width = w;
+                picture.height = h;
+                console.log("init webcam with: " + picture.width + " - " + picture.height);
+
+                angular.element($window).bind('resize', function() {
+                    $scope.$apply(function() {
+                        size = calculateFrameSize(picture);
+                        $(picture).width(size.width);
+                        $(picture).height(size.height);
+                    })
+                });
+
+
+
+                // init done
+                isWebcamInitizalied = true;
+            }
+
+
+            var startRecord = function() {
+                if (!validateWebcamInit())
+                    return;
+
+                // Every 33 milliseconds copy the video image to the canvas
+                webcamInterval = setInterval(function() {
+                    if (video.paused || video.ended) return;
+                    w = picture.width;
+                    h = picture.height;
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.drawImage(video, 0, 0, w, h);
+                    if (snapshoot) takePhoto();
+                }, 33);
+            }
+
+            var clearWebcam = function() {
+                if (!validateWebcamInit())
+                    return;
+
+                video.src = "";
+
+                stopRecord();
+                w = picture.width;
+                h = picture.height;
+                ctx.fillRect(0, 0, w, h);
+                ctx.drawImage(video, 0, 0, w, h);
+            }
+
+            var stopRecord = function() {
+                if (!validateWebcamInit())
+                    return;
+
+                if (webcamInterval) {
+                    clearInterval(webcamInterval);
+                }
+            }
+
+            // Cross browser
+            var startWebcam = function() {
+                if (!validateWebcamInit())
+                    return;
+
+                if (navigator.getUserMedia) {
+                    // Request access to video only
+                    navigator.getUserMedia({
+                            video: true,
+                            audio: false
+                        },
+                        function(stream) {
+                            // Cross browser checks
+                            var url = window.URL || window.webkitURL;
+                            video.src = url ? url.createObjectURL(stream) : stream;
+                            // Set the video to play
+                            video.play();
+                        },
+                        function(error) {
+                            alert('Something went wrong. (error code ' + error.code + ')');
+                            return;
+                        }
+                    );
+                } else {
+                    $scope.showAlert({
+                        title: "警報！",
+                        message: "カメラが 起動できません!"
+                    });
+                    return;
+                }
+            };
+
+            var uploadPictureFinish = function() {
+                if (!validateWebcamInit())
+                    return;
+
+                setTimeout(function() {
+                    $scope.$apply(function() {
+                        $scope.isPhotoTaken = true;
+                    });
+                })
+                $(picture).removeAttr("data-caman-id");
+                $scope.changeToAction("filter");
+                $scope.hideProcessingLoading();
+            }
+
+            var loadDataURLToImage = function(dataURL, method, callback) {
+                console.log("go to loadDataURLToImage");
+                var image = new Image();
+                w = picture.width;
+                h = picture.height;
+                console.log("pic w: " + w + " h: " + h);
+
+                image.onload = function() {
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.drawImage(image, 0, 0, w, h);
+                    if (callback) callback();
+                    uploadPictureFinish();
+
+                }
+                image.onerror = function() {
+                    $scope.showAlert({
+                        title: "警報！",
+                        message: (method + "が 起動できません!")
+                    });
+                    if (callback) callback();
+                };
+                image.src = dataURL;
+            }
+
+
+
+            var processUploadedFile = function(file) {
+
+                if (!validateWebcamInit())
+                    return;
+
+                try {
+
+                    var imgURL = window.URL.createObjectURL(file);
+                    loadDataURLToImage(imgURL, 'window.URL.createObjectURL', function(e) {
+                        URL.revokeObjectURL(imgURL);
+                    });
+
+                } catch (e) {
+                    try {
+                        // Fallback if createObjectURL is not supported
+                        var fileReader = new FileReader();
+                        fileReader.onload = function(event) {
+                            var imgURL = event.target.result;
+                            loadDataURLToImage(imgURL, 'FileReader');
+                        };
+                        fileReader.readAsDataURL(file);
+                    } catch (e) {
+
+                        $scope.showAlert({
+                            title: "警報！",
+                            message: "createObjectURL | FileReaderが 起動できません!"
+                        });
+                    }
+                }
+            }
+            var onFileSelect = function(e) {
+                if (!validateWebcamInit())
+                    return;
+
+                var file = e.target.files[0];
+                if (!file || !/^image\//i.test(file.type)) {
+                    $scope.showAlert({
+                        title: "警報！",
+                        message: "Uploaded invalid file(empty or not a image)"
+                    });
+                    return;
+                }
+                processUploadedFile(file);
+                $scope.showProcessingLoading();
+            };
+
+
+
+            var startUpload = function() {
+                if (!validateWebcamInit())
+                    return;
+
+                clearWebcam();
+                stopRecord();
+                setTimeout(function() {
+                    $scope.$apply(function() {
+                        $scope.isLastTaken = false;
+                        $scope.isWaitForTake = false;
+                        $scope.isPhotoTaken = false;
+                    })
+                })
+
+                if (window.File && window.FileReader && window.FormData) {
+                    if (window.addEventListener) {
+                        input.addEventListener('change', onFileSelect, false);
+                    } else if (window.attachEvent) {
+                        input.attachEvent("onchange", onFileSelect);
+                    }
+                } else {
+                    $scope.showAlert({
+                        title: "警報！",
+                        message: "Your browser not support file upload!"
+                    });
+                }
+            }
+
+            var registerVideoEvents = function() {
+
+                // Wait until the video stream can play
+                video.addEventListener('canplay', function(e) {
+                    if (!validateWebcamInit())
+                        return;
+
+                    if (!isStreaming) {
+                        // calculateFrameSize();
+
+                        // videoWidth isn't always set correctly in all browsers
+                        // if (v.videoWidth > 0) {
+
+                        //      h = v.videoHeight / (v.videoWidth / w);
+                        // }
+                        w = picture.width;
+                        h = picture.height;
+
+                        picture.setAttribute('width', w);
+                        picture.setAttribute('height', h);
+                        // Reverse the canvas image
+                        ctx.translate(w, 0);
+                        ctx.scale(-1, 1);
+                        isStreaming = true;
+                    }
+                    setTimeout(function() {
+                        $scope.$apply(function() {
+                            $scope.isWebcamReady = true;
+                            $scope.isWaitForTake = true;
+                            $scope.isPhotoTaken = false;
+                            $scope.isLastTaken = true;
+                        })
+                    })
+                }, false);
+
+
+                // Wait for the video to start to play
+                video.addEventListener('play', function() {
+                    if (!validateWebcamInit())
+                        return;
+                    startRecord();
+                }, false);
+            }
+
+
+            var takePhoto = function() {
+
+                console.log("do take...");
+                if (!validateWebcamInit())
+                    return;
+
+                var dataURL = picture.toDataURL();
+                // r.src = dataURL;
+                stopRecord();
+                snapshoot = false;
+                setTimeout(function() {
+                    $scope.$apply(function() {
+                        $scope.isWaitForTake = false;
+                        $scope.isLastTaken = true;
+                        $scope.isPhotoTaken = true;
+                    });
+                    $(picture).removeAttr("data-caman-id");
+                    $scope.changeToAction("filter");
+                })
+            }
+
+            $scope.clearWebcam = clearWebcam;
+            $scope.onFileSelect = onFileSelect;
+            $scope.startUpload = startUpload;
+            $scope.startWebcam = startWebcam;
+            $scope.takePhoto = takePhoto;
+            $scope.retakePhoto = function() {
+                if (!validateWebcamInit())
+                    return;
+                setTimeout(function() {
+
+                    if ($scope.isLastTaken) {
+                        startRecord();
+                    }
+
+                    $scope.$apply(function() {
+                        $scope.isWaitForTake = $scope.isLastTaken;
+                        $scope.isPhotoTaken = false;
+                    });
+                    $scope.changeToAction("takePicture");
+                })
+            }
+
+            $scope.decidedPhoto = function() {
+                console.log("go to edit... ....");
+
+            }
+
+            // call init()
+            initWebcam();
+            clearWebcam();
+            registerVideoEvents();
+        }
+
+        $scope.initPictureHandler = initPictureHandler;
+        /* @endregion - camera */
+
+        /* @region - filter */
         $scope.filterProcessing = false;
-        $scope.hideProcessingLoading();
-    });
-
-    $scope.availableFilterNames = ["vintage",
-        "lomo", "clarity", "sinCity",
-        "sunrise", "crossProcess", "orangePeel",
-        "love", "grungy", "jarques", "pinhole",
-        "oldBoot", "glowingSun", "hazyDays",
-        "herMajesty", "nostalgia",
-        "hemingway", "concentrate"
-    ]
-
-    $scope.activeFilterIndex = -1;
-    filterDisplayNames = ['lo_fi', 'mayfair', 'valencia', 'walden', 'xpro'];
-    filterNames = ['vintage', 'lomo', 'sinCity', 'love', 'sunrise', 'clarity']
-    $scope.filters = [];
-
-    for (var i = 0; i < filterDisplayNames.length; i++) {
-        $scope.filters.push({
-            id: i,
-            name: filterDisplayNames[i],
-            filter: filterNames[i],
-            src: 'img/assets/filters/' + (i + 1) + '.png'
-        });
-    }
-
-    $scope.applyFilter = function(index) {
-        var imageCanvas = $("#take-picture-canvas")[0];
-        var metadata_id = $(imageCanvas).attr('data-caman-id');
-
-        // ignore filter 
-        if (metadata_id && $scope.activeFilterIndex == index) {
-            $scope.activeFilterIndex = -1;
-            Caman(imageCanvas, function() {
-                this.revert();
-            });
-            return;
-        }
-
-        $scope.activeFilterIndex = index;
-
-        var effect = filterNames[index];
-
-
-        Caman("#take-picture-canvas", function() {
-            // If such an effect exists, use it:
-            //this.reloadCanvasData();
-            if (effect in this) {
-                this.revert();
-                this[effect]();
-                this.render();
+        Caman.Event.listen("processStart", function(job) {
+            if (!$scope.filterProcessing) {
+                $scope.filterProcessing = true;
+                $scope.showProcessingLoading('処理中');
             }
         });
-    }
-})
+
+        Caman.Event.listen("processComplete", function(job) {
+
+        });
+
+        Caman.Event.listen("renderFinished", function(job) {
+            $scope.filterProcessing = false;
+            $scope.hideProcessingLoading();
+        });
+
+        $scope.availableFilterNames = ["vintage",
+            "lomo", "clarity", "sinCity",
+            "sunrise", "crossProcess", "orangePeel",
+            "love", "grungy", "jarques", "pinhole",
+            "oldBoot", "glowingSun", "hazyDays",
+            "herMajesty", "nostalgia",
+            "hemingway", "concentrate"
+        ]
+
+        $scope.activeFilterIndex = -1;
+        filterDisplayNames = ['lo_fi', 'mayfair', 'valencia', 'walden', 'xpro'];
+        filterNames = ['vintage', 'lomo', 'sinCity', 'love', 'sunrise', 'clarity']
+        $scope.filters = [];
+
+        for (var i = 0; i < filterDisplayNames.length; i++) {
+            $scope.filters.push({
+                id: i,
+                name: filterDisplayNames[i],
+                filter: filterNames[i],
+                src: 'img/assets/filters/' + (i + 1) + '.png'
+            });
+        }
+
+        $scope.applyFilter = function(index) {
+            var imageCanvas = $("#take-picture-canvas")[0];
+            var metadata_id = $(imageCanvas).attr('data-caman-id');
+
+            // ignore filter 
+            if (metadata_id && $scope.activeFilterIndex == index) {
+                $scope.activeFilterIndex = -1;
+                Caman(imageCanvas, function() {
+                    this.revert();
+                });
+                return;
+            }
+
+            $scope.activeFilterIndex = index;
+
+            var effect = filterNames[index];
 
 
-.controller('TakePictureActionCtrl', function($scope, SharedService) {
+            Caman("#take-picture-canvas", function() {
+                if (effect in this) {
+                    this.revert();
+                    this[effect]();
+                    this.render();
+                }
+            });
+        }
 
-    $scope.takePicture = function() {
-        SharedService.prepForBroadcast("startWebcam");
-    }
+        /* @endregion - filter */
+        
+        /* @region frame */
+        $scope.activeFrameIndex = -1;
+        $scope.frames = [];
+        for (var i = 0; i < 5; i++) {
+            $scope.frames.push({
+                id: i,
+                name: 'frame-' + (i + 1),
+                src: 'img/assets/frames/thumbnails/' + (i + 1) + '.png'
+            });
+        }
 
-    $scope.$on('handleBroadcast', function() {
-        $scope.message = SharedService.message;
-    });
+        $scope.applyFrame = function(index) {
+            $scope.activeFrameIndex = index;
+        }
+        /* @endregion frame */
 
-    $scope.uploadPicture = function() {
-        SharedService.prepForBroadcast("startUpload");
-    }
+        /* @region stickers */
+        $scope.stickerCategories = [];
+        var stickerCategoriesNames = [
+            'コメント', 'マーク1', 'マーク2',
+            '仮装', '数字'
+        ];
 
-    $scope.poolPicture = function() {
-        SharedService.prepForBroadcast("startUpload");
-    }
+        for (var i = 0; i < 5; i++) {
+            var category = {
+                id: i,
+                name: stickerCategoriesNames[i],
+                src: 'img/assets/stickers/categories/' + (i + 1) + '.png',
+                stickers: []
+            };
 
-})
+            for (var j = 0; j < 10; j++) {
+                category.stickers.push({
+                    id: j,
+                    name: 'sticker-' + (i + 1) + '-' + (j + 1),
+                    src: 'img/assets/stickers/thumbnails/' + (i + 1) + '/' + (j + 1) + '.png'
+                });
+            }
 
-.controller('TextSettingActionCtrl', function($scope) {
-    var tabId = 3;
+            $scope.stickerCategories.push(category);
+        }
 
-    $scope.tabData[tabId].onSelectedHanlders.push(function() {
-        $scope.isTyping = true;
-    });
+        $scope.activeStickerCategoryIndex = 0;
+        $scope.category = $scope.stickerCategories[0];
+        $scope.stickers = $scope.category.stickers;
+
+        $scope.selectCategory = function(index) {
+            $scope.activeStickerCategoryIndex = index;
+            $scope.category = $scope.stickerCategories[index];
+            $scope.stickers = $scope.category.stickers;
+
+            $scope.stickers.forEach(function(e) {
+                //console.log("add -> " + e.name);
+            });
+        }
+
+        $scope.addSticker = function(index) {
+            console.log("addSticker: " + $scope.stickers[index].name);
+        }
+
+        $scope.getStickers = function() {
+            $scope.stickers.forEach(function(e) {
+                // console.log(e.name);
+            });
+            return $scope.stickers;
+        }
+        /* @endregion stickers */
+        // will execute when device is ready, or immediately if the device is already ready.
 
 
+        /*--- Draw handler -- */
+        /* @region -- setup frame size */
+        var frameWrapper = $("#frame-wrapper")[0];
+        var frameSize = calculateFrameSize(frameWrapper);
 
-    $scope.showTextSettingPanel = function() {
-        $scope.isTyping = false;
-    }
-})
+        angular.element($window).bind('resize', function() {
+            $scope.$apply(function() {
+                frameSize = calculateFrameSize(frameWrapper);
+                $(frameWrapper).width(frameSize.width);
+                $(frameWrapper).height(frameSize.height);
+            })
+        });
+        /* @endregion -- setup frame size */
 
+        var initDrawing = function() {
+            console.log("initDrawing executing..");
+            /* @region -- setup canvasContainer */
+            fabric.Object.prototype.transparentCorners = false;
+            var cc = $("#canvas-content")[0];
+            console.log("found canvas: " + (cc ? "true" : "false"));
+            var canvas = this.__canvas = new fabric.Canvas('canvas-content', {
+                backgroundColor: 'white',
+            });
+            canvas.setDimensions({
+                width: $scope.frameWidth,
+                height: $scope.frameHeight
+            });
+            //canvas.setOverlayColor('rgba(255, 73, 64, 0.6)', canvas.renderAll.bind(canvas));
+
+
+            canvas.on({
+                'object:moving': onChange,
+                'object:scaling': onChange,
+                'object:rotating': onChange,
+            });
+
+            function onChange(options) {
+                options.target.setCoords();
+                canvas.forEachObject(function(obj) {
+                    if (obj === options.target) return;
+                    obj.setOpacity(options.target.intersectsWithObject(obj) ? 0.5 : 1);
+                });
+            }
+            var rect = new fabric.Rect({
+                width: 100,
+                height: 100,
+                left: 350,
+                top: 250,
+                angle: -10,
+                fill: 'rgba(0,200,0,0.5)'
+            });
+
+
+            canvas.add(rect);
+            canvas.renderAll();
+
+            $scope.canvas = canvas;
+           
+        }
+         /* @endregion -- setup canvasContainer */
+
+        ionic.Platform.ready(function() {
+            initDrawing();
+        });
+
+        // init picture handler (camera & uploader)
+        $scope.initPictureHandler();
+
+        // link button event for camera-upload button
+        angular.element('#pool-picture-btn').bind('click', function(e) {
+            $scope.startUpload();
+            angular.element('#take-picture-input').trigger('click');
+        });
+        angular.element('#upload-picture-btn').bind('click', function(e) {
+            $scope.startUpload();
+            angular.element('#take-picture-input').trigger('click');
+        });
+        angular.element('#start-camera-btn').bind('click', function(e) {
+            $scope.startWebcam();
+        });
+}
+)
+
+// .directive('textSetting', function() {
+
+//     var tabId = 3;
+//     var ctrl = function($scope) {
+//         $scope.showTextSettingPanel = function() {
+//             $scope.isTyping = false;
+//         }
+//     }
+
+//     var link = function(scope, element, attrs, appCtrl) {
+//         console.log(appCtrl);
+//         appCtrl.addTabselectedHandler(tabId, function() {
+//             scope.isTyping = true;
+//         });
+
+//     }
+//     return {
+//         require: '^appContent',
+//         restrict: 'E',
+//         transclude: true,
+//         scope: {},
+//         templateUrl: 'templates/text-setting.html',
+//         controller: ctrl,
+//         link: link
+//     }
+// })
 
 .controller('DrawAppCtrl', function($scope, $itemId) {
     // don't be scared by the image value, its just datauri
@@ -497,5 +948,3 @@ angular.module('app.controllers', ['app.services', 'app.webcam', 'app.directives
     });
 
 })
-
-.controller('ExCtrl', ['$scope', function($scope) {}]);

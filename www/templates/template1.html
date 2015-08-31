@@ -9,19 +9,23 @@
 <input type="file" accept="image/*;capture=camera">
 <input type="file" accept="video/*;capture=camcorder"> -->
 <!-- end raw region -->
-<div ng-controller="WebcamCtrl" class="webcam-wrapper">
+<div ng-controller="WebcamCtrl" class="content-area-wrapper">
+    <!-- main draw area -->
     <div class="frame-wrapper row">
-        
+        <canvas id="canvas-content">
+		</canvas>
 		<video id="take-picture-video" src=""></video>
 		<canvas id="take-picture-canvas" class="take-picture-frame">
 		</canvas>
+
 	</div>
+
+	<!-- end main draw area -->
     
     <div class="frame-action row" ng-show="isWaitForTake">
 		<button id="take-picture-btn" class="col-100 button button-full button-balanced" ng-click="takePhoto()">
 			撮影
 		</button>
-
 	</div>
 
 	<div class="frame-action row" ng-show="isTaken">
@@ -32,10 +36,9 @@
 			決定
 		</button>
 	</div>
-
-
    
 	<div class="row" ng-if="debug">
+
 	<button id="uploadme-picture-btn" class="col-100 button button-full button-balanced" ng-click="startUpload()">
 		UPLOAD
 	</button>

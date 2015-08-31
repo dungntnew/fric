@@ -13,15 +13,6 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
   $stateProvider
 
-  .state('startup', {
-    url: '/startup',
-    views: {
-      startup: {
-        templateUrl: 'templates/startup.html',
-        controller: 'StartupCtrl'
-      }
-    }
-  })
   .state('products', {
     url: '/products',
     views: {

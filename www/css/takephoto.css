@@ -1,29 +1,36 @@
-
-.webcam-wrapper {
-	background-color:white;
-	text-align: center;
-	display: block;
-}
-
-#take-picture-video { 
-	visibility:hidden;
-    position: absolute;	
-}
-
-#take-picture-input {
-/*	visibility:hidden;
-    position: absolute;	*/
-}
-
 .frame-wrapper {
    min-height: 240px;
-   margin: 0;
-   padding: 0;
+   max-height: 425px;
    text-align: center;
 }
+.frame-wrapper, .frame-wrapper .row {
+  margin: 0 !important;
+  padding: 0 !important;
+}
 
-.take-picture-frame {
-	display: block;
+
+.frame-wrapper .canvas-container {
+   width: 100%;
+   height: 100%;
+    min-height: 240px;
+   max-height: 425px;
+ }
+
+.frame-wrapper #take-picture-canvas {
+/*    display: none;*/
+/*    visibility:hidden;*/
     text-align: center;
     margin: 0 auto;
+    width: 60%;
+    height: 60%;
 }
+
+.frame-wrapper #take-picture-video { 
+    visibility:hidden;
+    display: none;
+}
+#take-picture-input {
+  visibility:hidden;
+  display:none;
+}
+
