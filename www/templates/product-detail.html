@@ -22,7 +22,7 @@
         <div class="action-panel fadein fadeout camera-buttons" ng-controller="TakePictureActionCtrl" ng-show="shouldShowAction('takePicture')">
             <div ng-if="!isMobile()" class="row action-panel">
                <button class="col-50 button icon ion-camera button-full button-assertive" ng-click="takePicture()"></button>
-               <button id="upload-picture-btn" class="col-50 button icon ion-settings button-full button-energized" ng-click="uploadPicture()"></button>
+               <button id="upload-picture-btn" class="col-50 button icon ion-ios-browsers button-full button-energized" ng-click="uploadPicture()"></button>
             </div>
              <button class="col-100 button icon ion-camera button-full button-energized" ng-if="isMobile()" ng-click="poolPicture()"></button>
         </div> 
