@@ -92,6 +92,7 @@ body {
 }
 
 .text-action-bar .scroll-content {
+	top: 0 !important;
 }
 
 .text-action-bar .list .item {
@@ -102,7 +103,7 @@ body {
 }
 
 .text-action-bar .list .active {
-	background-color: rgba(202, 76, 0, 0.2);
+	background-color: rgba(0, 255, 21, 0.25);
 }
 
 .text-action-bar .range input {
@@ -115,7 +116,7 @@ body {
 }
 
 .text-action-bar .color-preview {
-	border: 1px solid black;
+	border: 1px solid rgba(0, 0, 0, 0.18);
 	display: block !important;
 	height: 40px !important;
 	width:  40px !important;
