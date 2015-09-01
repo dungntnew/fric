@@ -98,11 +98,11 @@
 
              <div class="row text-settting-info" >
                <div class="fadein fadeout message" ng-show="fontSetting.changed" ng-model="fontSetting.changed">
-                 <p>{{fontSetting.lastChangeMessage || ''}}</p>
+                 <p style="font-size:{{fontSize.valueText()}}; font-family: {{fontFamily.value.family}}; color: {{textColor.colorCode()}}; opacity: {{fontOpacity.valueFloat()}}">{{fontSetting.lastChangeMessage || ''}}</p>
                </div>
              </div>
              
-             <div class="row">
+             <div class="row font-setting-row-1">
                  <div class="col-40">
                      <div class="range range-positive">
                       <input type="range" name="fontSize" min="{{fontSize.min}}" max="{{fontSize.max}}" value="{{fontSize.value}}" step="{{fontSize.step}}" ng-model="fontSize.value">
@@ -110,30 +110,34 @@
                 </div>
 
                 <div class="col-40">
-                     <div class="range range-assertive">
+                     <div class="range range-energized">
                       <input type="range" name="fontOpacity" min="{{fontOpacity.min}}" max="{{fontOpacity.max}}" value="{{fontOpacity.value}}" step="{{fontOpacity.step}}" ng-model="fontOpacity.value">
                     </div>
                 </div>
 
                 <div class="col-20">
-                    <button class="setting-text-done-btn button ion-android-done  button-balanced button-full " ng-click="doneSettingText()">
+                    <button class="setting-text-done-btn button ion-android-done  button-assertive button-full " ng-click="doneSettingText()">
                      </button>
                  </div>
             </div> 
 
-            <div class="row font-setting-top">
-                <div class="col-20 color-preview-wrapper">
+            <div class="row font-setting-row-2">
+                <div class="col-10 color-preview-wrapper">
                    <div class="col-100 color-preview " style="background-color: {{textColor.colorCode()}}"></div>
                 </div>
-                <div class="col-80">
+                <div class="col-90 text-color-wrapper">
 
-                    <div class="range range-assertive">
-                        <input type="range" name="textColor" min="{{textColor.min}}" max="{{textColor.max}}" value="textColor.value" step="{{textColor.step}}" ng-model="textColor.value" list="colorList">
+                    <div class="range text-color-range">
+                        <input type="range" name="textColor" min="{{textColor.min}}" max="{{textColor.max}}" value="textColor.value" step="{{textColor.step}}" ng-model="textColor.value">
                      </div>
+                    <div class="text-color-background row">
+                       <a href="#" class="text-color-item {{textColor.styleColumn()}} {{textColor.activeClassFor(color)}}" ng-repeat="color in textColor.colors" style="background-color: {{color.code}}"  ng-click="textColor.select(color)"></a>
+                   </div>
+
                    </div>
             </div> 
 
-            <div class="row font-setting">
+            <div class="row font-setting font-setting-row-3">
 
             <ion-content class="content-x col-100" scroll="true">
                 <ul class="list">

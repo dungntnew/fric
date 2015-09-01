@@ -843,37 +843,46 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     /* @region text setting */
     $scope.fontSize = {
-        name: 'Font Size',
+        name: '大きさ',
         display: function() {
-            return this.name + ' : ' + this.value;
+            return this.name + ' ' + this.value + ' pt';
         },
         watch: 'fontSize.value',
         timeoutId: null,
-        min: 20,
-        max: 40,
+        min: 25,
+        max: 75,
         step: 5,
-        value: 25
+        value: 35,
+        valueText: function() {
+            return this.value + 'pt';
+        }
     }
     $scope.fontOpacity = {
-        name: 'Opacity',
+        name: 'オパシティ',
         display: function() {
-            return this.name + ' : ' + this.value;
+            return this.name + ' ' + this.valueText();
         },
         watch: 'fontOpacity.value',
         timeoutId: null,
         min: 0,
         max: 100,
         step: 10,
-        value: 100
+        value: 100,
+        valueText: function() {
+            return this.value + ' %';
+        },
+        valueFloat: function() {
+            return this.value / 100;
+        }
     }
     $scope.fontFamily = {
-        name: 'Font Family',
+        name: 'フォント',
         fonts: [],
         value: null,
         timeoutId: null,
         watch: 'fontFamily.value.displayName',
         display: function() {
-            return this.name + ' : ' + this.value.displayName;
+            return this.name + ' ' + this.value.displayName;
         },
         select: function(font) {
             this.value = font;
@@ -939,7 +948,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
 
     ]
-    $scope.fontFamily.value = $scope.fontFamily.fonts[0];
+    $scope.fontFamily.value = $scope.fontFamily.fonts[1];
     $scope.selectFontFamily = function(font) {
         console.log("change to : " + font.displayName);
         $scope.fontFamily.value = font;
@@ -958,18 +967,31 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
 
     $scope.textColor = {
-        name: 'Text Color',
+        name: 'カラー',
         display: function() {
-            return this.name + ' : ' + this.value;
+            return this.name + ' ' + this.colorName();
         },
         color: function() {
-            return this.colors[this.value]
+            return this.colors[this.value];
         },
         colorCode: function() {
             return this.color().code
         },
         colorName: function() {
             return this.color().name
+        },
+        styleColumn: function() {
+            return 'col-' + Math.round(100 / this.colors.length);
+        },
+        select: function(color){
+            $scope.textColor.value = this.colors.indexOf(color);
+        },
+        activeClassFor: function(color){
+            if (this.colors.indexOf(color) == this.value){
+                return 'active';
+            }else {
+                return 'in-active';
+            }
         },
 
         colors: [],
@@ -978,7 +1000,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         min: 0,
         max: 10,
         step: 1,
-        value: 0
+        value: 2
 
     };
 
