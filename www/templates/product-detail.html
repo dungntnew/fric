@@ -4,8 +4,10 @@
         </div>     
         <!-- main draw area -->
         <div class="frame-wrapper row">
-            <canvas id="canvas-content">
+            <canvas id="canvas-content" ng-show="!inReview">
             </canvas>
+            <canvas id="review-content" ng-show="inReview">
+
             <video id="take-picture-video" src=""></video>
             <canvas id="take-picture-canvas" class="take-picture-frame">
             </canvas>
@@ -79,7 +81,7 @@
 			<div class="row"
 	   <ion-content class="content-x col-90" scroll="true">
 			<ion-scroll direction="x" class="wide-as-needed">
-			<img ng-repeat="sticker in getStickers()" ng-click="addSticker(sticker.id)" ng-src="{{sticker.src}}" title="{{sticker.name}}" class="tab-item"/>
+			<img ng-repeat="sticker in stickers" ng-click="addSticker(sticker.id)" ng-src="{{sticker.src}}" title="{{sticker.name}}" class="tab-item"/>
 			</ion-scroll>
 			</ion-content>
 
@@ -95,61 +97,69 @@
 
            <!-- text setting button -->
        <div class="action-panel fadein fadeout" ng-show="shouldShowAction('text-setting')">
-
-             <div class="row text-settting-info" >
-               <div class="fadein fadeout message" ng-show="fontSetting.changed" ng-model="fontSetting.changed">
-                 <p style="font-size:{{fontSize.valueText()}}; font-family: {{fontFamily.value.family}}; color: {{textColor.colorCode()}}; opacity: {{fontOpacity.valueFloat()}}">{{fontSetting.lastChangeMessage || ''}}</p>
-               </div>
-             </div>
              
-             <div class="row font-setting-row-1">
-                 <div class="col-40">
-                     <div class="range range-positive">
-                      <input type="range" name="fontSize" min="{{fontSize.min}}" max="{{fontSize.max}}" value="{{fontSize.value}}" step="{{fontSize.step}}" ng-model="fontSize.value">
-                    </div>
-                </div>
+             <div ng-show="!fontSetting.isTyping" ng-model="fontSetting.isTyping"> <!-- setting panel -->
 
-                <div class="col-40">
-                     <div class="range range-energized">
-                      <input type="range" name="fontOpacity" min="{{fontOpacity.min}}" max="{{fontOpacity.max}}" value="{{fontOpacity.value}}" step="{{fontOpacity.step}}" ng-model="fontOpacity.value">
-                    </div>
-                </div>
+                       <div class="row text-settting-info" >
+                         <div class="fadein fadeout message" ng-show="fontSetting.changed" ng-model="fontSetting.changed">
+                           <p style="font-size:{{fontSize.valueText()}}; font-family: {{fontFamily.value.family}}; color: {{textColor.colorCode()}}; opacity: {{fontOpacity.valueFloat()}}">{{fontSetting.lastChangeMessage || ''}}</p>
+                         </div>
+                       </div>
+                       
+                       <div class="row font-setting-row-1">
+                           <div class="col-40">
+                               <div class="range range-positive">
+                                <input type="range" name="fontSize" min="{{fontSize.min}}" max="{{fontSize.max}}" value="{{fontSize.value}}" step="{{fontSize.step}}" ng-model="fontSize.value">
+                              </div>
+                          </div>
 
-                <div class="col-20">
-                    <button class="setting-text-done-btn button ion-android-done  button-assertive button-full " ng-click="doneSettingText()">
-                     </button>
-                 </div>
-            </div> 
+                          <div class="col-40">
+                               <div class="range range-energized">
+                                <input type="range" name="fontOpacity" min="{{fontOpacity.min}}" max="{{fontOpacity.max}}" value="{{fontOpacity.value}}" step="{{fontOpacity.step}}" ng-model="fontOpacity.value">
+                              </div>
+                          </div>
 
-            <div class="row font-setting-row-2">
-                <div class="col-10 color-preview-wrapper">
-                   <div class="col-100 color-preview " style="background-color: {{textColor.colorCode()}}"></div>
-                </div>
-                <div class="col-90 text-color-wrapper">
+                          <div class="col-20">
+                              <button class="setting-text-done-btn button ion-android-done  button-assertive button-full " ng-click="doneSettingText()">
+                               </button>
+                           </div>
+                      </div> 
 
-                    <div class="range text-color-range">
-                        <input type="range" name="textColor" min="{{textColor.min}}" max="{{textColor.max}}" value="textColor.value" step="{{textColor.step}}" ng-model="textColor.value">
-                     </div>
-                    <div class="text-color-background row">
-                       <a href="#" class="text-color-item {{textColor.styleColumn()}} {{textColor.activeClassFor(color)}}" ng-repeat="color in textColor.colors" style="background-color: {{color.code}}"  ng-click="textColor.select(color)"></a>
-                   </div>
+                      <div class="row font-setting-row-2">
+                          <div class="col-10 color-preview-wrapper">
+                             <div class="col-100 color-preview " style="background-color: {{textColor.colorCode()}}"></div>
+                          </div>
+                          <div class="col-90 text-color-wrapper">
 
-                   </div>
-            </div> 
+                              <div class="range text-color-range">
+                                  <input type="range" name="textColor" min="{{textColor.min}}" max="{{textColor.max}}" value="textColor.value" step="{{textColor.step}}" ng-model="textColor.value">
+                               </div>
+                              <div class="text-color-background row">
+                                 <a href="#" class="text-color-item {{textColor.styleColumn()}} {{textColor.activeClassFor(color)}}" ng-repeat="color in textColor.colors" style="background-color: {{color.code}}"  ng-click="textColor.select(color)"></a>
+                             </div>
 
-            <div class="row font-setting font-setting-row-3">
+                             </div>
+                      </div> 
 
-            <ion-content class="content-x col-100" scroll="true">
-                <ul class="list">
-                     <li class="item" ng-repeat="font in fontFamily.fonts" ng-click="fontFamily.select(font)">
-                     <a href="#" class="item" ng-class="{active: fontFamily.value==font}"  style="font-family: {{font.family}}" 
-                           >
-                           {{font.displayName}}
-                     </a>
-                     </li>
-                 </ul>
-            </ion-content>
-            </div>
+                      <div class="row font-setting font-setting-row-3">
+
+                      <ion-content class="content-x col-100" scroll="true">
+                          <ul class="list">
+                               <li class="item" ng-repeat="font in fontFamily.fonts" ng-click="fontFamily.select(font)">
+                               <a href="#" class="item" ng-class="{active: fontFamily.value==font}"  style="font-family: {{font.family}}" 
+                                     >
+                                     {{font.displayName}}
+                               </a>
+                               </li>
+                           </ul>
+                      </ion-content>
+                      </div>
+                  </div> <!-- end setting panel -->
+
+                  <div ng-show="fontSetting.isTyping" ng-model="fontSetting.isTyping" class="row">
+                     <button class="col-100 button button-full button-balanced" ng-click="addNewText()">テキスト追加</button>
+                  </div>
+
         </div>
         <!-- end text setting button -->
     </div> <!-- end action panel -->

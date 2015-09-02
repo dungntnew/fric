@@ -155,6 +155,7 @@ body {
 .text-action-bar .text-color-range  input[type=range] {
 	-webkit-appearance: none;
 	 border: none;
+	 outline: none;
 	 background: transparent;
 	 color: transparent;
 }
@@ -162,6 +163,7 @@ body {
     width: 20px;
     height: 35px;
     border: none;
+    outline: none;
     background: transparent;
     margin-left:0px;
     margin-top: -25px;
@@ -170,6 +172,7 @@ body {
 .text-action-bar .text-color-range  input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     border: none;
+    outline: none;
     height: 80px;
     width: 2px;
     text-align: center !important;

@@ -17,8 +17,8 @@
  }
 
 .frame-wrapper #take-picture-canvas {
-/*    display: none;*/
-/*    visibility:hidden;*/
+    display: none;
+    visibility:hidden;
     text-align: center;
     margin: 0 auto;
     width: 60%;
