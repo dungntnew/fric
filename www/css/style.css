@@ -108,14 +108,15 @@ body {
 
 .text-action-bar .range input {
     margin: 0 !important;
-    padding: 0 !important;
+    margin-right: 15px !important;
+/*    padding: 0 !important;*/
 }
 
 .text-action-bar .range {
 	background-color: transparent !important;
 	color: red !important;
-    margin: 0 !important;
-    padding: 0 !important;	
+/*    margin: 0 !important;
+    padding: 0 !important;	*/
 }
 .text-action-bar .text-color-range  {
 	height: 30px !important;
