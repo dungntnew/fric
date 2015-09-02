@@ -30,6 +30,7 @@
   "license": "MIT",
   "scripts": {
     "build": "node build.js modules=ALL exclude=json,gestures",
+    "build-full": "node build.js modules=ALL",
     "test": "node test.js && jshint src"
   },
   "dependencies": {
