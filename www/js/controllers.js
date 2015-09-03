@@ -267,6 +267,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             return $scope.pictureLoaded && $scope.activeTabIndex == 0;
         }
 
+        $scope.shouldShowPreview = function() {
+            return $scope.activeTabIndex == 4;
+        }
+
         $scope.slideHasChanged = function(index) {
             var view = $scope.contentViews[index];
             console.log("content view changed to: " + view.name);
@@ -776,18 +780,23 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.showTextSetting = function(text) {
 
             $scope.text = text;
-            $scope.$apply(function() {
-                $scope.fontSetting.isTyping = false;
-                $scope.fontFamily.changeTo(text.fontFamily);
-                $scope.textColor.changeTo(text.stroke);
-                $scope.fontSize.changeTo(text.fontSize);
+            setTimeout(function() {
+                $scope.$apply(function() {
+                    $scope.fontSetting.isTyping = false;
+                    $scope.fontFamily.changeTo(text.fontFamily);
+                    $scope.textColor.changeTo(text.stroke);
+                    $scope.fontSize.changeTo(text.fontSize);
+                });
             });
         }
 
         $scope.hideTextSetting = function() {
-            $scope.$apply(function() {
-                $scope.fontSetting.isTyping = true;
+            setTimeout(function() {
+                $scope.$apply(function() {
+                    $scope.fontSetting.isTyping = true;
+                });
             });
+
         }
 
         $scope.applyTextSetting = function() {
@@ -823,7 +832,61 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             var jsonData = JSON.stringify($scope.canvas.toDatalessJSON());
 
         }
-        $scope.addTabselectedHandler(previewTabId, previewFunc);
+
+        $scope.previewer = {
+            init: function() {
+                this.tabId = 4;
+                this.canvas = new fabric.Canvas('canvas-preview');
+            },
+            handler: function() {
+                var previewCanvas = this.canvas;
+                var contentCanvas = $scope.canvas;
+
+                //$scope.showProcessingLoading('please wait for load template image..');
+
+                var backgroundUrl = $scope.product.template;
+                previewCanvas.setBackgroundImage(backgroundUrl,
+                    previewCanvas.renderAll.bind(previewCanvas), {
+                        opacity: 1,
+                        angle: 0,
+                        left: 0,
+                        top: 0,
+                        originX: 'left',
+                        originY: 'top'
+                    });
+
+
+                var group = new fabric.Group([], {
+                    left: 10,
+                    top: 10
+                });
+
+                var canvas_item = contentCanvas.item(0),
+                    x = 0;
+                while (canvas_item != undefined) {
+                    group.addWithUpdate(canvas_item);
+                    x += 1;
+                    canvas_item = contentCanvas.item(x);
+                }
+                contentCanvas.clear();
+                contentCanvas.add(group);
+                var canvas_data = JSON.stringify(contentCanvas.toDatalessJSON());
+
+
+
+                previewCanvas.loadFromJSON(JSON.parse(canvas_data), function(obj) {
+                    previewCanvas.renderAll();
+                    console.log(' this is a callback. invoked when canvas is loaded!xxx ');
+                });
+
+
+
+            }
+        }
+        $scope.previewer.init();
+        $scope.addTabselectedHandler($scope.previewer.tabId, function() {
+            $scope.previewer.handler();
+        });
     }());
     /* @endregion preview */
 
@@ -873,17 +936,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         },
         createWiddeCanvas: function() {
 
-        },
-        loadBackgroundImage: function() {
-            var backgroundUrl = $scope.product.template;
-            $scope.canvas.setBackgroundImage(backgroundUrl, $scope.canvas.renderAll.bind($scope.canvas), {
-                opacity: 1,
-                angle: 0,
-                left: 0,
-                top: 0,
-                originX: 'left',
-                originY: 'top'
-            });
         },
         createFixedGroup: function() {},
         setPositionForFixedGroup: function() {},
@@ -1045,7 +1097,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             });
         });
         angular.element('#take-picture-input').trigger('click');
-    });    
+    });
     angular.element('#upload-picture-btn').bind('click', function(e) {
         $scope.webcam.clear();
         setTimeout(function() {

@@ -1,7 +1,7 @@
 <ion-view view-title="{{product.name}}" ng-controller="EditImageAppCtrl">
   <ion-content class="draw-content-view" scroll="false"> 
         <!-- main draw area -->
-        <div class="frame-wrapper row">
+        <div class="frame-wrapper row" ng-show="!shouldShowPreview()">
             <div ng-model="usingWebcam" ng-show="!usingWebcam">
               <canvas id="canvas-content"></canvas>
             </div>
@@ -9,7 +9,9 @@
             <video id="take-picture-video" src="" ng-hidden></video>
             <input type="file" id="take-picture-input" accept="image/*" ng-hidden>
         </div>
-        <div class="row"></div>
+        <div class="row frame-wrapper" ng-show="shouldShowPreview()">
+          <canvas id="canvas-preview"></canvas>
+        </div>
         <!-- end main draw area -->
 
         <!-- tool-bar buttons -->
