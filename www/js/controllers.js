@@ -172,6 +172,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             name: "take photo",
             view: 0,
             actionIds: [0, 1],
+            actionId: 0,
             multipleTab: false,
             onSelectedHanlders: [],
             actionBarClass: "action-bar"
@@ -179,6 +180,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             id: 1,
             name: "fames",
             view: 0,
+            actionId: 2,
             actionIds: [2],
             multipleTab: false,
             onSelectedHanlders: [],
@@ -187,6 +189,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             id: 2,
             name: "stickers",
             view: 0,
+            actionId: 3,
             actionIds: [3],
             multipleTab: false,
             onSelectedHanlders: [],
@@ -195,6 +198,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             id: 3,
             name: "text",
             view: 0,
+            actionId: 4, 
             actionIds: [4],
             multipleTab: false,
             onSelectedHanlders: [],
@@ -203,6 +207,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             id: 4,
             name: "review",
             view: 0,
+            actionId: null,
             actionIds: [],
             multipleTab: false,
             onSelectedHanlders: [],
@@ -216,20 +221,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
 
             if (tab.actionIds.length > 0) {
-                $scope.actionName = actionNames[tab.actionIds[0]];
+                if (!tab.actionId) tab.actionId = tab.actionIds[0];
+                $scope.actionName = actionNames[tab.actionId];
                 console.log("[current] action name -> " + $scope.actionName);
             }
-        }
-
-        var isValidActionName = function(actionName) {
-            var activeTabIndex = $scope.activeTabIndex;
-            var tab = tabContentViews[activeTabIndex];
-            var index = actionNames.indexOf(actionName);
-
-
-            if (index == -1) return false;
-
-            return tab.actionIds.indexOf(index) >= 0;
         }
 
         $scope.addTabselectedHandler = function(tabId, handler) {
@@ -237,11 +232,15 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         };
 
         $scope.changeToAction = function(newAction) {
-            if (!isValidActionName(newAction)) {
-                console.log("warning.. action: " + newAction + " is Invalid!!!!");
-                return;
-            }
+            var activeTabIndex = $scope.activeTabIndex;
+            var tab = tabContentViews[activeTabIndex];
+            var index = actionNames.indexOf(newAction);
 
+
+            if (index == -1) return false;
+            if (tab.actionIds.indexOf(index) == -1) return false;
+
+            tab.actionId = index;
             setTimeout(function() {
                 $scope.$apply(function() {
                     $scope.actionName = newAction;
@@ -413,15 +412,17 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
         $scope.onTakenPicture = function(canvas, canvasId) {
             var dataURL = canvas.toDataURL();
+            $(canvas).removeAttr("data-caman-id");
             $scope.painter.addImage(dataURL);
         }
 
         $scope.onPictureLoaded = function(dataURL) {
             $scope.painter.addImage(dataURL);
             var canvas = $("#take-picture-canvas")[0];
-            
+            $(canvas).removeAttr("data-caman-id");
+
             var image = new Image();
-            image.onload = function(){
+            image.onload = function() {
                 var w = image.width;
                 var h = image.height;
                 canvas.width = w;
@@ -945,8 +946,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     var iw = image.width;
                     var ih = image.height;
                     var scale = 1;
-                    if (iw > w || ih > h){
-                        scale = iw > ih ? w / iw : h /ih;
+                    if (iw > w || ih > h) {
+                        scale = iw > ih ? w / iw : h / ih;
                     }
                     $scope.canvas.add(image.set({
                         originX: 'center',
@@ -997,7 +998,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.pictureLoaded = true;
                 $scope.onTakenPicture(canvas, canvasId);
                 $scope.changeToAction("filter");
-                $(canvas).removeAttr("data-caman-id");
+
             },
             canvasId: '#take-picture-canvas',
             videoId: '#take-picture-video'
@@ -1015,7 +1016,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.pictureLoaded = true;
                 $scope.onPictureLoaded(dataURL);
                 $scope.changeToAction("filter");
-                //$(picture).removeAttr("data-caman-id");
+
 
             },
             inputId: '#take-picture-input'
@@ -1045,7 +1046,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.usingWebcam = false;
             });
         });
-
         angular.element('#take-picture-input').trigger('click');
     });
     angular.element('#start-camera-btn').bind('click', function(e) {
@@ -1056,6 +1056,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.usingWebcam = true;
             });
         });
+        $scope.webcam.start();
     });
 
     angular.element('#take-picture-btn').bind('click', function(e) {
