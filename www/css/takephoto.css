@@ -2,7 +2,11 @@
    min-height: 240px;
    max-height: 425px;
    text-align: center;
+   background-image: url(data:image/gif;base64,R0lGODlhCgAKAIAAAOLi4v///yH5BAAHAP8ALAAAAAAKAAoAAAIRhB2ZhxoM3GMSykqd1VltzxQAOw==);
+   display: inline-block;
+   border: 2px solid #ccc;
 }
+
 .frame-wrapper, .frame-wrapper .row {
   margin: 0 !important;
   padding: 0 !important;
@@ -33,7 +37,10 @@
 .frame-wrapper #take-picture-video { 
     visibility:hidden;
     display: none;
+  width: 100%    !important;
+  height: auto   !important;
 }
+
 #take-picture-input {
   visibility:hidden;
   display:none;

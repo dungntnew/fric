@@ -4,33 +4,35 @@
         </div>     
         <!-- main draw area -->
         <div class="frame-wrapper row">
-            <canvas id="canvas-content" ng-show="isCanvasInEdit()"></canvas>
-            
-            <canvas id="review-content" ng-show="inReview"></canvas>
-            <video id="take-picture-video" src=""></video>
-
-            <!-- <canvas id="upload-picture-canvas" class="take-picture-frame" ng-hide></canvas> -->
-            <canvas id="take-picture-canvas" class="take-picture-frame" ng-show="isSelectingPicture()">
-            </canvas>
-
-            <input type="file" id="take-picture-input" accept="image/*">
+            <div ng-model="usingWebcam" ng-show="!usingWebcam">
+              <canvas id="canvas-content"></canvas>
+            </div>
+            <canvas id="take-picture-canvas" ng-show="usingWebcam" ng-model="usingWebcam"></canvas>
+            <video id="take-picture-video" src="" ng-hidden></video>
+            <input type="file" id="take-picture-input" accept="image/*" ng-hidden>
         </div>
         <div class="row"></div>
         <!-- end main draw area -->
-        <div class="frame-action row" ng-show="isWaitForTake">
-            <button id="take-picture-btn" class="col-100 button button-full button-balanced" ng-click="takePhoto()">
+
+        <!-- tool-bar buttons -->
+        <div class="frame-action row" ng-show="usingWebcam" ng-model="usingWebcam">
+            <button id="take-picture-btn" class="col-100 button button-full button-balanced" ng-click="takePicture()">
                 撮影
             </button>
         </div>
 
-        <div class="frame-action row" ng-show="isPhotoTaken">
-            <button id="retake-picture-btn" class="col-50 button button-full button-balanced" ng-click="retakePhoto()">
+        <div class="frame-action row" ng-show="pictureLoaded">
+            <button id="retake-picture-btn" class="col-30 button button-full button-balanced" ng-click="retakePhoto()">
                 再撮影
             </button>
-            <button id="decided-picture-btn" class="col-50 button button-full button-assertive" ng-click="decidedPhoto()">
+            <button id="crop-picture-btn" class="col-30 button button-full button-balanced" ng-click="cropPhoto()">
+                CROP
+            </button>
+            <button id="decided-picture-btn" class="col-30 button button-full button-assertive" ng-click="decidedPhoto()">
                 決定
             </button>
         </div>
+        <!-- end tool bar buttons -->
   </ion-content> 
   <div>
     <!-- action panel -->

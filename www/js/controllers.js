@@ -21,11 +21,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         var isMobileDevice = isIPad || isIOS || isAndroid || isWindowsPhone;
         $scope.isInitialized = true;
         $scope.isMobileDevice = isMobileDevice;
-
-        // console.log("isWebView: " + isWebView);
-        // console.log("isIOS: " + isIOS);
-        // console.log("currentPlatform: " + currentPlatform);
-        // console.log("detected isMobile => " + $scope.isMobileDevice);
         return $scope.isMobileDevice;
     }
 
@@ -35,12 +30,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     $scope.config.maxHeight = 425;
     console.log("[app config] ratio: " + $scope.config.widthToHeight);
     console.log("[app config] Max Height: " + $scope.config.maxHeight + " px");
-
-    // detect brower support camera
-    navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
-
-    window.URL = window.URL || window.webkitURL;
-    //ionic.Platform.exitApp(); // stops the app
 
     $scope.calculateDimensions = function(gesture) {
         $scope.w = $window.innerWidth;
@@ -131,14 +120,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 })
 
 .controller('ProductListCtrl', function($scope, Products) {
-    // With the new view caching in Ionic, Controllers are only called
-    // when they are recreated or on app start, instead of every page change.
-    // To listen for when this page is active (for example, to refresh data),
-    // listen for the $ionicView.enter event:
-    //
-    //$scope.$on('$ionicView.enter', function(e) {
-    //});
-
     $scope.products = Products.all();
 })
 
@@ -151,7 +132,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     $ionicSlideBoxDelegate, $ionicLoading, $ionicPopup) {
 
     (function() {
-        /** register scope function  */
         $scope.showModal = function(templateUrl) {
 
             $ionicModal.fromTemplateUrl(templateUrl, {
@@ -289,21 +269,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             console.log("content view changed to: " + view.name);
         }
 
-        $scope.isSelectingPicture = function() {
-            //return $scope.activeTabIndex == 0;
-            return $scope.isWaitForTake;
-        }
-        $scope.isCanvasInEdit = function() {
-            return $scope.isPhotoTaken;
-
-            return true;
-            var inEditing = $scope.activeTabIndex != 0 && !$scope.inReview;
-            console.log("in editing: " + inEditing);
-            return inEditing;
-        }
-
         $scope.tabData = tabContentViews;
-
         $scope.frameWidth = 0;
         $scope.frameHeight = 0;
         $scope.selectTabWithIndex = function(index) {
@@ -332,7 +298,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
 
         var calculateFrameSize = function(frame) {
-            console.log("config in child: " + $scope.config);
             var config = $scope.config || {
                 widthToHeight: 1,
                 maxHeight: 425
@@ -352,12 +317,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 newWidth = newHeight * widthToHeight;
             }
 
-            console.log("frame size: " + newWidth + " x " + newHeight);
             size = {
                 width: newWidth,
                 height: newHeight
             }
-            console.log(size.width + " = = " + size.height);
             return {
                 width: newWidth,
                 height: newHeight
@@ -368,349 +331,16 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     /* @region - camera */
     (function() {
-        var initPictureHandler = function() {
-
-            $scope.isWebcamReady = false;
-            $scope.isPhotoTaken = false;
-            $scope.isWaitForTake = false;
-            $scope.isLastTaken = true; // Other is uploadPhoto
-
-            var video, picture, input, ctx,
-                isStreaming = false,
-                snapshoot = false,
-                webcamInterval = null,
-                w, h;
-
-            var isWebcamInitizalied = false;
-
-            var validateWebcamInit = function() {
-                if (!isWebcamInitizalied) {
-                    console.log("Please initWebcam before continue!..");
-                    return false;
-                }
-                return true;
-            }
-
-            var initWebcam = function() {
-
-                // init canvas element - wait for document ready
-                video = $('#take-picture-video')[0];
-                picture = $('#take-picture-canvas')[0];
-                input = $('#take-picture-input')[0];
-
-                if (!video || !picture || !input) {
-                    return;
-                }
-                ctx = picture.getContext('2d');
-
-
-                var size = $scope.calculateFrameSize(picture);
-                $(picture).width(size.width);
-                $(picture).height(size.height);
-                w = size.width;
-                h = size.height;
-                picture.width = w;
-                picture.height = h;
-                console.log("init webcam with: " + picture.width + " - " + picture.height);
-
-                angular.element($window).bind('resize', function() {
-                    $scope.$apply(function() {
-                        size = $scope.calculateFrameSize(picture);
-                        $(picture).width(size.width);
-                        $(picture).height(size.height);
-                    })
-                });
-
-                // init done
-                isWebcamInitizalied = true;
-            }
-
-
-            var startRecord = function() {
-                if (!validateWebcamInit())
-                    return;
-
-                // Every 33 milliseconds copy the video image to the canvas
-                webcamInterval = setInterval(function() {
-                    if (video.paused || video.ended) return;
-                    w = picture.width;
-                    h = picture.height;
-                    ctx.fillRect(0, 0, w, h);
-                    ctx.drawImage(video, 0, 0, w, h);
-                    if (snapshoot) takePhoto();
-                }, 33);
-            }
-
-            var clearWebcam = function() {
-                if (!validateWebcamInit())
-                    return;
-
-                video.src = "";
-
-                stopRecord();
-                w = picture.width;
-                h = picture.height;
-                ctx.fillRect(0, 0, w, h);
-                ctx.drawImage(video, 0, 0, w, h);
-            }
-
-            var stopRecord = function() {
-                if (!validateWebcamInit())
-                    return;
-
-                if (webcamInterval) {
-                    clearInterval(webcamInterval);
-                }
-            }
-
-            // Cross browser
-            var startWebcam = function() {
-                if (!validateWebcamInit())
-                    return;
-
-                if (navigator.getUserMedia) {
-                    // Request access to video only
-                    navigator.getUserMedia({
-                            video: true,
-                            audio: false
-                        },
-                        function(stream) {
-                            // Cross browser checks
-                            var url = window.URL || window.webkitURL;
-                            video.src = url ? url.createObjectURL(stream) : stream;
-                            // Set the video to play
-                            video.play();
-                        },
-                        function(error) {
-                            alert('Something went wrong. (error code ' + error.code + ')');
-                            return;
-                        }
-                    );
-                } else {
-                    $scope.showAlert({
-                        title: "警報！",
-                        message: "カメラが 起動できません!"
-                    });
-                    return;
-                }
-            };
-
-            var uploadPictureFinish = function() {
-                if (!validateWebcamInit())
-                    return;
-
-                setTimeout(function() {
-                    $scope.$apply(function() {
-                        $scope.isPhotoTaken = true;
-                    });
-                })
-                $(picture).removeAttr("data-caman-id");
-                $scope.changeToAction("filter");
-                $scope.updateUploadedImageToWidget();
-                $scope.hideProcessingLoading();
-            }
-
-            var loadDataURLToImage = function(dataURL, method, callback) {
-              
-                var image = new Image();
-         
-                console.log("pic w: " + w + " h: " + h);
-
-                image.onload = function() {
-                    w = image.width;
-                    h = image.height;
-                    picture.width = w;
-                    picture.height = h;
-                    ctx.fillRect(0, 0, w, h);
-                    ctx.drawImage(image, 0, 0, w, h);
-                    if (callback) callback();
-                    uploadPictureFinish();
-                }
-                image.onerror = function() {
-                    $scope.showAlert({
-                        title: "警報！",
-                        message: (method + "が 起動できません!")
-                    });
-                    if (callback) callback();
-                };
-                image.src = dataURL;
-            }
-
-
-
-            var processUploadedFile = function(file) {
-
-                if (!validateWebcamInit())
-                    return;
-
-                try {
-
-                    var imgURL = window.URL.createObjectURL(file);
-                    loadDataURLToImage(imgURL, 'window.URL.createObjectURL', function(e) {
-                        URL.revokeObjectURL(imgURL);
-                    });
-
-                } catch (e) {
-                    try {
-                        // Fallback if createObjectURL is not supported
-                        var fileReader = new FileReader();
-                        fileReader.onload = function(event) {
-                            var imgURL = event.target.result;
-                            loadDataURLToImage(imgURL, 'FileReader');
-                        };
-                        fileReader.readAsDataURL(file);
-                    } catch (e) {
-
-                        $scope.showAlert({
-                            title: "警報！",
-                            message: "createObjectURL | FileReaderが 起動できません!"
-                        });
-                    }
-                }
-            }
-            var onFileSelect = function(e) {
-                if (!validateWebcamInit())
-                    return;
-
-                var file = e.target.files[0];
-                if (!file || !/^image\//i.test(file.type)) {
-                    $scope.showAlert({
-                        title: "警報！",
-                        message: "Uploaded invalid file(empty or not a image)"
-                    });
-                    return;
-                }
-                processUploadedFile(file);
-                $scope.showProcessingLoading();
-            };
-
-
-
-            var startUpload = function() {
-                if (!validateWebcamInit())
-                    return;
-
-                clearWebcam();
-                stopRecord();
-                setTimeout(function() {
-                    $scope.$apply(function() {
-                        $scope.isLastTaken = false;
-                        $scope.isWaitForTake = false;
-                        $scope.isPhotoTaken = false;
-                    })
-                })
-
-                if (window.File && window.FileReader && window.FormData) {
-                    if (window.addEventListener) {
-                        input.addEventListener('change', onFileSelect, false);
-                    } else if (window.attachEvent) {
-                        input.attachEvent("onchange", onFileSelect);
-                    }
-                } else {
-                    $scope.showAlert({
-                        title: "警報！",
-                        message: "Your browser not support file upload!"
-                    });
-                }
-            }
-
-            var registerVideoEvents = function() {
-                if (!validateWebcamInit())
-                    return;
-
-                // Wait until the video stream can play
-                video.addEventListener('canplay', function(e) {
-                    if (!validateWebcamInit())
-                        return;
-
-                    if (!isStreaming) {
-                        // calculateFrameSize();
-
-                        // videoWidth isn't always set correctly in all browsers
-                        // if (v.videoWidth > 0) {
-
-                        //      h = v.videoHeight / (v.videoWidth / w);
-                        // }
-                        w = picture.width;
-                        h = picture.height;
-
-                        picture.setAttribute('width', w);
-                        picture.setAttribute('height', h);
-                        // Reverse the canvas image
-                        ctx.translate(w, 0);
-                        ctx.scale(-1, 1);
-                        isStreaming = true;
-                    }
-                    setTimeout(function() {
-                        $scope.$apply(function() {
-                            $scope.isWebcamReady = true;
-                            $scope.isWaitForTake = true;
-                            $scope.isPhotoTaken = false;
-                            $scope.isLastTaken = true;
-                        })
-                    })
-                }, false);
-
-
-                // Wait for the video to start to play
-                video.addEventListener('play', function() {
-                    if (!validateWebcamInit())
-                        return;
-                    startRecord();
-                }, false);
-            }
-
-
-            var takePhoto = function() {
-
-                console.log("do take...");
-                if (!validateWebcamInit())
-                    return;
-
-                stopRecord();
-                snapshoot = false;
-                setTimeout(function() {
-                    $scope.$apply(function() {
-                        $scope.isWaitForTake = false;
-                        $scope.isLastTaken = true;
-                        $scope.isPhotoTaken = true;
-                    });
-                    $(picture).removeAttr("data-caman-id");
-                    $scope.changeToAction("filter");
-                    $scope.updateTakenImageToWidget();
-                })
-            }
-
-            $scope.clearWebcam = clearWebcam;
-            $scope.onFileSelect = onFileSelect;
-            $scope.startUpload = startUpload;
-            $scope.startWebcam = startWebcam;
-            $scope.takePhoto = takePhoto;
-            $scope.retakePhoto = function() {
-                if (!validateWebcamInit())
-                    return;
-                setTimeout(function() {
-
-                    if ($scope.isLastTaken) {
-                        startRecord();
-                    }
-
-                    $scope.$apply(function() {
-                        $scope.isWaitForTake = $scope.isLastTaken;
-                        $scope.isPhotoTaken = false;
-                    });
-                    $scope.changeToAction("takePicture");
-                })
-            }
-
-            // call init()
-            initWebcam();
-            clearWebcam();
-            registerVideoEvents();
-        }
-        $scope.initPictureHandler = initPictureHandler;
+        $scope.webcam = webcamHandler;
     }());
     /* @endregion - camera */
+
+    /* @region upload picture */
+    (function() {
+        $scope.uploader = uploaderHandler;
+    }());
+    /* @endregion upload picture */
+
 
     /* @region - filter */
     (function() {
@@ -720,10 +350,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.filterProcessing = true;
                 $scope.showProcessingLoading('処理中');
             }
-        });
-
-        Caman.Event.listen("processComplete", function(job) {
-
         });
 
         Caman.Event.listen("renderFinished", function(job) {
@@ -776,7 +402,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 if (effect in this) {
                     this.revert();
                     this[effect]();
-                    this.render(function(){
+                    this.render(function() {
                         var picture = $("#take-picture-canvas")[0];
                         var dataURL = picture.toDataURL();
                         $scope.painter.addImage(dataURL);
@@ -785,20 +411,14 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             });
         }
 
-        $scope.updateUploadedImageToWidget = function(){
-            var picture = $("#take-picture-canvas")[0];
-            var dataURL = picture.toDataURL();
+        $scope.onTakenPicture = function(canvas, canvasId) {
+            var dataURL = canvas.toDataURL();
+            console.log(dataURL);
             $scope.painter.addImage(dataURL);
         }
 
-        $scope.updateTakenImageToWidget = function(){
-            var picture = $("#take-picture-canvas")[0];
-            var dataURL = picture.toDataURL();
+        $scope.onPictureLoaded = function(dataURL) {
             $scope.painter.addImage(dataURL);
-        }
-
-        $scope.decidedPhoto = function() {
-            $scope.selectTabWithIndex(1);
         }
     }());
     /* @endregion - filter */
@@ -1117,7 +737,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 }, 1500);
             })
         }
-        _.each(fontDataList, function(data){ fontDataWatch(data)});
+        _.each(fontDataList, function(data) {
+            fontDataWatch(data)
+        });
 
         $scope.fontSetting = {
             lastChangeMessage: '',
@@ -1200,7 +822,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
             fabric.Object.prototype.transparentCorners = false;
             var canvas = $scope.canvas = this.__canvas = new fabric.Canvas('canvas-content');
-            canvas.backgroundColor = "#333"
             canvas.selectionColor = 'rgba(0,255,0,0.3)';
             canvas.selectionBorderColor = 'red';
             canvas.selectionLineWidth = 5;
@@ -1210,7 +831,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             this.setupFrameSize();
             angular.element($window).bind('resize', this.setupFrameSize);
 
-            console.log("painter initDrawing done");
             this.setupEvents();
         },
         setupEvents: function() {
@@ -1224,12 +844,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $scope.canvas.on('selection:cleared', function(e) {
                 $scope.hideTextSetting();
             });
-
         },
         createWiddeCanvas: function() {
 
         },
-
         loadBackgroundImage: function() {
             var backgroundUrl = $scope.product.template;
             $scope.canvas.setBackgroundImage(backgroundUrl, $scope.canvas.renderAll.bind($scope.canvas), {
@@ -1241,13 +859,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 originY: 'top'
             });
         },
-        createFixedGroup: function() {
-
-        },
-        setPositionForFixedGroup: function() {
-
-        },
-
+        createFixedGroup: function() {},
+        setPositionForFixedGroup: function() {},
         newPosition: function() {
             var haft_w = this.width;
             var haft_h = this.height;
@@ -1304,99 +917,143 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $scope.canvas.renderAll();
         },
 
-        addImage: function(src){
+        addImage: function(src) {
             var isOnlyOne = true;
             if (isOnlyOne) {
-                _.each(this.images, function(image){ 
-                   $scope.canvas.remove(image);
+                _.each(this.images, function(image) {
+                    $scope.canvas.remove(image);
                 })
-     
+
                 var images = [];
                 var w = this.width;
                 var h = this.height;
-                fabric.Image.fromURL(src, function(image){
 
-                    $scope.canvas.add(image);
+                fabric.Image.fromURL(src, function(image) {
+                    $scope.canvas.add(image.set({
+                        originX: 'center',
+                        originY: 'center',
+                        left: w / 2,
+                        top: h / 2
+                    }));
+
                     $scope.canvas.sendToBack(image);
                     $scope.canvas.renderAll();
                     images.push(image);
-                })
+                });
                 this.images = images;
             }
+        },
+        crop: function() {
+            var el = new fabric.Rect({
+                fill: 'transparent',
+                originX: 'left',
+                originY: 'top',
+                stroke: '#ccc',
+                strokeDashArray: [2, 2],
+                opacity: 1,
+                width: 1,
+                height: 1
+            });
+            el.visible = false;
+            $scope.canvas.add(el);
         }
     }
 
+
     ionic.Platform.ready(function() {
         $scope.painter.initDrawing();
-    });
+        $scope.webcam.init({
+            window: $window,
+            scope: $scope,
+            fail: function(err) {
+                $scope.showAlert({
+                    title: "警報！",
+                    message: err
+                });
+            },
+            done: function(canvas, canvasId) {
+                $scope.usingWebcam = false;
+                $scope.pictureLoaded = true;
+                $scope.onTakenPicture(canvas, canvasId);
+                $scope.changeToAction("filter");
+                $(canvas).removeAttr("data-caman-id");
+            },
+            canvasId: '#take-picture-canvas',
+            videoId: '#take-picture-video'
+        });
+        $scope.uploader.init({
+            window: $window,
+            scope: $scope,
+            fail: function(err) {
+                $scope.showAlert({
+                    title: "警報！",
+                    message: err
+                });
+            },
+            done: function(dataURL) {
+                $scope.pictureLoaded = true;
+                $scope.onPictureLoaded(dataURL);
+                $scope.changeToAction("filter");
+                //$(picture).removeAttr("data-caman-id");
 
-    // init picture handler (camera & uploader)
-    $scope.initPictureHandler();
+            },
+            inputId: '#take-picture-input'
+        });
+    });
 
     // link button event for camera-upload button
     angular.element('#pool-picture-btn').bind('click', function(e) {
-        $scope.startUpload();
+        $scope.webcam.clear();
+        $scope.uploader.start();
+
+        setTimeout(function() {
+            $scope.$apply(function() {
+                $scope.useWebcam = false;
+                $scope.usingWebcam = false;
+            });
+        });
+
+
         angular.element('#take-picture-input').trigger('click');
     });
     angular.element('#upload-picture-btn').bind('click', function(e) {
-        $scope.startUpload();
+        $scope.webcam.clear();
+        $scope.uploader.start();
+
+        setTimeout(function() {
+            $scope.$apply(function() {
+                $scope.useWebcam = false;
+                $scope.usingWebcam = false;
+            });
+        });
+
         angular.element('#take-picture-input').trigger('click');
     });
     angular.element('#start-camera-btn').bind('click', function(e) {
-        $scope.startWebcam();
+
+        setTimeout(function() {
+            $scope.$apply(function() {
+                $scope.useWebcam = true;
+                $scope.usingWebcam = true;
+            });
+        });
+        $scope.webcam.start();
     });
-})
 
-// .directive('textSetting', function() {
+    angular.element('#take-picture-btn').bind('click', function(e) {
+        $scope.webcam.take();
+    });
 
-//     var tabId = 3;
-//     var ctrl = function($scope) {
-//         $scope.showTextSettingPanel = function() {
-//             $scope.isTyping = false;
-//         }
-//     }
+    angular.element('#retake-picture-btn').bind('click', function(e) {
 
-//     var link = function(scope, element, attrs, appCtrl) {
-//         console.log(appCtrl);
-//         appCtrl.addTabselectedHandler(tabId, function() {
-//             scope.isTyping = true;
-//         });
-
-//     }
-//     return {
-//         require: '^appContent',
-//         restrict: 'E',
-//         transclude: true,
-//         scope: {},
-//         templateUrl: 'templates/text-setting.html',
-//         controller: ctrl,
-//         link: link
-//     }
-// })
-
-.controller('DrawAppCtrl', function($scope, $itemId) {
-    // don't be scared by the image value, its just datauri
-
-    var canvas = new fabric.Canvas('c');
-
-    canvas.add(new fabric.IText('Tap and Type', {
-        fontFamily: 'arial black',
-        left: 100,
-        top: 100,
-    }));
-
-    fabric.Image.fromURL('img/ionic.png', function(img) {
-
-        canvas.add(img).setActiveObject(img);
     });
 
 })
 
 
-.controller('TextSettingCtrl', function($scope, $timeout) {
-    // don't be scared by the image value, its just datauri
-
-})
+///
+/// $scope.changeToAction("filter");
+// $(picture).removeAttr("data-caman-id");
 
 
 
