@@ -289,6 +289,19 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             console.log("content view changed to: " + view.name);
         }
 
+        $scope.isSelectingPicture = function() {
+            //return $scope.activeTabIndex == 0;
+            return $scope.isWaitForTake;
+        }
+        $scope.isCanvasInEdit = function() {
+            return $scope.isPhotoTaken;
+
+            return true;
+            var inEditing = $scope.activeTabIndex != 0 && !$scope.inReview;
+            console.log("in editing: " + inEditing);
+            return inEditing;
+        }
+
         $scope.tabData = tabContentViews;
 
         $scope.frameWidth = 0;
@@ -493,6 +506,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 })
                 $(picture).removeAttr("data-caman-id");
                 $scope.changeToAction("filter");
+                $scope.updateUploadedImageToWidget();
                 $scope.hideProcessingLoading();
             }
 
@@ -508,7 +522,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     ctx.drawImage(image, 0, 0, w, h);
                     if (callback) callback();
                     uploadPictureFinish();
-
                 }
                 image.onerror = function() {
                     $scope.showAlert({
@@ -651,8 +664,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 if (!validateWebcamInit())
                     return;
 
-                var dataURL = picture.toDataURL();
-                // r.src = dataURL;
                 stopRecord();
                 snapshoot = false;
                 setTimeout(function() {
@@ -663,6 +674,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     });
                     $(picture).removeAttr("data-caman-id");
                     $scope.changeToAction("filter");
+                    $scope.updateTakenImageToWidget();
                 })
             }
 
@@ -686,11 +698,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     });
                     $scope.changeToAction("takePicture");
                 })
-            }
-
-            $scope.decidedPhoto = function() {
-                console.log("go to edit... ....");
-
             }
 
             // call init()
@@ -766,9 +773,29 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 if (effect in this) {
                     this.revert();
                     this[effect]();
-                    this.render();
+                    this.render(function(){
+                        var picture = $("#take-picture-canvas")[0];
+                        var dataURL = picture.toDataURL();
+                        $scope.painter.addImage(dataURL);
+                    });
                 }
             });
+        }
+
+        $scope.updateUploadedImageToWidget = function(){
+            var picture = $("#take-picture-canvas")[0];
+            var dataURL = picture.toDataURL();
+            $scope.painter.addImage(dataURL);
+        }
+
+        $scope.updateTakenImageToWidget = function(){
+            var picture = $("#take-picture-canvas")[0];
+            var dataURL = picture.toDataURL();
+            $scope.painter.addImage(dataURL);
+        }
+
+        $scope.decidedPhoto = function() {
+            $scope.selectTabWithIndex(1);
         }
     }());
     /* @endregion - filter */
@@ -854,7 +881,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             valueText: function() {
                 return this.value + 'pt';
             },
-            changeTo: function(size){
+            changeTo: function(size) {
                 this.value = size;
             }
         }
@@ -875,7 +902,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             valueFloat: function() {
                 return this.value / 100;
             },
-            changeTo: function(val){
+            changeTo: function(val) {
                 this.value = (val * 100).toFixed;
             }
         }
@@ -892,18 +919,18 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             select: function(font) {
                 this.value = font;
             },
-            find: function(fontName){
-                for (var i = 0; i < this.fonts.length; i++){
+            find: function(fontName) {
+                for (var i = 0; i < this.fonts.length; i++) {
                     font = this.fonts[i];
                     family = font.family;
-                    if (family.indexOf(fontName) != -1 || 
+                    if (family.indexOf(fontName) != -1 ||
                         fontName.indexOf(family) != -1)
                         return font;
-                        
+
                 }
                 return this.value;
             },
-            changeTo: function(fontName){
+            changeTo: function(fontName) {
                 var newValue = this.find(fontName);
                 this.value = newValue;
             }
@@ -998,7 +1025,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 }
             },
             find: function(code) {
-                for(var i = 0; i > this.colors.length; i++){
+                for (var i = 0; i > this.colors.length; i++) {
                     var color = this.colors[i];
                     if (code == color.code)
                         return color;
@@ -1006,16 +1033,16 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 return this.color();
             },
             findIndex: function(code) {
-                for(var i = 0; i > this.colors.length; i++){
+                for (var i = 0; i > this.colors.length; i++) {
                     var color = this.colors[i];
                     if (code == color.code)
                         return i;
                 }
                 return this.value;
             },
-            changeTo: function(code){
+            changeTo: function(code) {
                 var newIndex = this.findIndex(code);
-                this.value = newIndex; 
+                this.value = newIndex;
             },
             colors: [],
             watch: 'textColor.value',
@@ -1081,17 +1108,13 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 timeoutId = $timeout(function() {
                     $scope.fontSetting.changed = false;
                     $timeout.cancel(data.timeoutId);
-                    data.timeoutId = null;
-　　　　　　　　　　　　
+                    data.timeoutId = null;　　　　　　　　　　　　
                     // Now load data from server 
                     $scope.applyTextSetting();
                 }, 1500);
             })
         }
-
-        fontDataList.forEach(function(data) {
-            fontDataWatch(data);
-        });
+        _.each(fontDataList, function(data){ fontDataWatch(data)});
 
         $scope.fontSetting = {
             lastChangeMessage: '',
@@ -1099,10 +1122,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             isTyping: true
         }
 
-        $scope.showTextSetting = function(text){
+        $scope.showTextSetting = function(text) {
 
             $scope.text = text;
-            $scope.$apply(function(){
+            $scope.$apply(function() {
                 $scope.fontSetting.isTyping = false;
                 $scope.fontFamily.changeTo(text.fontFamily);
                 $scope.textColor.changeTo(text.stroke);
@@ -1111,21 +1134,22 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
 
         $scope.hideTextSetting = function() {
-            $scope.$apply(function(){
+            $scope.$apply(function() {
                 $scope.fontSetting.isTyping = true;
             });
         }
 
-        $scope.applyTextSetting = function(){
+        $scope.applyTextSetting = function() {
             if (!$scope.text) return;
-             $scope.text.fontFamily = $scope.fontFamily.value.family;
-             $scope.text.fontSize = $scope.fontSize.value;
-             $scope.text.stroke = $scope.textColor.colorCode();
+            $scope.text.fontFamily = $scope.fontFamily.value.family;
+            $scope.text.fontSize = $scope.fontSize.value;
+            $scope.text.stroke = $scope.textColor.colorCode();
+            $scope.canvas.renderAll();
         }
 
 
         $scope.doneSettingText = function() {
-            console.log("setting text ok");
+            $scope.hideTextSetting();
         }
 
         $scope.addNewText = function() {
@@ -1169,39 +1193,16 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             this.height = size.height;
             console.log("painter setup frame size: " + this.width + " x " + this.height);
         },
-
-         animate: function(e, dir) {
-            if (e.target) {
-                fabric.util.animate({
-                    startValue: e.target.get('angle'),
-                    endValue: e.target.get('angle') + (dir ? 10 : -10),
-                    duration: 100,
-                    onChange: function(value) {
-                        e.target.setAngle(value);
-                        $scope.canvas.renderAll();
-                    },
-                    onComplete: function() {
-                        e.target.setCoords();
-                    }
-                });
-                fabric.util.animate({
-                    startValue: e.target.get('scaleX'),
-                    endValue: e.target.get('scaleX') + (dir ? 0.2 : -0.2),
-                    duration: 100,
-                    onChange: function(value) {
-                        e.target.scale(value);
-                        $scope.canvas.renderAll();
-                    },
-                    onComplete: function() {
-                        e.target.setCoords();
-                    }
-                });
-            }
-        },
         initDrawing: function() {
 
             fabric.Object.prototype.transparentCorners = false;
             var canvas = $scope.canvas = this.__canvas = new fabric.Canvas('canvas-content');
+            canvas.backgroundColor = "#333"
+            canvas.selectionColor = 'rgba(0,255,0,0.3)';
+            canvas.selectionBorderColor = 'red';
+            canvas.selectionLineWidth = 5;
+
+            canvas.renderAll();
             var animate = this.animate;
             this.setupFrameSize();
             angular.element($window).bind('resize', this.setupFrameSize);
@@ -1209,18 +1210,18 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             console.log("painter initDrawing done");
             this.setupEvents();
         },
-        setupEvents: function(){
+        setupEvents: function() {
             var texts = this.texts;
-            $scope.canvas.on('object:selected', function(e){
-                if (texts.indexOf(e.target) != -1){
+            $scope.canvas.on('object:selected', function(e) {
+                if (texts.indexOf(e.target) != -1) {
                     $scope.showTextSetting(e.target);
                 }
             });
 
-            $scope.canvas.on('selection:cleared', function(e){
+            $scope.canvas.on('selection:cleared', function(e) {
                 $scope.hideTextSetting();
             });
-           
+
         },
         createWiddeCanvas: function() {
 
@@ -1243,14 +1244,19 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         setPositionForFixedGroup: function() {
 
         },
-        
-        newPosition: function(){
+
+        newPosition: function() {
             var haft_w = this.width;
             var haft_h = this.height;
             var pos_x = (Math.random() * 240).toFixed() % haft_w;
             var pos_y = (Math.random() * 240).toFixed() % haft_h;
-            return { x: pos_y, y: pos_y }
+            return {
+                x: pos_y,
+                y: pos_y
+            }
         },
+
+        images: [],
         widgets: [],
         texts: [],
 
@@ -1277,7 +1283,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $scope.canvas.add(text);
             $scope.canvas.renderAll();
         },
-        
+
         addSticker: function(sticker) {
 
             newPosition = this.newPosition();
@@ -1293,6 +1299,23 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 }));
             })
             $scope.canvas.renderAll();
+        },
+
+        addImage: function(src){
+            var isOnlyOne = true;
+            if (isOnlyOne) {
+                _.each(this.images, function(image){ 
+                   $scope.canvas.remove(image);
+                })
+     
+                var images = [];
+                fabric.Image.fromURL(src, function(image){
+                    $scope.canvas.add(image);
+                    $scope.canvas.renderAll();
+                    images.push(image);
+                })
+                this.images = images;
+            }
         }
     }
 
@@ -1367,3 +1390,17 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     // don't be scared by the image value, its just datauri
 
 })
+
+
+
+/*
+Try this
+
+$('#remove').click(function(){
+    var object = canvas.getActiveObject();
+    if (!object){
+        alert('Please select the element to remove');
+        return '';
+    }
+    canvas.remove(object);
+});*/

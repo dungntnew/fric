@@ -1,0 +1,8 @@
+ <div class="action-panel fadein fadeout filter-buttons" ng-show="show">
+    <div class="background"></div>
+    <div class="tabs tabs-icon-only">
+        <a ng-repeat="filter in filters" ng-click="applyFilter($index)" class="tab-item" href="#" ng-class="{active: activeFilterIndex == $index}">
+            <img  ng-src="{{filter.src}}" title="{{filter.name}}"/>
+        </a>
+    </div>
+</div> 

@@ -1,0 +1,9 @@
+<div class="action-panel fadein fadeout frame-buttons" ng-show="shouldShowAction('frame')">
+    <div class="background"></div>
+    <div class="tabs tabs-icon-only">
+        <a ng-repeat="frame in frames" ng-click="applyFrame($index)" class="tab-item" href="#" ng-class="{active: activeFrameIndex == $index}">
+            <img  ng-src="{{frame.src}}" title="{{frame.name}}"/>
+        </a>
+        
+    </div>
+</div> 

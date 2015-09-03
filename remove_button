@@ -1,0 +1,88 @@
+var canvas = new fabric.Canvas('canvas');
+var el;
+var object, lastActive, object1, object2;
+var cntObj = 0;
+var selection_object_left = 0;
+var selection_object_top = 0;
+
+var src = "http://fabricjs.com/lib/pug.jpg";
+fabric.Image.fromURL('http://serio.piiym.net/CVBla/txtboard/thumb/1260285874089s.jpg', function (oImg) {
+     oImg.top = 60;
+    oImg.left = 30;
+    oImg.hasControls = false;
+    canvas.add(oImg);
+});
+
+fabric.Image.fromURL('http://www.clker.com/cliparts/2/5/6/5/1194986466653224692smiley110.svg.med.png', function (oImg1) {
+    oImg1.top = 200;
+    oImg1.left = 300;
+    oImg1.hasControls = false;
+    canvas.add(oImg1);
+});
+canvas.renderAll();
+
+canvas.on('object:selected',function(e){
+
+
+        jQuery(".deleteBtn").remove(); 
+        var btnLeft = e.target.oCoords.mt.x;
+        var btnTop = e.target.oCoords.mt.y - 25;
+        var widthadjust=e.target.width/2;
+        btnLeft=widthadjust+btnLeft-10;
+        var deleteBtn = '<p" class="deleteBtn" title="Delete" style="position:absolute;top:'+btnTop+'px;left:'+btnLeft+'px;cursor:pointer;" title="Remove object">&#10005;</p>';
+        jQuery(".canvas-container").append(deleteBtn);
+        //.canvas-container is the parent div to the canvas positioned relative via CSS
+
+
+
+    });
+
+canvas.on('mouse:down',function(e){
+    if(canvas.getActiveObject())
+    {
+
+    }
+    else
+    {
+         jQuery(".deleteBtn").remove(); 
+    }
+});
+
+
+canvas.on('object:modified',function(e){
+
+
+        jQuery(".deleteBtn").remove(); 
+        var btnLeft = e.target.oCoords.mt.x;
+        var btnTop = e.target.oCoords.mt.y - 25;
+        var widthadjust=e.target.width/2;
+        btnLeft=widthadjust+btnLeft-10;
+        var deleteBtn = '<p" class="deleteBtn" title="Delete" style="position:absolute;top:'+btnTop+'px;left:'+btnLeft+'px;cursor:pointer;" title="Remove object">&#10005;</p>';
+        jQuery(".canvas-container").append(deleteBtn);
+        //.canvas-container is the parent div to the canvas positioned relative via CSS
+
+
+
+    });
+
+canvas.on('object:moving',function(e){
+	
+	 jQuery(".deleteBtn").remove(); 
+//remove the delete button while the object is being moved
+	});
+
+
+//THE DELETE BUTTON CLICK EVENT
+ jQuery(document).on('click',".deleteBtn",function(){
+
+
+    if(canvas.getActiveObject())
+    {
+         canvas.remove(canvas.getActiveObject());
+//this would remove the currently active object on stage,
+         jQuery(this).remove();
+         jQuery(".deleteBtn").remove();
+    }
+
+
+     })

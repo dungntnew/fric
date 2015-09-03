@@ -1,0 +1,236 @@
+%!Adobe-FontList 1.16
+%Locale:0x411
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:07YasashisaGothic
+FamilyName:07YasashisaGothic
+StyleName:Regular
+FullName:07YasashisaGothic
+MenuName:07やさしさゴシック
+StyleBits:0
+FamilyNameNative:07やさしさゴシック
+StyleNameNative:Regular
+FullNameNative:07やさしさゴシック
+WritingScript:Japanese
+OutlineFileName:C:\作業\20150706_婚姻アプリ\デザインデータ\slide_15-18\Font\07やさしさゴシック.ttf
+DataFormat:sfntData
+FileLength:4711748
+FileModTime:1439803122
+WeightClass:400
+WidthClass:5
+AngleClass:0
+NameArray:0,Mac,4,07YasashisaGothic
+NameArray:0,Win,1,07YasashisaGothic
+NameArray:1,Win,1,07やさしさゴシック
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:Desyrel
+FamilyName:Desyrel
+StyleName:Regular
+FullName:Desyrel
+MenuName:Desyrel
+StyleBits:0
+WritingScript:Roman
+OutlineFileName:C:\作業\20150706_婚姻アプリ\デザインデータ\slide_15-18\Font\desyrel.ttf
+DataFormat:sfntData
+FileLength:90928
+FileModTime:1439794567
+WeightClass:400
+WidthClass:5
+AngleClass:0
+NameArray:0,Mac,4,Desyrel
+NameArray:0,Win,1,Desyrel
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:GoudyBookletter1911
+FamilyName:Goudy Bookletter 1911
+StyleName:Regular
+FullName:Goudy Bookletter 1911
+MenuName:Goudy Bookletter 1911
+StyleBits:0
+WritingScript:Roman
+OutlineFileName:C:\作業\20150706_婚姻アプリ\デザインデータ\slide_15-18\Font\goudy_bookletter_1911.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+FileLength:39988
+FileModTime:1439803314
+WeightClass:400
+WidthClass:5
+AngleClass:0
+NameArray:0,Mac,4,Goudy Bookletter 1911
+NameArray:0,Win,1,Goudy Bookletter 1911
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:CID
+FontName:HannariMincho
+FamilyName:HannariMincho
+StyleName:Regular
+FullName:HannariMincho
+MenuName:はんなり明朝
+StyleBits:0
+FamilyNameNative:はんなり明朝
+StyleNameNative:Regular
+FullNameNative:はんなり明朝
+WritingScript:Japanese
+OutlineFileName:C:\作業\20150706_婚姻アプリ\デザインデータ\slide_15-18\Font\Hannari.otf
+DataFormat:sfntData
+isCFF:yes
+FileLength:2882588
+FileModTime:1439803114
+WeightClass:400
+WidthClass:5
+AngleClass:0
+NameArray:0,Mac,4,HannariMincho
+NameArray:1,Mac,4,はんなり明朝
+NameArray:1,Mac,18,はんなり明朝
+NameArray:0,Win,1,HannariMincho
+NameArray:0,Win,16,HannariMincho
+NameArray:1,Win,1,はんなり明朝
+NameArray:1,Win,16,はんなり明朝
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:Italianno-Regular
+FamilyName:Italianno
+StyleName:Regular
+FullName:Italianno
+MenuName:Italianno
+StyleBits:0
+WritingScript:Roman
+OutlineFileName:C:\作業\20150706_婚姻アプリ\デザインデータ\slide_15-18\Font\Italianno-Regular-OTF.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+FileLength:79168
+FileModTime:1439803947
+WeightClass:400
+WidthClass:5
+AngleClass:0
+NameArray:0,Mac,4,Italianno
+NameArray:0,Win,1,Italianno
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:Oswald-Regular
+FamilyName:Oswald Regular
+StyleName:Regular
+FullName:Oswald Regular
+MenuName:Oswald Regular
+StyleBits:0
+WritingScript:Roman
+OutlineFileName:C:\作業\20150706_婚姻アプリ\デザインデータ\slide_15-18\Font\Oswald-Regular.ttf
+DataFormat:sfntData
+FileLength:81076
+FileModTime:1439804380
+WeightClass:400
+WidthClass:5
+AngleClass:0
+NameArray:0,Mac,4,Oswald Regular
+NameArray:0,Win,1,Oswald Regular
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:PlaytimeWithHotToddies
+FamilyName:Playtime With Hot Toddies
+StyleName:Regular
+FullName:Playtime With Hot Toddies
+MenuName:Playtime With Hot Toddies
+StyleBits:0
+WritingScript:Roman
+OutlineFileName:C:\作業\20150706_婚姻アプリ\デザインデータ\slide_15-18\Font\playtime.ttf
+DataFormat:sfntData
+FileLength:76860
+FileModTime:1439807138
+WeightClass:400
+WidthClass:5
+AngleClass:0
+NameArray:0,Mac,18,Playtime With Hot Toddies
+NameArray:0,Mac,4,Playtime With Hot Toddies
+NameArray:0,Win,1,Playtime With Hot Toddies
+NameArray:0,Win,16,Playtime With Hot Toddies
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:PrintClearly
+FamilyName:Print Clearly
+StyleName:Regular
+FullName:Print Clearly
+MenuName:Print Clearly
+StyleBits:0
+WritingScript:Roman
+OutlineFileName:C:\作業\20150706_婚姻アプリ\デザインデータ\slide_15-18\Font\PrintClearly.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+FileLength:28472
+FileModTime:1439803507
+WeightClass:400
+WidthClass:5
+AngleClass:0
+NameArray:0,Mac,4,Print Clearly
+NameArray:0,Win,1,Print Clearly
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:QikkiReg
+FamilyName:Qarmic sans
+StyleName:Regular
+FullName:Qarmic sans
+MenuName:Qarmic sans
+StyleBits:0
+WritingScript:Roman
+OutlineFileName:C:\作業\20150706_婚姻アプリ\デザインデータ\slide_15-18\Font\Qarmic_sans_Abridged.ttf
+DataFormat:sfntData
+FileLength:16124
+FileModTime:1439803876
+WeightClass:400
+WidthClass:5
+AngleClass:0
+NameArray:0,Mac,4,Qikki Reg
+NameArray:0,Win,1,Qarmic sans
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:SpinCycleOT
+FamilyName:Spin Cycle OT
+StyleName:Regular
+FullName:Spin Cycle OT
+MenuName:Spin Cycle OT
+StyleBits:0
+WritingScript:Roman
+OutlineFileName:C:\作業\20150706_婚姻アプリ\デザインデータ\slide_15-18\Font\spincycle_ot.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+FileLength:28744
+FileModTime:1439804449
+WeightClass:400
+WidthClass:5
+AngleClass:0
+NameArray:0,Mac,4,Spin Cycle OT
+NameArray:0,Win,1,Spin Cycle OT
+%EndFont
+

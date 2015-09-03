@@ -1,0 +1,10 @@
+<div class="action-panel fadein fadeout sticker-buttons" ng-show="shouldShowAction('sticker')">
+	<div class="background"></div>
+	<ion-content class="content-x">
+	<ion-scroll direction="x" class="wide-as-needed">
+	
+	<img ng-repeat="sticker in getStickers()" ng-click="addSticker(sticker.id)" ng-src="{{sticker.src}}" title="{{sticker.name}}" class="tab-item"/>
+	</ion-scroll>
+	
+	</ion-content>
+</div>

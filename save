@@ -1,0 +1,270 @@
+/* Write JavaScript here */
+
+var imgSrc ='http://th09.deviantart.net/fs71/PRE/i/2012/340/7/b/png_bird_by_moonglowlilly-d5n88u2.png';
+var canvas = new fabric.Canvas('c');
+var cv = new fabric.Canvas('cv');
+
+
+//var svgSrc = "http://fabricjs.com/assets/1.svg";
+
+		// Create a text object. 
+		// Does not display it-the canvas doesn't 
+		// know about it yet.
+var hi = new fabric.Text('DATA', {
+	left: canvas.getWidth() / 2,
+	top: canvas.getHeight() / 2		
+});
+
+var circle = new fabric.Circle({ 
+  left: 500,
+  top: 400,
+  name:'ds',
+  radius: 75,
+  fill: 'green',
+  stroke: 'rgba(255,0,0,0.6)',
+  strokeWidth: 15
+  
+}); 
+var recta = new fabric.Rect({
+  width: 125,
+  top:100,
+  left:100,  
+  height: 125,  
+  stroke: 'red',
+  strokeDashArray: [5, 5]
+});
+/*
+recta.toObject = (function(toObject) {
+  return function() {
+    return fabric.util.object.extend(toObject.call(this), {
+      name: this.name
+    });
+  };
+})(recta.toObject);
+
+*/
+function setName(obj,name){
+  obj.toObject = (function(toObject) {
+  return function() {
+    return fabric.util.object.extend(toObject.call(this), {
+      name: this.name
+    });
+  };
+})(obj.toObject);
+  obj.name = ''+name;
+}
+setName(recta,'layout');
+setName(hi,'hi');
+fabric.Image.fromURL(imgSrc, function(oImg) {
+    // scale image down, and flip it, before adding it onto canvas
+    oImg.set({ left: 300, top: 150, angle: -50 });
+    oImg.scale(0.2).setFlipX(true);  
+    canvas.add(oImg);  
+
+});
+
+
+
+$('#btn').click(function(){
+   var trsvg = canvas.toSVG();
+   var trsvg_cv = cv.toSVG();
+   var canvas_svg = new fabric.Canvas('canvas-svg');
+   $('#svg-tag').html(trsvg);
+     //alert(JSON.stringify(trsvg));    
+  	//alert(JSON.stringify(canvas.toDatalessJSON()));
+   var stringa = canvas.toJSON;    
+  
+   fabric.loadSVGFromString( trsvg , function (objects, options) {
+     var obj = fabric.util.groupSVGElements(objects, options);
+     canvas_svg.add(obj).centerObject(obj);
+     obj.setCoords();
+     canvas_svg.calcOffset();
+     canvas_svg.renderAll();
+      //alert('sss');  
+   }); 
+  
+});
+	// Attach it to the canvas object, then (re)display
+	// the canvas. 
+/*
+circle.animate('left', 10, {
+	  onChange: canvas.renderAll.bind(canvas),
+	  duration: 5000,
+	  easing: fabric.util.ease.easeOutBounce
+});*/
+//cv.add(hi);
+canvas.add(circle);
+canvas.add(recta);
+//recta.name = 'recta';
+//hi.name ='hi';
+canvas.add(hi);
+ //  canvas.add(his); 
+
+$('#btn_edit').click(function(){
+var canvas_ = new fabric.Canvas('canvas');
+console.log('Click Edit');
+  
+  
+//JSON DATA   
+var json_data = JSON.stringify(canvas.toDatalessJSON()); 
+console.log(json_data);
+//LOAD JSON DATA
+
+canvas_.loadFromJSON(JSON.parse(json_data), function(obj) {
+  canvas_.renderAll();
+   console.log(' this is a callback. invoked when canvas is loaded!xxx ');
+   
+  canvas_.forEachObject(function(obj){
+    console.log(obj.name);
+  
+    if(obj.name === 'recta'){      
+      obj.set({
+                left: 100,
+                top:200,
+                height: 700,
+                width: 700,
+                scaleX: .35,
+                scaleY:.35,
+        lockScalingY: .35
+            });
+            
+      canvas_.add(obj); 
+    }
+    
+  });
+
+     
+});  
+
+  
+  /*
+canvas_.loadFromJSON(json_data, function() {
+    canvas_.renderAll();
+});
+  */
+});
+//Load imange from url
+
+
+/**
+function loadImage(url, callback, context) {
+  if (url) {
+    var img = new Image();
+    // @ignore 
+    img.onload = function () { 
+      callback && callback.call(context, img);
+      img = img.onload = null;
+    };
+    img.src = url;
+  }
+}
+
+var v=document.getElementById("video1");
+var cv_=document.getElementById("c");
+ctx=cv_.getContext('2d');
+v.addEventListener('play', function() {
+  var i=window.setInterval(function(){
+    ctx.drawImage(v,5,5,260,125)},0,0);                                   
+   },false);
+v.addEventListener('pause',function() {window.clearInterval(i);},false);
+v.addEventListener('ended',function() {clearInterval(i);},false); 
+*/
+/* 
+fabric.Object.prototype.transparentCorners = false;
+
+  var canvas = this.__canvas = new fabric.Canvas('c', {
+    backgroundColor: '#333',
+    HOVER_CURSOR: 'pointer'
+  });
+
+  var PolaroidPhoto = fabric.util.createClass(fabric.Object, fabric.Observable, {
+    H_PADDING: 20,
+    V_PADDING: 50,
+    originX: 'center',
+    originY: 'center',
+    initialize: function(src, options) {
+      this.callSuper('initialize', options);
+      this.image = new Image();
+      this.image.src = src;
+      this.image.onload = (function() {
+        this.width = this.image.width;
+        this.height = this.image.height;
+        this.loaded = true;
+        this.setCoords();
+        this.fire('image:loaded');
+      }).bind(this);
+    },
+    _render: function(ctx) {
+      if (this.loaded) {
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(
+          -(this.width / 2) - this.H_PADDING,
+          -(this.height / 2) - this.H_PADDING,
+          this.width + this.H_PADDING * 2,
+          this.height + this.V_PADDING * 2);
+        ctx.drawImage(this.image, -this.width / 2, -this.height / 2);
+      }
+    }
+  });
+  var photo = new PolaroidPhoto('http://fabricjs.com/assets/pug.jpg', {
+    top: 200,
+    left: 200,
+    scaleX: 0.2,
+    scaleY: 0.2
+  });
+  photo.on('image:loaded', canvas.renderAll.bind(canvas));
+  photo.drawBorders = photo.drawCorners = function() { return this };
+
+  function makeHandler(arg) {
+    return function(e) {
+      if (e.target) {
+        e.target.animate('angle', arg, {
+          duration: 100,
+          onChange: canvas.renderAll.bind(canvas)
+        });
+      }
+    };
+  }
+  canvas.on({
+    'mouse:down': makeHandler('+10'),
+    'mouse:up': makeHandler('-10')
+  });
+  canvas.add(photo);*/
+
+
+/*
+
+var LabeledRect = fabric.util.createClass(fabric.Rect, {
+
+  type: 'labeledRect',
+
+  initialize: function(options) {
+    options || (options = { });
+
+    this.callSuper('initialize', options);
+    this.set('label', options.label || '');
+  },
+
+  toObject: function() {
+    return fabric.util.object.extend(this.callSuper('toObject'), {
+      label: this.get('label')
+    });
+  },
+
+  _render: function(ctx) {
+    this.callSuper('_render', ctx);
+
+    ctx.font = '20px Helvetica';
+    ctx.fillStyle = '#333';
+    ctx.fillText(this.label, -this.width/2, -this.height/2 + 20);
+  }
+});
+var labeledRect = new LabeledRect({
+  width: 100,
+  height: 50,
+  left: 100,
+  top: 100,
+  label: 'test',
+  fill: '#faa'
+});
+canvas.add(labeledRect);*/
