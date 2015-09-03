@@ -1,7 +1,5 @@
 <ion-view view-title="{{product.name}}" ng-controller="EditImageAppCtrl">
-  <ion-content class="" scroll="false"> 
-       <div class="row">
-        </div>     
+  <ion-content class="draw-content-view" scroll="false"> 
         <!-- main draw area -->
         <div class="frame-wrapper row">
             <div ng-model="usingWebcam" ng-show="!usingWebcam">
@@ -21,14 +19,11 @@
             </button>
         </div>
 
-        <div class="frame-action row" ng-show="pictureLoaded">
-            <button id="retake-picture-btn" class="col-30 button button-full button-balanced" ng-click="retakePhoto()">
+        <div class="frame-action row" ng-show="shouldShowPictureToolBars()">
+            <button id="retake-picture-btn" class="col-50 button button-full button-balanced" ng-click="retakePhoto()">
                 再撮影
             </button>
-            <button id="crop-picture-btn" class="col-30 button button-full button-balanced" ng-click="cropPhoto()">
-                CROP
-            </button>
-            <button id="decided-picture-btn" class="col-30 button button-full button-assertive" ng-click="decidedPhoto()">
+            <button id="decided-picture-btn" class="col-50 button button-full button-assertive">
                 決定
             </button>
         </div>
@@ -43,15 +38,13 @@
 
         <!-- camera -->
         <div class="action-panel fadein fadeout camera-buttons" ng-show="shouldShowAction('takePicture')">
-
-        <!--ng-if="!isMobile()" -->
-
           <div class="row action-panel" ng-show="!isMobile()">
             <button id="start-camera-btn"  class="col-50 button icon ion-camera button-full button-assertive"></button>
             <button id="upload-picture-btn" class="col-50 button icon ion-ios-browsers button-full button-energized"></button>
-
           </div>
-          <button id="pool-picture-btn" class="col-100 button icon ion-camera button-full button-energized" ng-show="isMobile()"></button>
+          <div class="row action-panel" ng-show="isMobile()">
+              <button id="rool-picture-btn" class="col-100 button icon ion-camera button-full button-energized"></button>
+          </div>
         </div>
         <!-- end camera-->
 

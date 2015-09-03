@@ -1,3 +1,6 @@
+.draw-content-view .row {
+  padding: 0 !important;
+}
 .frame-wrapper {
    min-height: 240px;
    max-height: 425px;

@@ -26,7 +26,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     // config rendering size
     $scope.config = $scope.config || {}
-    $scope.config.widthToHeight = 1 / 1;
+    $scope.config.widthToHeight = 4 / 3;
     $scope.config.maxHeight = 425;
     console.log("[app config] ratio: " + $scope.config.widthToHeight);
     console.log("[app config] Max Height: " + $scope.config.maxHeight + " px");
@@ -198,7 +198,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             id: 3,
             name: "text",
             view: 0,
-            actionId: 4, 
+            actionId: 4,
             actionIds: [4],
             multipleTab: false,
             onSelectedHanlders: [],
@@ -261,6 +261,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.showContentViewFor = function(tabIndex) {
             var viewId = tabContentViews[tabIndex].view
             $ionicSlideBoxDelegate.slide(viewId);
+        }
+
+        $scope.shouldShowPictureToolBars = function() {
+            return $scope.pictureLoaded && $scope.activeTabIndex == 0;
         }
 
         $scope.slideHasChanged = function(index) {
@@ -387,10 +391,18 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             if (metadata_id && $scope.activeFilterIndex == index) {
                 $scope.activeFilterIndex = -1;
                 Caman(imageCanvas, function() {
+                    $scope.showProcessingLoading('処理中');
                     this.revert();
+                    this.render(function() {
+                        var picture = $("#take-picture-canvas")[0];
+                        var dataURL = picture.toDataURL();
+                        $scope.painter.addImage(dataURL);
+                        $scope.hideProcessingLoading();
+                    })
                 });
                 return;
             }
+
 
             $scope.activeFilterIndex = index;
 
@@ -1024,20 +1036,16 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     });
 
     // link button event for camera-upload button
-    angular.element('#pool-picture-btn').bind('click', function(e) {
+    angular.element('#rool-picture-btn').bind('click', function(e) {
         $scope.webcam.clear();
-        $scope.uploader.start();
-
         setTimeout(function() {
             $scope.$apply(function() {
                 $scope.useWebcam = false;
                 $scope.usingWebcam = false;
             });
         });
-
-
         angular.element('#take-picture-input').trigger('click');
-    });
+    });    
     angular.element('#upload-picture-btn').bind('click', function(e) {
         $scope.webcam.clear();
         setTimeout(function() {
@@ -1064,9 +1072,22 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     });
 
     angular.element('#retake-picture-btn').bind('click', function(e) {
-
+        if ($scope.useWebcam) {
+            $scope.webcam.start();
+            $scope.usingWebcam = true;
+        }
+        $scope.pictureLoaded = false;
+        $scope.changeToAction("takePicture");
     });
 
+    angular.element('#decided-picture-btn').bind('click', function(e) {
+        setTimeout(function() {
+            $scope.$apply(function() {
+                $scope.selectTabWithIndex(1);
+            });
+
+        })
+    });
 })
 
 
