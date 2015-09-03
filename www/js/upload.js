@@ -16,14 +16,11 @@ var uploaderHandler = {
             this.onFail('cannot init module with id: ' + options['inputId']);
             return;
         }
+        this.register();
         this.initizalied = true;
     },
 
-    start: function() {
-        if (!this.initizalied) {
-            this.onFail('please init module before use this function!');
-            return;
-        }
+    register: function() {
         if (!window.File || !window.FileReader || !window.FormData) {
             this.onFail('your browser do not support file upload!');
             return;
@@ -40,8 +37,10 @@ var uploaderHandler = {
         };
 
         if (window.addEventListener) {
+            this.input.removeEventListener('change', _handler);
             this.input.addEventListener('change', _handler, false);
         } else if (window.attachEvent) {
+            this.input.detachEvent('onchange', _handler);
             this.input.attachEvent("onchange", _handler);
         } else {
             this.onFail('your browser do not support file upload!');

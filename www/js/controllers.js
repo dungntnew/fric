@@ -26,7 +26,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     // config rendering size
     $scope.config = $scope.config || {}
-    $scope.config.widthToHeight = 4 / 3;
+    $scope.config.widthToHeight = 1 / 1;
     $scope.config.maxHeight = 425;
     console.log("[app config] ratio: " + $scope.config.widthToHeight);
     console.log("[app config] Max Height: " + $scope.config.maxHeight + " px");
@@ -413,12 +413,25 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
         $scope.onTakenPicture = function(canvas, canvasId) {
             var dataURL = canvas.toDataURL();
-            console.log(dataURL);
             $scope.painter.addImage(dataURL);
         }
 
         $scope.onPictureLoaded = function(dataURL) {
             $scope.painter.addImage(dataURL);
+            var canvas = $("#take-picture-canvas")[0];
+            
+            var image = new Image();
+            image.onload = function(){
+                var w = image.width;
+                var h = image.height;
+                canvas.width = w;
+                canvas.height = h;
+                var ctx = canvas.getContext('2d');
+                ctx.fillRect(0, 0, w, h);
+                ctx.drawImage(image, 0, 0, w, h);
+            };
+            image.src = dataURL;
+
         }
     }());
     /* @endregion - filter */
@@ -929,11 +942,19 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 var h = this.height;
 
                 fabric.Image.fromURL(src, function(image) {
+                    var iw = image.width;
+                    var ih = image.height;
+                    var scale = 1;
+                    if (iw > w || ih > h){
+                        scale = iw > ih ? w / iw : h /ih;
+                    }
                     $scope.canvas.add(image.set({
                         originX: 'center',
                         originY: 'center',
                         left: w / 2,
-                        top: h / 2
+                        top: h / 2,
+                        scaleX: scale,
+                        scaleY: scale
                     }));
 
                     $scope.canvas.sendToBack(image);
@@ -1018,8 +1039,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     });
     angular.element('#upload-picture-btn').bind('click', function(e) {
         $scope.webcam.clear();
-        $scope.uploader.start();
-
         setTimeout(function() {
             $scope.$apply(function() {
                 $scope.useWebcam = false;
@@ -1037,7 +1056,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.usingWebcam = true;
             });
         });
-        $scope.webcam.start();
     });
 
     angular.element('#take-picture-btn').bind('click', function(e) {
