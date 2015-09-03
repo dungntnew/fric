@@ -511,13 +511,16 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             }
 
             var loadDataURLToImage = function(dataURL, method, callback) {
-                console.log("go to loadDataURLToImage");
+              
                 var image = new Image();
-                w = picture.width;
-                h = picture.height;
+         
                 console.log("pic w: " + w + " h: " + h);
 
                 image.onload = function() {
+                    w = image.width;
+                    h = image.height;
+                    picture.width = w;
+                    picture.height = h;
                     ctx.fillRect(0, 0, w, h);
                     ctx.drawImage(image, 0, 0, w, h);
                     if (callback) callback();
@@ -1309,8 +1312,12 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 })
      
                 var images = [];
+                var w = this.width;
+                var h = this.height;
                 fabric.Image.fromURL(src, function(image){
+
                     $scope.canvas.add(image);
+                    $scope.canvas.sendToBack(image);
                     $scope.canvas.renderAll();
                     images.push(image);
                 })
