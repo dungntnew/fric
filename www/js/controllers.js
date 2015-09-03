@@ -821,63 +821,93 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     /* @region preview tab */
     (function() {
-
-        var previewTabId = 4;
-        var previewFunc = function() {
-            $scope.inReview = true;
-            var _canvas = new fabric.Canvas('preview-content', {
-                backgroundColor: 'green'
-            });
-
-            var jsonData = JSON.stringify($scope.canvas.toDatalessJSON());
-
-        }
-
         $scope.previewer = {
             init: function() {
                 this.tabId = 4;
-                this.canvas = new fabric.Canvas('canvas-preview');
+                this.minWidth = 1104;
+                this.minHeight = 512;
+                this.maxWidth = 2048;
+                this.maxHeight = 1104;
+                this.maxViewHeight = 320;
+                this.canvas = new fabric.Canvas('canvas-preview', {
+                    backgroundColor: 'green'
+                });
+
             },
-            handler: function() {
+            loadContent: function(canvas_data) {
                 var previewCanvas = this.canvas;
-                var contentCanvas = $scope.canvas;
+                var src = $scope.product.template;
+                var self = this;
+                fabric.util.loadImage(src, function(image) {
+                    var iw = image.width;
+                    var ih = image.height;
+                    scale = 1;
 
-                //$scope.showProcessingLoading('please wait for load template image..');
+                    if (iw < self.minWidth || iw < self.minHeight) {
+                        scale = self.minWidth / iw;
+                    }
+                    if (iw > self.maxWidth || iw > self.maxHeight) {
+                        scale = iw / self.maxWidth;
+                    }
 
-                var backgroundUrl = $scope.product.template;
-                previewCanvas.setBackgroundImage(backgroundUrl,
-                    previewCanvas.renderAll.bind(previewCanvas), {
-                        opacity: 1,
-                        angle: 0,
-                        left: 0,
-                        top: 0,
-                        originX: 'left',
-                        originY: 'top'
+                    var width = iw * scale;
+                    var height = ih * scale;
+
+                    console.log("preview content: " + width + " - " + height + " scale: " + scale);
+
+                    previewCanvas.setDimensions({
+                        width: width,
+                        height: height
                     });
 
+                    previewCanvas.loadFromJSON(JSON.parse(canvas_data), function(obj) {
+                        var backgroundImage = new fabric.Image(image);
+                        backgroundImage.scale(scale).set({
+                            left: 0,
+                            top: 0,
+                        });
 
-                var group = new fabric.Group([], {
-                    left: 10,
-                    top: 10
+                        previewCanvas.add(backgroundImage);
+                        previewCanvas.sendToBack(backgroundImage);
+
+                        previewCanvas.renderAll();
+                        previewCanvas.setZoom(0.5);
+                        console.log(' this is a callback. invoked when canvas is loaded!xxx ');
+                    });
+
+                });
+            },
+            handler: function() {
+
+                var previewCanvas = this.canvas;
+                var contentCanvas = $scope.canvas;
+                var self = this;
+
+                contentCanvas.clone(function(canvas) {
+                    var cloneContent = canvas;
+
+                    var group = new fabric.Group([], {
+                        left: 10,
+                        top: 10
+                    });
+
+                    var canvas_item = cloneContent.item(0),
+                        x = 0;
+                    while (canvas_item != undefined) {
+                        group.addWithUpdate(canvas_item);
+                        x += 1;
+                        canvas_item = cloneContent.item(x);
+                    }
+
+                    cloneContent.clear();
+                    cloneContent.add(group);
+                    var canvas_data = JSON.stringify(cloneContent.toDatalessJSON());
+                    self.loadContent(canvas_data);
+
                 });
 
-                var canvas_item = contentCanvas.item(0),
-                    x = 0;
-                while (canvas_item != undefined) {
-                    group.addWithUpdate(canvas_item);
-                    x += 1;
-                    canvas_item = contentCanvas.item(x);
-                }
-                contentCanvas.clear();
-                contentCanvas.add(group);
-                var canvas_data = JSON.stringify(contentCanvas.toDatalessJSON());
 
-
-
-                previewCanvas.loadFromJSON(JSON.parse(canvas_data), function(obj) {
-                    previewCanvas.renderAll();
-                    console.log(' this is a callback. invoked when canvas is loaded!xxx ');
-                });
+                //$scope.showProcessingLoading('please wait for load template image..');
 
 
 
