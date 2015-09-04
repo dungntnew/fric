@@ -461,12 +461,15 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $scope.frames.push({
                 id: i,
                 name: 'frame-' + (i + 1),
-                src: 'img/assets/frames/thumbnails/' + (i + 1) + '.png'
+                src: 'img/assets/frames/thumbnails/' + (i + 1) + '.png',
+                mask: 'img/assets/frames/images/' + (i + 1) + '.png',
             });
         }
 
         $scope.applyFrame = function(index) {
             $scope.activeFrameIndex = index;
+            var frame = $scope.frames[index];
+            $scope.painter.applyFrame(frame);
         }
     }());
     /* @endregion frame */
@@ -895,12 +898,12 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
                     var svgContent = contentCanvas.toSVG();
                     fabric.loadSVGFromString(svgContent, function(objects, options) {
-                      self.content = fabric.util.groupSVGElements(objects, options);
-                      $scope.previewCanvas.add(self.content.set({
-                        top: contentTop,
-                        left: contentLeft
-                      })).renderAll();
-                      $scope.hideProcessingLoading();
+                        self.content = fabric.util.groupSVGElements(objects, options);
+                        $scope.previewCanvas.add(self.content.set({
+                            top: contentTop,
+                            left: contentLeft
+                        })).renderAll();
+                        $scope.hideProcessingLoading();
                     });
                 })
             }
@@ -1029,8 +1032,41 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     selectionBorderColor: 'red',
                     selectionLineWidth: 5
                 }));
+                $scope.canvas.setActiveObject(image);
             })
             $scope.canvas.renderAll();
+        },
+
+        applyFrame: function(frame) {
+            var self = this;
+            if (self.frame != null) {
+                $scope.canvas.remove(self.frame);
+            }
+
+            var w = $scope.painter.width;
+            var h = $scope.painter.height;
+            fabric.Image.fromURL(frame.mask, function(image) {
+                var iw = image.width;
+                var ih = image.height;
+                var scale = 1;
+                if (iw > w || ih > h) {
+                    scale = iw > ih ? w / iw : h / ih;
+                }
+                $scope.canvas.add(image.set({
+                    scaleX: scale,
+                    scaleY: scale
+                }));
+                self.frame = image;
+                $scope.canvas.bringToFront(image);
+                $scope.canvas.centerObject(image);
+                $scope.canvas.renderAll();
+
+                $scope.canvas.remove(image);
+                $scope.canvas.clipTo = function(ctx) {
+                  image.render(ctx);
+                };
+
+            });
         },
 
         addImage: function(src) {
@@ -1065,6 +1101,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     }));
 
                     $scope.canvas.sendToBack(image);
+                    $scope.canvas.setActiveObject(image);
                     $scope.canvas.renderAll();
                     images.push(image);
                 });
