@@ -857,6 +857,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     var scale = $scope.config.printHeight / image.height;
                     var newWidth = image.width * scale;
                     var newHeight = image.height * scale;
+                    $scope.printSizeWidth = newWidth;
+                    $scope.printSizeHeight = newHeight;
                     console.log("[previewer] set print size: " + newWidth + " x " + newHeight);
 
                     $scope.previewCanvas.setDimensions({
@@ -879,33 +881,28 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             handler: function() {
                 var self = this;
                 var contentCanvas = $scope.canvas;
-                contentCanvas.clone(function(canvas) {
-                    var cloneContent = canvas;
+                $scope.showProcessingLoading('写真処理中');
+                if (self.content) {
+                    $scope.previewCanvas.remove(self.content);
+                    self.content = null;
+                }
 
-                    var group = new fabric.Group([], {
-                        left: 10,
-                        top: 10
+                self.setBackground(function() {
+                    console.log("$scope.printSizeWidth: " + $scope.printSizeWidth);
+                    console.log("$scope.printSizeHeight: " + $scope.printSizeHeight);
+                    var contentLeft = $scope.printSizeWidth / 2 + $scope.canvas.width / 2;
+                    var contentTop = $scope.printSizeHeight / 2 + $scope.canvas.height / 2;
+
+                    var svgContent = contentCanvas.toSVG();
+                    fabric.loadSVGFromString(svgContent, function(objects, options) {
+                      self.content = fabric.util.groupSVGElements(objects, options);
+                      $scope.previewCanvas.add(self.content.set({
+                        top: contentTop,
+                        left: contentLeft
+                      })).renderAll();
+                      $scope.hideProcessingLoading();
                     });
-
-                    var canvas_item = cloneContent.item(0),
-                        x = 0;
-                    while (canvas_item != undefined) {
-                        group.addWithUpdate(canvas_item);
-                        x += 1;
-                        canvas_item = cloneContent.item(x);
-                    }
-
-                    cloneContent.clear();
-                    cloneContent.add(group);
-                    var contentJsonData = JSON.stringify(cloneContent.toDatalessJSON());
-                    
-                    self.setBackground(function() {
-                        $scope.previewCanvas.loadFromJSON(JSON.parse(contentJsonData), function(obj) {
-                            $scope.previewCanvas.renderAll();
-                        });
-                    })
-                });
-                //$scope.showProcessingLoading('please wait for load template image..');
+                })
             }
         }
         $scope.previewer.init();
@@ -935,7 +932,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 cssOnly: true
             });
 
-            
+
             console.log("[painter] setup view size: " + size.width + " x " + size.height);
         },
 
@@ -983,13 +980,11 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         createFixedGroup: function() {},
         setPositionForFixedGroup: function() {},
         newPosition: function() {
-            var haft_w = $scope.painter.width;
-            var haft_h = $scope.painter.height;
-            var pos_x = (Math.random() * 240).toFixed() % haft_w;
-            var pos_y = (Math.random() * 240).toFixed() % haft_h;
+            var w4 = $scope.painter.width / 4;
+            var h4 = $scope.painter.height / 4;
             return {
-                x: pos_y,
-                y: pos_y
+                x: fabric.util.getRandomInt(w4, w4 * 2),
+                y: fabric.util.getRandomInt(h4, h4 * 2)
             }
         },
 
