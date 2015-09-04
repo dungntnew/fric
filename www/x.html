@@ -30,19 +30,49 @@ fabric.Object.prototype.set({
 
 // ADD YOUR CODE HERE
 
-var text = new fabric.IText('text');
-text.stroke = '#c3bfbf';
-canvas.add(text);
+// var text = new fabric.IText('text');
+// text.stroke = '#c3bfbf';
+// canvas.add(text);
 
-var rect = new fabric.Rect({
-    width: 100,
-    height: 100,
-    left: 10,
-    top: 10,
-    angle: -10,
-    fill: 'rgba(0,200,0,0.5)'
-});
-canvas.add(rect);
+// var rect = new fabric.Rect({
+//     width: 100,
+//     height: 100,
+//     left: 10,
+//     top: 10,
+//     angle: -10,
+//     fill: 'rgba(0,200,0,0.5)'
+// });
+
+
+// canvas.add(rect);
+  var w = canvas.width;
+  var h = canvas.height;
+  var loadMask;
+
+  fabric.Image.fromURL("/img/example2.jpg", function(image){
+    image.scaleToHeight(h);
+    canvas.add(image);
+    canvas.centerObject(image);
+    canvas.renderAll();
+
+    setTimeout(function(){
+      loadMask();
+    }, 10)
+  });
+
+  loadMask = fabric.Image.fromURL('/img/mask.jpg', function(image) {
+
+      image.scaleToHeight(h);
+      canvas.add(image);
+      canvas.centerObject(image);
+      canvas.renderAll();
+      setTimeout(function(){
+         // $scope.canvas.remove(image);
+          // apply(image);
+
+      }, 100);
+  });
+
 canvas.renderAll();
 </script>
 </body>

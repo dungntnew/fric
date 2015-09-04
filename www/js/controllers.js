@@ -1038,35 +1038,55 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         },
 
         applyFrame: function(frame) {
-            var self = this;
-            if (self.frame != null) {
-                $scope.canvas.remove(self.frame);
+
+            // will call after loaded mask image
+            var apply = function(mask) {
+                var lastFilter = this.filter;
+                var newFilter = new fabric.Image.filters.Mask({
+                    'mask': mask
+                });
+                this.filter = newFilter;
+
+                $scope.canvas.forEachObject(function(object) {
+                    if (object.type === 'image') {
+                        // clear last filter if exists
+                        if (object.filters.length && object.filters.indexOf(lastFilter) != -1) {
+                            object.filters.splice(object.filters.indexOf(lastFilter), 1);
+                        }
+                        object.filters.push(newFilter);
+                        object.applyFilters(function() {
+                            object.canvas.renderAll();
+                        });
+                    }
+                });
             }
 
+            var self = this;
             var w = $scope.painter.width;
             var h = $scope.painter.height;
+            frame.mask = "/img/mask.jpg";
             fabric.Image.fromURL(frame.mask, function(image) {
-                var iw = image.width;
-                var ih = image.height;
-                var scale = 1;
-                if (iw > w || ih > h) {
-                    scale = iw > ih ? w / iw : h / ih;
-                }
-                $scope.canvas.add(image.set({
-                    scaleX: scale,
-                    scaleY: scale
-                }));
-                self.frame = image;
-                $scope.canvas.bringToFront(image);
-                $scope.canvas.centerObject(image);
-                $scope.canvas.renderAll();
+                // var iw = image.width;
+                // var ih = image.height;
+                // var scale = 1;
+                // if (iw > w || ih > h) {
+                //     scale = iw > ih ? w / iw : h / ih;
+                // }
+                // image.set({
+                //     scaleX: scale,
+                //     scaleY: scale
+                // })
+                // //apply(image);
+                // $scope.canvas.add(image);
+                // $scope.canvas.centerObject(image);
+                // $scope.canvas.renderAll();
+                setTimeout(function(){
+                   // $scope.canvas.remove(image);
+                    apply(image);
 
-                $scope.canvas.remove(image);
-                $scope.canvas.clipTo = function(ctx) {
-                  image.render(ctx);
-                };
-
+                }, 100);
             });
+
         },
 
         addImage: function(src) {
@@ -1077,29 +1097,22 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 })
 
                 var images = [];
-                var w = $scope.painter.width;
                 var h = $scope.painter.height;
+                var w = $scope.painter.width;
 
                 fabric.Image.fromURL(src, function(image) {
                     var iw = image.width;
                     var ih = image.height;
-                    var scale = 1;
-                    if (iw > w || ih > h) {
-                        scale = iw > ih ? w / iw : h / ih;
+                    if (iw/ih > w/h) {
+                        image.scaleToWidth(w);
+                    }else {
+                        
+                        image.scaleToHeight(h);
                     }
-                    image.filters.push(new fabric.Image.filters.Resize({
-                        resizeType: 'hermite',
-                        scaleX: scale,
-                        scaleY: scale
-                    }))
+                    
                     image.applyFilters();
-                    $scope.canvas.add(image.set({
-                        originX: 'center',
-                        originY: 'center',
-                        left: w / 2,
-                        top: h / 2
-                    }));
-
+                    $scope.canvas.add(image);
+                    $scope.canvas.centerObject(image);
                     $scope.canvas.sendToBack(image);
                     $scope.canvas.setActiveObject(image);
                     $scope.canvas.renderAll();
