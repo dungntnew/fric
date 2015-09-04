@@ -935,7 +935,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 cssOnly: true
             });
 
-
+            
             console.log("[painter] setup view size: " + size.width + " x " + size.height);
         },
 
@@ -956,6 +956,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 backstoreOnly: true
             });
             console.log("[painter] setup content size: " + contentWidth + " x " + $scope.config.contentHeight);
+            $scope.painter.width = contentWidth;
+            $scope.painter.height = $scope.config.contentHeight;
 
             canvas.renderAll();
             this.setupFrameSize();
@@ -981,8 +983,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         createFixedGroup: function() {},
         setPositionForFixedGroup: function() {},
         newPosition: function() {
-            var haft_w = this.width;
-            var haft_h = this.height;
+            var haft_w = $scope.painter.width;
+            var haft_h = $scope.painter.height;
             var pos_x = (Math.random() * 240).toFixed() % haft_w;
             var pos_y = (Math.random() * 240).toFixed() % haft_h;
             return {
@@ -1044,8 +1046,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 })
 
                 var images = [];
-                var w = this.width;
-                var h = this.height;
+                var w = $scope.painter.width;
+                var h = $scope.painter.height;
 
                 fabric.Image.fromURL(src, function(image) {
                     var iw = image.width;
@@ -1054,13 +1056,17 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     if (iw > w || ih > h) {
                         scale = iw > ih ? w / iw : h / ih;
                     }
+                    image.filters.push(new fabric.Image.filters.Resize({
+                        resizeType: 'hermite',
+                        scaleX: scale,
+                        scaleY: scale
+                    }))
+                    image.applyFilters();
                     $scope.canvas.add(image.set({
                         originX: 'center',
                         originY: 'center',
                         left: w / 2,
-                        top: h / 2,
-                        scaleX: scale,
-                        scaleY: scale
+                        top: h / 2
                     }));
 
                     $scope.canvas.sendToBack(image);
