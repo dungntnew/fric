@@ -876,61 +876,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 });
             },
 
-            loadContent: function(canvas_data) {
-                var previewCanvas = this.canvas;
-                var src = $scope.product.template;
-                var self = this;
-                fabric.util.loadImage()
-
-                fabric.util.loadImage(src, function(image) {
-                    var iw = image.width;
-                    var ih = image.height;
-                    scale = self.printHeight / ih;
-                    zoom = self.previewHeight / self.printHeight;
-
-                    var width = iw * scale;
-                    var height = ih * scale;
-
-                    console.log("preview content: " + width + " - " + height + " scale: " + scale + " zoom: " + zoom);
-
-                    previewCanvas.setDimensions({
-                        width: width,
-                        height: height
-                    }, {
-                        cssOnly: true
-                    });
-
-                    previewCanvas.loadFromJSON(JSON.parse(canvas_data), function(obj) {
-                        var backgroundImage = new fabric.Image(image);
-                        backgroundImage.scale(scale).set({
-                            left: 0,
-                            top: 0,
-                        });
-
-                        previewCanvas.add(backgroundImage);
-                        previewCanvas.sendToBack(backgroundImage);
-
-                        previewCanvas.renderAll();
-                        previewCanvas.setZoom(zoom);
-                        console.log(' this is a callback. invoked when canvas is loaded!xxx ');
-                    });
-
-                });
-            },
             handler: function() {
-                this.setBackground(function() {
-                    console.log("done");
-                })
-                return;
-                var previewCanvas = this.canvas;
-                var contentCanvas = $scope.canvas;
                 var self = this;
-
-                previewCanvas.setDimensions({
-                    width: 320,
-                    height: 480
-                });
-
+                var contentCanvas = $scope.canvas;
                 contentCanvas.clone(function(canvas) {
                     var cloneContent = canvas;
 
@@ -949,15 +897,15 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
                     cloneContent.clear();
                     cloneContent.add(group);
-                    var canvas_data = JSON.stringify(cloneContent.toDatalessJSON());
-                    self.loadContent(canvas_data);
+                    var contentJsonData = JSON.stringify(cloneContent.toDatalessJSON());
+                    
+                    self.setBackground(function() {
+                        $scope.previewCanvas.loadFromJSON(JSON.parse(contentJsonData), function(obj) {
+                            $scope.previewCanvas.renderAll();
+                        });
+                    })
                 });
-
-
                 //$scope.showProcessingLoading('please wait for load template image..');
-
-
-
             }
         }
         $scope.previewer.init();
@@ -974,7 +922,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             var size = $scope.calculateFrameSize(frame, {
                 widthToHeight: $scope.config.widthToHeight,
                 maxHeight: $scope.config.maxViewContentHeight
-            },'setupFrameSize');
+            }, 'setupFrameSize');
 
             $(frame).width(size.width);
             $(frame).height(size.height);
@@ -997,7 +945,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             canvas.backgroundColor = 'rgba(0, 255, 0, 0.1)';
             canvas.selectionColor = 'rgba(0,255,0,0.3)';
 
-            var contentWidth = $scope.config.contentHeight *  $scope.config.widthToHeight;
+            var contentWidth = $scope.config.contentHeight * $scope.config.widthToHeight;
             console.log("****** with to height: " + $scope.config.widthToHeight);
             console.log("****** content height: " + $scope.config.contentHeight);
 
