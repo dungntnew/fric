@@ -21,7 +21,10 @@
             this.isWebcamInitizalied = false;
             var self = this;
             var setFrameSize = function() {
-                var size = self.scope.calculateFrameSize(this.canvas);
+                var size = self.scope.calculateFrameSize(this.canvas, {
+                    widthToHeight: self.scope.config.widthToHeight,
+                    maxHeight: self.scope.config.maxViewContentHeight
+                },'webcam::setFrameSize');
                 $(self.canvas).width(size.width);
                 $(self.canvas).height(size.height);
                 var videoWidth = self.video.videoWidth;

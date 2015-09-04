@@ -1,43 +1,50 @@
 .draw-content-view .row {
   padding: 0 !important;
 }
-.frame-wrapper {
+
+#frame-wrapper,
+#preview-wrapper {
    min-height: 240px;
    max-height: 425px;
    text-align: center;
-   background-image: url(data:image/gif;base64,R0lGODlhCgAKAIAAAOLi4v///yH5BAAHAP8ALAAAAAAKAAoAAAIRhB2ZhxoM3GMSykqd1VltzxQAOw==);
-   display: inline-block;
-   border: 2px solid #ccc;
+   margin: 0 auto;  
+   border-bottom: 1px solid #d4d4d4;
+/*   background-image: url(data:image/gif;base64,R0lGODlhCgAKAIAAAOLi4v///yH5BAAHAP8ALAAAAAAKAAoAAAIRhB2ZhxoM3GMSykqd1VltzxQAOw==);
+   display: inline-block;*/
 }
 
-.frame-wrapper, .frame-wrapper .row {
+#frame-wrapper, #frame-wrapper .row 
+#preview-wrapper. #preview-wrapper .row {
   margin: 0 !important;
   padding: 0 !important;
 }
 
 
-.frame-wrapper .canvas-container {
-   width: 100%;
-   height: 100%;
+#preview-wrapper .canvas-container {
    text-align: center;
    margin: 0 auto;   
    min-height: 240px;
    max-height: 425px;
  }
 
-.frame-wrapper #canvas-content {
+#canvas-content {
     text-align: center;
     margin: 0 auto;
 }
 
-.frame-wrapper #take-picture-canvas {
+#canvas-preview {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.#take-picture-canvas {
     text-align: center;
     margin: 0 auto;
     width: 60%;
     height: 60%;
 }
 
-.frame-wrapper #take-picture-video { 
+#take-picture-video { 
     visibility:hidden;
     display: none;
   width: 100%    !important;

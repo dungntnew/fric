@@ -51,8 +51,8 @@ angular.module('app.services', [])
         id: 5,
         name: '世界に一つの婚姻届',
         detail: '写真や名前、記念日を自由に入れられるオーダーメイドの婚姻届',
-        thumbnail: 'http://konin-todoke.com/upload/save_image/06241149_558a1a9ea2937.jpg',
-        template: 'http://konin-todoke.com/upload/save_image/06241149_558a1a9ea2937.jpg'
+        thumbnail: 'http://konin-todoke.com/upload/save_image/06240937_5589fbacef9bc.jpg',
+        template: 'http://konin-todoke.com/upload/save_image/06240937_5589fbacef9bc.jpg'
     }, {
         id: 6,
         name: 'Little Twin Stars Dreaming',
