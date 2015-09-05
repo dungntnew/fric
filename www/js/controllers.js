@@ -353,19 +353,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     /* @region - filter */
     (function() {
-        $scope.filterProcessing = false;
-        Caman.Event.listen("processStart", function(job) {
-            if (!$scope.filterProcessing) {
-                $scope.filterProcessing = true;
-                $scope.showProcessingLoading('処理中');
-            }
-        });
-
-        Caman.Event.listen("renderFinished", function(job) {
-            $scope.filterProcessing = false;
-            $scope.hideProcessingLoading();
-        });
-
         $scope.availableFilterNames = ["vintage",
             "lomo", "clarity", "sinCity",
             "sunrise", "crossProcess", "orangePeel",
@@ -390,42 +377,48 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
 
         $scope.applyFilter = function(index) {
-            var imageCanvas = $("#take-picture-canvas")[0];
-            var metadata_id = $(imageCanvas).attr('data-caman-id');
+            $scope.showProcessingLoading('処理中');
+            setTimeout(function() {
+                var imageCanvas = $("#take-picture-canvas")[0];
+                var metadata_id = $(imageCanvas).attr('data-caman-id');
 
-            // ignore filter 
-            if (metadata_id && $scope.activeFilterIndex == index) {
-                $scope.activeFilterIndex = -1;
-                Caman(imageCanvas, function() {
-                    $scope.showProcessingLoading('処理中');
-                    this.revert();
-                    this.render(function() {
-                        var picture = $("#take-picture-canvas")[0];
-                        var dataURL = picture.toDataURL();
-                        $scope.painter.addImage(dataURL);
-                        $scope.hideProcessingLoading();
-                    })
-                });
-                return;
-            }
-
-
-            $scope.activeFilterIndex = index;
-
-            var effect = filterNames[index];
-
-
-            Caman("#take-picture-canvas", function() {
-                if (effect in this) {
-                    this.revert();
-                    this[effect]();
-                    this.render(function() {
-                        var picture = $("#take-picture-canvas")[0];
-                        var dataURL = picture.toDataURL();
-                        $scope.painter.addImage(dataURL);
+                // ignore filter 
+                if (metadata_id && $scope.activeFilterIndex == index) {
+                    $scope.activeFilterIndex = -1;
+                    Caman(imageCanvas, function() {
+                        this.revert();
+                        this.render(function() {
+                            var picture = $("#take-picture-canvas")[0];
+                            var dataURL = picture.toDataURL();
+                            $scope.painter.addImage(dataURL, function(){
+                                $scope.hideProcessingLoading();
+                            });
+                            
+                        })
                     });
+                    return;
                 }
-            });
+
+
+                $scope.activeFilterIndex = index;
+                var effect = filterNames[index];
+                Caman("#take-picture-canvas", function() {
+                    if (effect in this) {
+                        this.revert();
+                        this[effect]();
+                        this.render(function() {
+                            var picture = $("#take-picture-canvas")[0];
+                            var dataURL = picture.toDataURL();
+                            $scope.painter.addImage(dataURL, function(){
+                                $scope.hideProcessingLoading();
+                            });
+                        });
+                    } else {
+                        $scope.hideProcessingLoading();
+                    }
+                });
+
+            }, 50);
         }
 
         $scope.onTakenPicture = function(canvas, canvasId) {
@@ -450,7 +443,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 ctx.drawImage(image, 0, 0, w, h);
             };
             image.src = dataURL;
-
         }
     }());
     /* @endregion - filter */
@@ -922,7 +914,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                         canvas.add(content);
                         $scope.previewCanvas.setBackgroundImage(background,
                             $scope.previewCanvas.renderAll.bind($scope.previewCanvas));
-                        setTimeout(function(){
+                        setTimeout(function() {
                             $scope.hideProcessingLoading();
                         }, 100);
 
@@ -1139,7 +1131,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             canvas.renderAll();
         },
 
-        addImage: function(src) {
+        addImage: function(src, callback) {
             var isOnlyOne = true;
             if (isOnlyOne) {
                 _.each(this.images, function(image) {
@@ -1166,6 +1158,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     $scope.canvas.sendToBack(image);
                     $scope.canvas.setActiveObject(image);
                     $scope.canvas.renderAll();
+                    if (callback) callback();
                     images.push(image);
                 });
                 this.images = images;
