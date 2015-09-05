@@ -1197,7 +1197,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     ionic.Platform.ready(function() {
         $scope.painter.initDrawing();
-        $scope.painter.addImage('/img/example3.jpg');
+        //$scope.painter.addImage('/img/example3.jpg');
         $scope.webcam.init({
             window: $window,
             scope: $scope,
