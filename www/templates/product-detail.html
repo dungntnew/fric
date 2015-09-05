@@ -39,7 +39,7 @@
         <div style="position:relative; width=100%"></div>
 
         <!-- camera -->
-        <div class="action-panel fadein fadeout camera-buttons" ng-show="shouldShowAction('takePicture')">
+        <div class="action-panel fadein fadeout camera-buttons" ng-show="shouldShowAction('takePicture', 0)">
           <div class="row action-panel" ng-show="!isMobile()">
             <button id="start-camera-btn"  class="col-50 button icon ion-camera button-full button-assertive"></button>
             <button id="upload-picture-btn" class="col-50 button icon ion-ios-browsers button-full button-energized"></button>
@@ -51,7 +51,7 @@
         <!-- end camera-->
 
         <!-- filter -->
-         <div class="action-panel fadein fadeout filter-buttons" ng-show="shouldShowAction('filter')">
+         <div class="action-panel fadein fadeout filter-buttons" ng-show="shouldShowAction('filter', 0)">
             <div class="background"></div>
             <div class="tabs tabs-icon-only">
                 <a ng-repeat="filter in filters" ng-click="applyFilter($index)" class="tab-item" href="#" ng-class="{active: activeFilterIndex == $index}">
@@ -62,7 +62,7 @@
         <!-- end filter-->
 
        <!-- frame -->
-       <div class="action-panel fadein fadeout frame-buttons" ng-show="shouldShowAction('frame')">
+       <div class="action-panel fadein fadeout frame-buttons" ng-show="shouldShowAction('frame', 1)">
 		    <div class="background"></div>
 		    <div class="tabs tabs-icon-only">
 		        <a ng-repeat="frame in frames" ng-click="applyFrame($index)" class="tab-item" href="#" ng-class="{active: activeFrameIndex == $index}">
@@ -73,7 +73,7 @@
        <!-- end frame -->
 
        <!-- sticker -->
-       <div class="action-panel fadein fadeout sticker-buttons" ng-show="shouldShowAction('sticker')">
+       <div class="action-panel fadein fadeout sticker-buttons" ng-show="shouldShowAction('sticker', 2)">
 			<div class="background"></div>
 
 
@@ -95,7 +95,7 @@
 
 
            <!-- text setting button -->
-       <div class="action-panel fadein fadeout" ng-show="shouldShowAction('text-setting')">
+       <div class="action-panel fadein fadeout" ng-show="shouldShowAction('text-setting', 3)">
              
              <div ng-show="!fontSetting.isTyping" ng-model="fontSetting.isTyping"> <!-- setting panel -->
 
