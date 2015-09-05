@@ -27,16 +27,18 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     // config rendering size
     $scope.config = $scope.config || {}
     $scope.config.widthToHeight = 320 / 240;
+    $scope.config.contentHeight = 480; // height of content image ( should be 1/2 of printHeight)
     $scope.config.maxViewContentHeight = 425; // height of content when view in app(css only)
-    $scope.config.maxPreviewHeight = 425 //print pager when view in app(css only)
+    
     $scope.config.printHeight = 960; // height of paper when print  
-    $scope.config.contentHeight = 240; // height of content image ( should be 1/4 of printHeight)
+    $scope.config.maxPreviewHeight = 425 //print pager when view in app(css only)
+    
 
-    console.log("[app config] widthToHeight: " + $scope.config.widthToHeight);
-    console.log("[app config] maxViewContentHeight: " + $scope.config.maxViewContentHeight + " px");
-    console.log("[app config] maxPreviewHeight: " + $scope.config.maxPreviewHeight + " px");
-    console.log("[app config] printHeight: " + $scope.config.printHeight + " px");
-    console.log("[app config] contentHeight: " + $scope.config.contentHeight + " px");
+    //console.log("[app config] widthToHeight: " + $scope.config.widthToHeight);
+    //console.log("[app config] maxViewContentHeight: " + $scope.config.maxViewContentHeight + " px");
+    //console.log("[app config] maxPreviewHeight: " + $scope.config.maxPreviewHeight + " px");
+    //console.log("[app config] printHeight: " + $scope.config.printHeight + " px");
+    //console.log("[app config] contentHeight: " + $scope.config.contentHeight + " px");
 
     $scope.calculateDimensions = function(gesture) {
         $scope.w = $window.innerWidth;
@@ -230,7 +232,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             if (tab.actionIds.length > 0) {
                 if (!tab.actionId) tab.actionId = tab.actionIds[0];
                 $scope.actionName = actionNames[tab.actionId];
-                console.log("[current] action name -> " + $scope.actionName);
+                //console.log("[current] action name -> " + $scope.actionName);
             }
         }
 
@@ -315,7 +317,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
             var widthToHeight = config.widthToHeight;
             var maxHeight = config.maxHeight;
-            console.log("[" + name + "] widthToHeight: " + widthToHeight + " - maxHeight: " + maxHeight);
+            //console.log("[" + name + "] widthToHeight: " + widthToHeight + " - maxHeight: " + maxHeight);
 
             var canvasRatio = $(frame).height() / $(frame).width();
             var newWidth = $window.innerWidth;
@@ -840,7 +842,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     cssOnly: true
                 });
                 $scope.previewCanvas.renderAll();
-                console.log("[previewer] setup preview size: " + size.width + " x " + size.height);
+                console.log("[previewer] view: " + size.width + " x " + size.height);
             },
 
             init: function() {
@@ -848,6 +850,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 fabric.Object.prototype.transparentCorners = false;
                 var canvas = $scope.previewCanvas = new fabric.Canvas('canvas-preview');
                 canvas.backgroundColor = 'rgba(255, 0, 0, 0.1)';
+                canvas.selection = false;
                 this.setupPreviewSize();
                 canvas.renderAll();
                 angular.element($window).bind('resize', this.setupPreviewSize);
@@ -862,7 +865,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     var newHeight = image.height * scale;
                     $scope.printSizeWidth = newWidth;
                     $scope.printSizeHeight = newHeight;
-                    console.log("[previewer] set print size: " + newWidth + " x " + newHeight);
+
+                    console.log("[previewer] size: " + newWidth + " x " + newHeight);
 
                     $scope.previewCanvas.setDimensions({
                         width: newWidth,
@@ -883,58 +887,40 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
             handler: function() {
                 var self = this;
-                var contentCanvas = $scope.canvas;
+                var canvas = $scope.previewCanvas;
+                var painter = $scope.painter;
                 $scope.showProcessingLoading('写真処理中');
+
                 if (self.content) {
-                    $scope.previewCanvas.remove(self.content);
+                    canvas.remove(self.content);
                     self.content = null;
                 }
 
-
                 self.setBackground(function() {
-                    console.log("$scope.printSizeWidth: " + $scope.printSizeWidth);
-                    console.log("$scope.printSizeHeight: " + $scope.printSizeHeight);
-                    var contentLeft = $scope.printSizeWidth / 2 + $scope.canvas.width / 2;
-                    var contentTop = $scope.printSizeHeight / 2 + $scope.canvas.height / 2;
 
-                    var svgContent = contentCanvas.toSVG({
-                        viewBox: {
-                            x: 0,
-                            y: 0,
-                            width: 320,
-                            height: 240
-                        }
+                    painter.toDrawContent(function(content){
+                        var left = canvas.width / 2 + content.width/2;
+                        var top = canvas.height / 2 + content.height/2;
+                        console.log("[print content] size: "  + canvas.width + " x " + canvas.height);
+                        console.log("[exported content] size: " + content.width + " x " + content.height);
+                        console.log("[content place] l-t: " + left + " - " + top);
+
+                        content.set({
+                            originX: 'center',
+                            originY: 'center',
+                            top: top,
+                            left: left,
+                            scaleX: 0.8,
+                            scaleY: 0.8,
+                            selectable: false
+                        })
+                        self.content = content;
+                       
+                        canvas.add(content);
+                        canvas.renderAll();
+                        $scope.hideProcessingLoading();
                     });
-                    var setContent = function(mask) {
-                        fabric.loadSVGFromString(svgContent, function(objects, options) {
-                            self.content = fabric.util.groupSVGElements(objects, options);
-                            if (mask) {
-                                self.content.set({
-                                    clipTo: function(ctx) {
-                                        mask.render(ctx);
-                                    }
-                                });
-                            }
-                            $scope.previewCanvas.add(self.content).renderAll();
-                            $scope.hideProcessingLoading();
-                        });
-                    }
-
-                    if ($scope.painter.mask){
-                        $scope.painter.mask.clone(function(mask){
-                            mask.set({
-                                originX: 'center',
-                                originY: 'center',
-                                top: 0,
-                                left: 0
-                            });
-                            setContent(mask);
-                        });
-                    }
-                    else {
-                        setContent()
-                    }
-                })
+                });
             }
         }
         $scope.previewer.init();
@@ -963,9 +949,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             }, {
                 cssOnly: true
             });
-
-
-            console.log("[painter] setup view size: " + size.width + " x " + size.height);
+            $scope.canvas.backgroundColor ='rgba(0, 255, 0, 0.1)';
+            console.log("[painter] view: " + size.width + " x " + size.height);
         },
 
         initDrawing: function() {
@@ -975,16 +960,16 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             canvas.selectionColor = 'rgba(0,255,0,0.3)';
 
             var contentWidth = $scope.config.contentHeight * $scope.config.widthToHeight;
-            console.log("****** with to height: " + $scope.config.widthToHeight);
-            console.log("****** content height: " + $scope.config.contentHeight);
-
+            //console.log("****** with to height: " + $scope.config.widthToHeight);
+            //console.log("****** content height: " + $scope.config.contentHeight);
+            
             canvas.setDimensions({
                 width: contentWidth,
                 height: $scope.config.contentHeight
             }, {
                 backstoreOnly: true
             });
-            console.log("[painter] setup content size: " + contentWidth + " x " + $scope.config.contentHeight);
+            console.log("[painter] size: " + contentWidth + " x " + $scope.config.contentHeight);
             $scope.painter.width = contentWidth;
             $scope.painter.height = $scope.config.contentHeight;
 
@@ -1006,11 +991,37 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.hideTextSetting();
             });
         },
-        createWiddeCanvas: function() {
+        toDrawContent: function(callback) {
+            var self = this;
+            var ready = function(mask){
+                var str = $scope.canvas.toSVG();
+                fabric.loadSVGFromString(str, function(objects, options){
+                    var image = fabric.util.groupSVGElements(objects, options);
+                    if (mask) {
+                        image.set({
+                            clipTo: function(ctx){
+                                mask.render(ctx);
+                            }
+                        });
+                    }
+                    if (callback) callback(image);
+                });
+            };
 
+            if (!self.mask) {
+                ready();
+                return;
+            } 
+            self.mask.clone(function(mask){
+                mask.set({
+                    originX: 'center',
+                    originY: 'center',
+                    top: 0,
+                    left: 0
+                });
+                ready(mask);
+            });
         },
-        createFixedGroup: function() {},
-        setPositionForFixedGroup: function() {},
         newPosition: function() {
             var w4 = $scope.painter.width / 4;
             var h4 = $scope.painter.height / 4;
@@ -1023,17 +1034,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         images: [],
         widgets: [],
         texts: [],
-
-        addToGroup: function() {
-            var widgets = this.widgets;
-            var group = new fabric.Group(widgets, {
-                left: 0,
-                top: 0,
-                angle: 0
-            });
-            $scope.canvas.add(group);
-            $scope.canvas.renderAll();
-        },
 
         addNewText: function() {
             var text = new fabric.IText('text');
@@ -1095,14 +1095,14 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 fabric.Image.fromURL(src, function(image) {
                     var iw = image.width;
                     var ih = image.height;
-                    if (iw/ih > w/h) {
-                        image.scaleToWidth(w);
-                    }else {
+                    // if (iw/ih > w/h) {
+                    //     image.scaleToWidth(w);
+                    // }else {
                         
-                        image.scaleToHeight(h);
-                    }
+                    //     image.scaleToHeight(h);
+                    // }
                     
-                    image.applyFilters();
+                    //image.applyFilters();
                     $scope.canvas.add(image);
                     $scope.canvas.centerObject(image);
                     $scope.canvas.sendToBack(image);
@@ -1132,7 +1132,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     ionic.Platform.ready(function() {
         $scope.painter.initDrawing();
-        $scope.painter.addImage('/img/example.png');
+        $scope.painter.addImage('/img/example3.jpg');
         $scope.webcam.init({
             window: $window,
             scope: $scope,
