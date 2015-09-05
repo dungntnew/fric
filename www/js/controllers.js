@@ -31,7 +31,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     $scope.config.maxViewContentHeight = 400; // height of content when view in app(css only)
 
     $scope.config.printHeight = 960; // height of paper when print  
-    $scope.config.maxPreviewHeight = 420//print pager when view in app(css only)
+    $scope.config.maxPreviewHeight = 420 //print pager when view in app(css only)
 
 
     //console.log("[app config] widthToHeight: " + $scope.config.widthToHeight);
@@ -391,10 +391,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                         this.render(function() {
                             var picture = $("#take-picture-canvas")[0];
                             var dataURL = picture.toDataURL();
-                            $scope.painter.addImage(dataURL, function(){
+                            $scope.painter.addImage(dataURL, function() {
                                 $scope.hideProcessingLoading();
                             });
-                            
+
                         })
                     });
                     return;
@@ -410,7 +410,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                         this.render(function() {
                             var picture = $("#take-picture-canvas")[0];
                             var dataURL = picture.toDataURL();
-                            $scope.painter.addImage(dataURL, function(){
+                            $scope.painter.addImage(dataURL, function() {
                                 $scope.hideProcessingLoading();
                             });
                         });
@@ -1029,19 +1029,22 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 var str = $scope.canvas.toSVG();
                 fabric.loadSVGFromString(str, function(objects, options) {
                     var image = fabric.util.groupSVGElements(objects, options);
-                    if (mask) {
-                        image.set({
-                            clipTo: function(ctx) {
-                                mask.render(ctx);
-                            }
-                        });
-                    } else {
-                        image.set({
-                            clipTo: function(ctx) {
-                                ctx.rect(-w / 2, -h / 2, w, h);
-                            }
-                        });
+                    if (objects && objects.length > 0) {
+                        if (mask) {
+                            image.set({
+                                clipTo: function(ctx) {
+                                    mask.render(ctx);
+                                }
+                            });
+                        } else {
+                            image.set({
+                                clipTo: function(ctx) {
+                                    ctx.rect(-w / 2, -h / 2, w, h);
+                                }
+                            });
+                        }
                     }
+
                     if (callback) callback(image);
                 });
             };
@@ -1095,7 +1098,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     left: newPosition.x,
                     top: newPosition.y,
                     transparentCorners: false,
-                     cornerColor: 'red',
+                    cornerColor: 'red',
                     cornerSize: 20,
                     borderColor: 'red'
                 }).scaleToHeight(150));
@@ -1146,7 +1149,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     var iw = image.width;
                     var ih = image.height;
                     if (iw / ih > w / h) {
-                        image.scaleToWidth(w -10);
+                        image.scaleToWidth(w - 10);
                     } else {
 
                         image.scaleToHeight(h - 10);
