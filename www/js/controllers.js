@@ -28,10 +28,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     $scope.config = $scope.config || {}
     $scope.config.widthToHeight = 320 / 240;
     $scope.config.contentHeight = 480; // height of content image ( should be 1/2 of printHeight)
-    $scope.config.maxViewContentHeight = 425; // height of content when view in app(css only)
+    $scope.config.maxViewContentHeight = 400; // height of content when view in app(css only)
 
     $scope.config.printHeight = 960; // height of paper when print  
-    $scope.config.maxPreviewHeight = 425 //print pager when view in app(css only)
+    $scope.config.maxPreviewHeight = 420//print pager when view in app(css only)
 
 
     //console.log("[app config] widthToHeight: " + $scope.config.widthToHeight);
@@ -44,6 +44,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.w = $window.innerWidth;
         $scope.h = $window.innerHeight;
     }
+
     $scope.calculateDimensions();
 
     angular.element($window).bind('resize', function() {
@@ -958,14 +959,14 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             }, {
                 cssOnly: true
             });
-            $scope.canvas.backgroundColor = 'rgba(0, 255, 0, 0.1)';
+            //$scope.canvas.backgroundColor = 'rgba(0, 255, 0, 0.1)';
             console.log("[painter] view: " + size.width + " x " + size.height);
         },
 
         initDrawing: function() {
             fabric.Object.prototype.transparentCorners = false;
             var canvas = $scope.canvas = this.__canvas = new fabric.Canvas('canvas-content');
-            canvas.backgroundColor = 'rgba(0, 255, 0, 0.1)';
+            canvas.backgroundColor = 'black';
             canvas.selectionColor = 'rgba(0,255,0,0.3)';
 
             var contentWidth = $scope.config.contentHeight * $scope.config.widthToHeight;
