@@ -462,7 +462,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 id: i,
                 name: 'frame-' + (i + 1),
                 src: 'img/assets/frames/thumbnails/' + (i + 1) + '.png',
-                mask: 'img/assets/frames/images/' + (i + 1) + '.png',
+                mask: 'img/assets/frames/masks/' + (i + 1) + '.svg',
             });
         }
 
@@ -890,21 +890,50 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     self.content = null;
                 }
 
+
                 self.setBackground(function() {
                     console.log("$scope.printSizeWidth: " + $scope.printSizeWidth);
                     console.log("$scope.printSizeHeight: " + $scope.printSizeHeight);
                     var contentLeft = $scope.printSizeWidth / 2 + $scope.canvas.width / 2;
                     var contentTop = $scope.printSizeHeight / 2 + $scope.canvas.height / 2;
 
-                    var svgContent = contentCanvas.toSVG();
-                    fabric.loadSVGFromString(svgContent, function(objects, options) {
-                        self.content = fabric.util.groupSVGElements(objects, options);
-                        $scope.previewCanvas.add(self.content.set({
-                            top: contentTop,
-                            left: contentLeft
-                        })).renderAll();
-                        $scope.hideProcessingLoading();
+                    var svgContent = contentCanvas.toSVG({
+                        viewBox: {
+                            x: 0,
+                            y: 0,
+                            width: 320,
+                            height: 240
+                        }
                     });
+                    var setContent = function(mask) {
+                        fabric.loadSVGFromString(svgContent, function(objects, options) {
+                            self.content = fabric.util.groupSVGElements(objects, options);
+                            if (mask) {
+                                self.content.set({
+                                    clipTo: function(ctx) {
+                                        mask.render(ctx);
+                                    }
+                                });
+                            }
+                            $scope.previewCanvas.add(self.content).renderAll();
+                            $scope.hideProcessingLoading();
+                        });
+                    }
+
+                    if ($scope.painter.mask){
+                        $scope.painter.mask.clone(function(mask){
+                            mask.set({
+                                originX: 'center',
+                                originY: 'center',
+                                top: 0,
+                                left: 0
+                            });
+                            setContent(mask);
+                        });
+                    }
+                    else {
+                        setContent()
+                    }
                 })
             }
         }
@@ -1038,55 +1067,18 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         },
 
         applyFrame: function(frame) {
-
-            // will call after loaded mask image
-            var apply = function(mask) {
-                var lastFilter = this.filter;
-                var newFilter = new fabric.Image.filters.Mask({
-                    'mask': mask
-                });
-                this.filter = newFilter;
-
-                $scope.canvas.forEachObject(function(object) {
-                    if (object.type === 'image') {
-                        // clear last filter if exists
-                        if (object.filters.length && object.filters.indexOf(lastFilter) != -1) {
-                            object.filters.splice(object.filters.indexOf(lastFilter), 1);
-                        }
-                        object.filters.push(newFilter);
-                        object.applyFilters(function() {
-                            object.canvas.renderAll();
-                        });
-                    }
-                });
-            }
-
             var self = this;
             var w = $scope.painter.width;
             var h = $scope.painter.height;
-            frame.mask = "/img/mask.jpg";
-            fabric.Image.fromURL(frame.mask, function(image) {
-                // var iw = image.width;
-                // var ih = image.height;
-                // var scale = 1;
-                // if (iw > w || ih > h) {
-                //     scale = iw > ih ? w / iw : h / ih;
-                // }
-                // image.set({
-                //     scaleX: scale,
-                //     scaleY: scale
-                // })
-                // //apply(image);
-                // $scope.canvas.add(image);
-                // $scope.canvas.centerObject(image);
-                // $scope.canvas.renderAll();
-                setTimeout(function(){
-                   // $scope.canvas.remove(image);
-                    apply(image);
-
-                }, 100);
+            fabric.loadSVGFromURL(frame.mask, function(objects, options){
+                var image = $scope.painter.mask = fabric.util.groupSVGElements(objects, options);
+                image.scaleToHeight(h);
+                $scope.canvas.centerObject(image);
+                $scope.canvas.clipTo = function(ctx){
+                    image.render(ctx);
+                }
+                $scope.canvas.renderAll();
             });
-
         },
 
         addImage: function(src) {
@@ -1140,6 +1132,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     ionic.Platform.ready(function() {
         $scope.painter.initDrawing();
+        $scope.painter.addImage('/img/example.png');
         $scope.webcam.init({
             window: $window,
             scope: $scope,
