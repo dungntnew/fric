@@ -31,7 +31,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     $scope.config.maxViewContentHeight = 400; // height of content when view in app(css only)
 
     $scope.config.printHeight = 960; // height of paper when print  
-    $scope.config.maxPreviewHeight = 420 //print pager when view in app(css only)
+    $scope.config.maxPreviewHeight = 420; //print pager when view in app(css only)
+    $scope.config.crossOrigin = ''; // other : 'Anonymous'
 
 
     //console.log("[app config] widthToHeight: " + $scope.config.widthToHeight);
@@ -275,6 +276,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
         $scope.shouldShowPictureToolBars = function() {
             return $scope.pictureLoaded && $scope.activeTabIndex == 0;
+        }
+        $scope.shouldShowPreviewToolBars = function() {
+            return $scope.activeTabIndex == 4;
         }
 
         $scope.shouldShowPreview = function() {
@@ -858,14 +862,14 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             loadBackground: function(callback) {
                 var self = this;
                 var src = $scope.product.template;
-                fabric.Image.fromURL(src, function(image) {
-                    var scale = $scope.config.printHeight / image.height;
-                    var newWidth = image.width * scale;
-                    var newHeight = image.height * scale;
+                var objectLoadedHandler = function(object){
+                    var scale = $scope.config.printHeight / object.height;
+                    var newWidth = object.width * scale;
+                    var newHeight = object.height * scale;
                     $scope.printSizeWidth = newWidth;
                     $scope.printSizeHeight = newHeight;
-
                     console.log("[previewer] size: " + newWidth + " x " + newHeight);
+
 
                     $scope.previewCanvas.setDimensions({
                         width: newWidth,
@@ -874,11 +878,16 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                         backstoreOnly: true
                     });
 
-                    image.set({
+                    object.set({
                         width: newWidth,
                         height: newHeight
                     });
-                    if (callback) callback(image);
+                    if (callback) callback(object);
+                }
+
+                fabric.util.loadImage(src, function(image) {
+                    var object = new fabric.Image(image);
+                    objectLoadedHandler(object);
                 });
             },
 
@@ -914,7 +923,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                         self.content = content;
                         canvas.add(content);
                         $scope.previewCanvas.setBackgroundImage(background,
-                            $scope.previewCanvas.renderAll.bind($scope.previewCanvas));
+                            $scope.previewCanvas.renderAll.bind($scope.previewCanvas), {
+                                crossOrigin: 'anonymous'
+                            });
                         setTimeout(function() {
                             $scope.hideProcessingLoading();
                         }, 100);
@@ -922,7 +933,27 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     });
                 });
 
+            },
+            exportData: function() {
+                console.log('export data ..');
+                $scope.showProcessingLoading();
+                var self = this;
+                var canvas = $scope.previewCanvas;
 
+                try {
+                    var dataURL = canvas.toDataURL({
+                        format: 'png'
+                    });
+                    console.log(dataURL);
+
+                } catch (e) {
+                    $scope.showAlert({
+                        title: 'エラー',
+                        message: "Cannot export data in your browser, \nerror: " + e
+                    })
+                } finally {
+                    $scope.hideProcessingLoading();
+                }
             }
         }
         $scope.previewer.init();
@@ -1286,6 +1317,12 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
         })
     });
+
+    angular.element('#decided-design-btn').bind('click', function(e) {
+        setTimeout(function() {
+            $scope.previewer.exportData();
+        })
+    })
 })
 
 

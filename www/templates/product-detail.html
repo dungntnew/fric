@@ -16,17 +16,22 @@
 
         <!-- tool-bar buttons -->
         <div class="frame-action row" ng-show="usingWebcam" ng-model="usingWebcam">
-            <button id="take-picture-btn" class="col-100 button button-full button-balanced" ng-click="takePicture()">
+            <button id="take-picture-btn" class="col-100 button button-full button-balanced">
                 撮影
             </button>
         </div>
 
         <div class="frame-action row" ng-show="shouldShowPictureToolBars()">
-            <button id="retake-picture-btn" class="col-50 button button-full button-balanced" ng-click="retakePhoto()">
+            <button id="retake-picture-btn" class="col-50 button button-full button-balanced">
                 再撮影
             </button>
             <button id="decided-picture-btn" class="col-50 button button-full button-assertive">
                 決定
+            </button>
+        </div>
+        <div class="frame-action row" ng-show="shouldShowPreviewToolBars()">
+            <button id="decided-design-btn" class="col-100 button button-full button-assertive">
+                このデザインにする！
             </button>
         </div>
         <!-- end tool bar buttons -->
