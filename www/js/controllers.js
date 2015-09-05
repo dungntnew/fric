@@ -1101,12 +1101,11 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.canvas.add(image.set({
                     left: newPosition.x,
                     top: newPosition.y,
-                    transparentCorners: true,
-                    cornerSize: 10,
-                    selectionColor: 'rgba(0,255,0,0.3)',
-                    selectionBorderColor: 'red',
-                    selectionLineWidth: 5
-                }));
+                    transparentCorners: false,
+                     cornerColor: 'red',
+                    cornerSize: 20,
+                    borderColor: 'red'
+                }).scaleToHeight(150));
                 $scope.canvas.setActiveObject(image);
             })
             $scope.canvas.renderAll();
@@ -1154,11 +1153,18 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     var iw = image.width;
                     var ih = image.height;
                     if (iw / ih > w / h) {
-                        image.scaleToWidth(w);
+                        image.scaleToWidth(w -10);
                     } else {
 
-                        image.scaleToHeight(h);
+                        image.scaleToHeight(h - 10);
                     }
+                    image.set({
+                        transparentCorners: false,
+                        cornerColor: 'red',
+                        cornerSize: 20,
+                        borderColor: 'red'
+
+                    });
 
                     //image.applyFilters();
                     $scope.canvas.add(image);
