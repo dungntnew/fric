@@ -836,11 +836,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             var textInputPopup = $ionicPopup.show({
                 template: '<input type="text" maxlength="30" ng-model="textData.text">',
                 title: 'テキストを入力してください',
-                subTitle: 'Please use normal things(limit 30 characters)',
+                subTitle: '制限（30文字)',
                 scope: $scope,
                 buttons: [{
-                    text: 'キャンセール'
-                }, {
                     text: '<b>入力</b>',
                     type: 'button-positive',
                     onTap: function(e) {
