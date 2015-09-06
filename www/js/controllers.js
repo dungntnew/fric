@@ -27,7 +27,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     // config rendering size
     $scope.config = $scope.config || {}
     $scope.config.widthToHeight = 320 / 240;
-    $scope.config.contentHeight = 480; // height of content image ( should be 1/2 of printHeight)
+    $scope.config.contentHeight = 320; // height of content image ( should be 1/2 of printHeight)
     $scope.config.maxViewContentHeight = 400; // height of content when view in app(css only)
 
     $scope.config.printHeight = 960; // height of paper when print  
@@ -281,6 +281,16 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.shouldShowPreviewToolBars = function() {
             return $scope.activeTabIndex == 4;
         }
+
+        $scope.textSettingIsActive = false;
+        $scope.shouldShowAddTextButton = function(){
+            return !$scope.textSettingIsActive && $scope.activeTabIndex == 3;
+        }
+
+        $scope.shouldShowTextSettingBar = function(){
+            return $scope.textSettingIsActive && $scope.activeTabIndex == 3;
+        }
+
 
         $scope.shouldShowPreview = function() {
             return $scope.activeTabIndex == 4;
@@ -790,7 +800,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $scope.text = text;
             setTimeout(function() {
                 $scope.$apply(function() {
-                    $scope.fontSetting.isTyping = false;
+                    $scope.textSettingIsActive = true;
                     $scope.fontFamily.changeTo(text.fontFamily);
                     $scope.textColor.changeTo(text.stroke);
                     $scope.fontSize.changeTo(text.fontSize);
@@ -801,7 +811,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.hideTextSetting = function() {
             setTimeout(function() {
                 $scope.$apply(function() {
-                    $scope.fontSetting.isTyping = true;
+                    $scope.textSettingIsActive = false;
                 });
             });
 
@@ -1136,9 +1146,13 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                         });
                     });
                 }
+                else {
+                    $scope.hideTextSetting();
+                }
             });
             $scope.canvas.on('selection:cleared', function(e) {
                 $scope.hideTextSetting();
+                
             });
         },
         toImageContent: function(callback){
