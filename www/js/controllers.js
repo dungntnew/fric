@@ -33,6 +33,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     $scope.config.printHeight = 960; // height of paper when print  
     $scope.config.maxPreviewHeight = 420; //print pager when view in app(css only)
     $scope.config.crossOrigin = ''; // other : 'Anonymous'
+    $scope.config.multiplier = 1; // value multiplier using for export dataURL
 
 
     //console.log("[app config] widthToHeight: " + $scope.config.widthToHeight);
@@ -821,8 +822,58 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
 
         $scope.addNewText = function() {
-            $scope.painter.addNewText();
+            $scope.showTextInputPopup();
         }
+
+
+        // Triggered on a text doubble click, or some other target
+        $scope.showTextInputPopup = function(text) {
+            var content = text ? text.text : '';
+            $scope.textData = {
+                text: content
+            }
+
+            // An elaborate, custom popup
+            var textInputPopup = $ionicPopup.show({
+                template: '<input type="text" ng-model="textData.text">',
+                title: 'テキストを入力してください',
+                subTitle: 'Please use normal things',
+                scope: $scope,
+                buttons: [{
+                    text: 'キャンセール'
+                }, {
+                    text: '<b>入力</b>',
+                    type: 'button-positive',
+                    onTap: function(e) {
+                        if (!$scope.textData.text) {
+                            e.preventDefault();
+                        } else {
+                            return $scope.textData.text;
+                        }
+                    }
+                }]
+            });
+            textInputPopup.then(function(res) {
+                if (!res) {
+                    return;
+                }
+
+                if (!text) {
+                    $scope.painter.addNewText(res);
+                } else {
+                    setTimeout(function() {
+                        $scope.$apply(function() {
+                            text.setText(res);
+                            $scope.canvas.renderAll();
+                        })
+                    })
+
+
+                }
+            });
+
+        };
+
     }());
     /* @endregion text setting */
 
@@ -862,7 +913,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             loadBackground: function(callback) {
                 var self = this;
                 var src = $scope.product.template;
-                var objectLoadedHandler = function(object){
+                var objectLoadedHandler = function(object) {
                     var scale = $scope.config.printHeight / object.height;
                     var newWidth = object.width * scale;
                     var newHeight = object.height * scale;
@@ -934,26 +985,42 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 });
 
             },
+            exportDataSVG: function() {
+                var filedata = $scope.previewCanvas.toSVG(); // the SVG file is now in filedata
+
+                var locfile = new Blob([filedata], {
+                    type: "image/svg+xml;charset=utf-8"
+                });
+                var locfilesrc = URL.createObjectURL(locfile); //mylocfile);
+
+                var dwn = document.getElementById('dwn');
+                dwn.innerHTML = "<a href=" + locfilesrc + " download='mysvg.svg'>Download</a>";
+
+            },
             exportData: function() {
                 console.log('export data ..');
                 $scope.showProcessingLoading();
-                var self = this;
-                var canvas = $scope.previewCanvas;
+                setTimeout(function() {
+                    var self = this;
+                    var canvas = $scope.previewCanvas;
 
-                try {
-                    var dataURL = canvas.toDataURL({
-                        format: 'png'
-                    });
-                    console.log(dataURL);
+                    try {
+                        var dataURL = canvas.toDataURL({
+                            format: 'png',
+                            multiplier: $scope.config.multiplier
+                        });
+                        var dwn = document.getElementById('download');
+                        dwn.innerHTML = "<a href=" + dataURL + ">View Image</a>";
 
-                } catch (e) {
-                    $scope.showAlert({
-                        title: 'エラー',
-                        message: "Cannot export data in your browser, \nerror: " + e
-                    })
-                } finally {
-                    $scope.hideProcessingLoading();
-                }
+                    } catch (e) {
+                        $scope.showAlert({
+                            title: 'ラー',
+                            message: "Cannot export data in your browser, \nerror: " + e
+                        })
+                    } finally {
+                        $scope.hideProcessingLoading();
+                    }
+                }, 100);
             }
         }
         $scope.previewer.init();
@@ -1014,6 +1081,21 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
         setupEvents: function() {
             var texts = this.texts;
+
+            var date = new Date();
+            var lastTime = date.getTime();
+            $scope.canvas.observe('mouse:down', function(e) {
+                date = new Date();
+                var now = date.getTime();
+                if (now - lastTime < 500) {
+
+                    if (texts.indexOf(e.target) != -1) {
+                        $scope.showTextInputPopup(e.target);
+                    }
+                }
+                lastTime = now;
+            });
+
             $scope.canvas.on('object:selected', function(e) {
                 if (texts.indexOf(e.target) != -1) {
                     $scope.showTextSetting(e.target);
@@ -1023,6 +1105,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $scope.canvas.on('selection:cleared', function(e) {
                 $scope.hideTextSetting();
             });
+
 
             // $scope.canvas.on('object:moving', function(e) {
             //     var el = e.target;
@@ -1108,8 +1191,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         widgets: [],
         texts: [],
 
-        addNewText: function() {
-            var text = new fabric.IText('text');
+        addNewText: function(content) {
+            var text = new fabric.Text(content);
             var newPosition = this.newPosition();
 
             this.texts.push(text.set({
@@ -1224,7 +1307,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     ionic.Platform.ready(function() {
         $scope.painter.initDrawing();
-        //$scope.painter.addImage('/img/example3.jpg');
+        $scope.painter.addImage('/img/example3.jpg');
         $scope.webcam.init({
             window: $window,
             scope: $scope,
