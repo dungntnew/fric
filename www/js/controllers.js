@@ -27,8 +27,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     // config rendering size
     $scope.config = $scope.config || {}
     $scope.config.widthToHeight = 320 / 240;
-    $scope.config.contentHeight = 320; // height of content image ( should be 1/2 of printHeight)
-    $scope.config.maxViewContentHeight = 400; // height of content when view in app(css only)
+    $scope.config.contentHeight = 480; // height of content image ( should be 1/2 of printHeight)
+    $scope.config.maxViewContentHeight = 320; // height of content when view in app(css only)
 
     $scope.config.printHeight = 960; // height of paper when print  
     $scope.config.maxPreviewHeight = 420; //print pager when view in app(css only)
