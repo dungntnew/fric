@@ -771,7 +771,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     $scope.fontSetting.changed = false;
                     $timeout.cancel(data.timeoutId);
                     data.timeoutId = null;　　　　　　　　　　　　
-                    //$scope.applyTextSetting();
+                    $scope.applyTextSetting();
                 }, 100);
             })
         }
@@ -1117,7 +1117,13 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 if (now - lastTime < 500) {
 
                     if (texts.indexOf(e.target) != -1) {
-                        $scope.showTextInputPopup(e.target);
+                        setTimeout(function(){
+                            $scope.$apply(function(){
+                                $scope.selectTabWithIndex(3);
+                               $scope.showTextInputPopup(e.target); 
+                            });
+                        });
+
                     }
                 }
                 lastTime = now;
@@ -1125,10 +1131,14 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
             $scope.canvas.on('object:selected', function(e) {
                 if (texts.indexOf(e.target) != -1) {
-                    $scope.showTextSetting(e.target);
+                    setTimeout(function() {
+                        $scope.$apply(function() {
+                            $scope.selectTabWithIndex(3);
+                            $scope.showTextSetting(e.target);
+                        });
+                    });
                 }
             });
-
             $scope.canvas.on('selection:cleared', function(e) {
                 $scope.hideTextSetting();
             });
@@ -1216,8 +1226,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
         addNewText: function(content) {
             var text = new fabric.Text(content, {
-                // fontFamily: $scope.fontFamily.value.family,
-                // fontSize: $scope.fontSize.value,
+                fontFamily: $scope.fontFamily.value.family,
+                fontSize: $scope.fontSize.value,
                 fill: $scope.textColor.colorCode(),
                 textAlign: 'center'
             });
@@ -1234,6 +1244,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             }));
 
             $scope.canvas.add(text);
+            $scope.canvas.setActiveObject(text);
             $scope.canvas.renderAll();
         },
 
