@@ -73,11 +73,11 @@ angular.module('app.services', [])
     ]
     var templateFakes = [
         'img/assets/products/templates/08261626_55dd6a26556d4.jpg',
-        'mg/assets/products/templates/08191656_55d4369d52dea.jpg',
-        'mg/assets/products/templates/08191649_55d43517ccd65.jpg',
-        'mg/assets/products/templates/08191652_55d435b9bbeca.jpg',
-        'mg/assets/products/templates/06240937_5589fbacef9bc.jpg',
-        'mg/assets/products/templates/08071541_55c45334c0b76.jpg',
+        'img/assets/products/templates/08191656_55d4369d52dea.jpg',
+        'img/assets/products/templates/08191649_55d43517ccd65.jpg',
+        'img/assets/products/templates/08191652_55d435b9bbeca.jpg',
+        'img/assets/products/templates/06240937_5589fbacef9bc.jpg',
+        'img/assets/products/templates/08071541_55c45334c0b76.jpg',
         'img/assets/products/templates/08071650_55c4635c16d45.jpg'
     ]
     _.each(products, function(p, i){
