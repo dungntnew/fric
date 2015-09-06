@@ -79,7 +79,7 @@ body {
 }
 
 .draw-content-view  {
-   background-color: black;
+   background-color: white;
 }
 
 .header-bar-color {
@@ -111,6 +111,59 @@ body {
    bottom: 50px !important;
 }
 
+.tabs-positive > .tabs, .tabs.tabs-positive {
+    border-color: #cccccc !important;
+    background-color: #cccccc !important;
+    background-image: linear-gradient(0deg, #cccccc, #cccccc 50%, transparent 50%) !important;
+    color: #fff !important;
+}
+
+.tab-icon-background {
+  background-size: contain;
+  background-clip: content-box;
+  background-repeat: no-repeat;
+}
+
+.tab-icon-camera {
+    background-image: url('../img/assets/btn/camera-tab.png');
+    margin-left: 8px;
+}
+.tab-icon-camera-active {
+  background-image: url('../img/assets/btn/camera-tab-active.png');
+  margin-left: 8px;
+}
+
+.tab-icon-frame {
+    background-image: url('../img/assets/btn/frame-tab.png');
+}
+.tab-icon-frame-active {
+  background-image: url('../img/assets/btn/frame-tab-active.png');
+}
+
+.tab-icon-sticker {
+    background-image: url('../img/assets/btn/stamp-tab.png');
+}
+.tab-icon-sticker-active {
+  background-image: url('../img/assets/btn/stamp-tab-active.png');
+}
+
+.tab-icon-text {
+    background-image: url('../img/assets/btn/text-tab.png');
+}
+.tab-icon-text-active {
+  background-image: url('../img/assets/btn/text-tab-active.png');
+}
+.tab-icon-review {
+    background-image: url('../img/assets/btn/review-tab.png');
+    margin-right: 8px;
+}
+.tab-icon-review-active {
+  background-image: url('../img/assets/btn/review-tab-active.png');
+  margin-right: 8px;
+}
+
+
+
 .action-bar {
 	position: absolute !important;
 	height: 50px !important;
@@ -132,6 +185,9 @@ body {
 
 .text-action-bar {
   display: none;
+}
+.review-action-bar {
+   display: none;
 }
 
 .text-add-panel {
@@ -166,9 +222,50 @@ body {
 .camera-buttons  button {
 	display: inline-block !important;
 	height: 60px;
-	margin: 0 !important;
-	padding: 0 !important;
+/*	margin: 0 !important;
+	padding: 0 !important;*/
 }
+
+.action-rool-btn {
+  display: block !important;;
+  margin: 0px auto !important;
+  text-align: center !important;
+  width: 150px !important;
+  min-height: 60px !important;
+  background-color: transparent;
+  border: none !important;
+  background-image: url('../img/assets/btn/camera-btn.png');
+    background-size: contain;
+  background-repeat: no-repeat;
+}
+
+
+.action-take-camera-btn {
+  display: block !important;;
+  margin: 0px auto !important;
+  text-align: center !important;
+  width: 150px !important;
+  min-height: 60px !important;
+  background-color: transparent;
+  border: none !important;
+  background-image: url('../img/assets/btn/camera-btn.png');
+    background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.action-take-folder-btn {
+  display: block !important;;
+  margin: 0px auto !important;
+  text-align: center !important;
+  width: 150px !important;
+  min-height: 60px !important;
+  background-color: transparent;
+  border: none !important;
+  background-image: url('../img/assets/btn/folder-btn.png');
+    background-size: contain;
+  background-repeat: no-repeat;
+}
+
 
 .fadein {
   -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
@@ -312,25 +409,6 @@ body {
 	margin: 0 !important;
 	padding: 0 !important;
 }
-
-
-
-/*.ion-camera:before {
-	content: url('/img/assets/btn/tab-camera.png');
-}
-.ion-star:before {
-	content: url('/img/assets/btn/tab-frame.png');
-}
-.ion-ionic:before {
-	content: url('/img/assets/btn/tab-stamp.png');
-}
-.ion-arrow-shrink:before {
-	content: url('/img/assets/btn/tab-text.png');
-}
-.ion-gear-a:before {
-	content: url('/img/assets/btn/tab-review.png');
-}
-*/
 
 
 

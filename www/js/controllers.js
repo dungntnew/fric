@@ -187,7 +187,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionId: 0,
             multipleTab: false,
             onSelectedHanlders: [],
-            actionBarClass: "action-bar"
+            actionBarClass: "action-bar",
+            inActiveClass: 'tab-icon-camera',
+            activeClass: 'tab-icon-camera-active'
         }, {
             id: 1,
             name: "fames",
@@ -196,7 +198,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionIds: [2],
             multipleTab: false,
             onSelectedHanlders: [],
-            actionBarClass: "action-bar"
+            actionBarClass: "action-bar",
+            inActiveClass: 'tab-icon-frame',
+            activeClass: 'tab-icon-frame-active'
         }, {
             id: 2,
             name: "stickers",
@@ -205,7 +209,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionIds: [3],
             multipleTab: false,
             onSelectedHanlders: [],
-            actionBarClass: "action-bar"
+            actionBarClass: "action-bar",
+                        inActiveClass: 'tab-icon-sticker',
+            activeClass: 'tab-icon-sticker-active'
         }, {
             id: 3,
             name: "text",
@@ -214,7 +220,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionIds: [4],
             multipleTab: false,
             onSelectedHanlders: [],
-            actionBarClass: "text-action-bar"
+            actionBarClass: "text-action-bar",
+                        inActiveClass: 'tab-icon-text',
+            activeClass: 'tab-icon-text-active'
         }, {
             id: 4,
             name: "review",
@@ -223,7 +231,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionIds: [],
             multipleTab: false,
             onSelectedHanlders: [],
-            actionBarClass: "action-bar"
+                        inActiveClass: 'tab-icon-review',
+            activeClass: 'tab-icon-review-active',
+            actionBarClass: "review-action-bar"
         }]
 
         $scope.actionBarClassName = "action-bar";
@@ -304,6 +314,13 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.tabData = tabContentViews;
         $scope.frameWidth = 0;
         $scope.frameHeight = 0;
+        $scope.tabIconWithIndex = function(index){
+            var tab = tabContentViews[index];
+            var cl = $scope.activeTabIndex != index ? tab.inActiveClass : tab.activeClass;
+            console.log("class:" + cl);
+            return cl;
+
+        },
         $scope.selectTabWithIndex = function(index) {
 
             // handler if tab current tab

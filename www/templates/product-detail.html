@@ -66,13 +66,19 @@
         <div style="position:relative; width=100%"></div>
 
         <!-- camera -->
-        <div class="action-panel fadein fadeout camera-buttons" ng-show="shouldShowAction('takePicture', 0)">
+        <div class="action-panel fadein fadeout" ng-show="shouldShowAction('takePicture', 0)">
           <div class="row action-panel" ng-show="!isMobile()">
-            <button id="start-camera-btn"  class="col-50 button icon ion-camera button-full button-assertive"></button>
-            <button id="upload-picture-btn" class="col-50 button icon ion-ios-browsers button-full button-energized"></button>
+            <div class="col-50">
+              <button id="start-camera-btn"  class="button action-take-camera-btn"></button>
+            </div>
+            <div class="col-50">
+            <button id="upload-picture-btn" class="button action-take-folder-btn"></button>
+            </div>
+            
+            
           </div>
           <div class="row action-panel" ng-show="isMobile()">
-              <button id="rool-picture-btn" class="col-100 button icon ion-camera button-full button-energized"></button>
+              <button id="rool-picture-btn" class="button action-rool-btn"></button>
           </div>
         </div>
         <!-- end camera-->
@@ -124,20 +130,20 @@
      
     <!-- footer bar --> 
     <div class="bar bar-footer">
-        <ion-tabs class="tabs-positive tabs-icon-top">
+        <ion-tabs class="tabs-positive ">
 
-        <ion-tab title="カメラ" icon-on="ion-camera" icon-off="ion-camera" ng-click="selectTabWithIndex(0)">
+        <ion-tab class="tab-icon-background {{tabIconWithIndex(0)}}" ng-click="selectTabWithIndex(0)">
         </ion-tab>
 
-        <ion-tab title="フレーム" icon-on="ion-ios-crop-strong" icon-off="ion-ios-crop" ng-click="selectTabWithIndex(1)">
+        <ion-tab class="tab-icon-background {{tabIconWithIndex(1)}}" ng-click="selectTabWithIndex(1)">
         </ion-tab>
 
-        <ion-tab title="スタンプ" icon-on="ion-ios-star" icon-off="ion-ios-star" ng-click="selectTabWithIndex(2)">
+        <ion-tab class="tab-icon-background {{tabIconWithIndex(2)}}" ng-click="selectTabWithIndex(2)">
         </ion-tab>
-        <ion-tab title="文字入れ" icon-on="ion-social-tumblr" icon-off="ion-social-tumblr-outline" ng-click="selectTabWithIndex(3)">
+        <ion-tab class="tab-icon-background {{tabIconWithIndex(3)}}" ng-click="selectTabWithIndex(3)">
          
         </ion-tab>
-        <ion-tab title="完成地図" icon-on="ion-eye" icon-off="ion-eye" ng-click="selectTabWithIndex(4)">
+        <ion-tab class="tab-icon-background {{tabIconWithIndex(4)}}" ng-click="selectTabWithIndex(4)">
         </ion-tab>
         </ion-tabs>
    </div>
