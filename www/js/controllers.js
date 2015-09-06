@@ -466,8 +466,21 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             });
         }
 
-        $scope.applyFrame = function(index) {
-            if ($scope.activeFrameIndex == index) {
+        $scope.applyFrame = function(index, undo) {
+
+            // track history
+            if (!undo) {
+                var lastIndex = $scope.activeFrameIndex;
+                $scope.history.addVersion(function(params) {
+                    var lastFrameIndex = params.frameIndex;
+                    $scope.applyFrame(lastFrameIndex, true);
+                }, {
+                    frameIndex: lastIndex
+                });
+            }
+
+
+            if ($scope.activeFrameIndex == index || index == -1) {
                 $scope.painter.setDefaultFrame();
                 $scope.activeFrameIndex = -1;
                 return;
@@ -1115,10 +1128,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 if (now - lastTime < 500) {
 
                     if (texts.indexOf(e.target) != -1) {
-                        setTimeout(function(){
-                            $scope.$apply(function(){
+                        setTimeout(function() {
+                            $scope.$apply(function() {
                                 $scope.selectTabWithIndex(3);
-                               $scope.showTextInputPopup(e.target); 
+                                $scope.showTextInputPopup(e.target);
                             });
                         });
 
@@ -1141,7 +1154,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.hideTextSetting();
             });
         },
-        toImageContent: function(callback){
+        toImageContent: function(callback) {
             var self = this;
             var canvas = $scope.canvas;
             canvas.deactivateAll();
@@ -1161,8 +1174,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     title: 'ラー',
                     message: "Cannot export data in your browser, \nerror: " + e
                 })
-            } finally {
-            }
+            } finally {}
 
         },
         toDrawContent: function(callback) {
@@ -1223,6 +1235,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         texts: [],
 
         addNewText: function(content) {
+            // track history
+            $scope.history.addVersion();
+
             var text = new fabric.Text(content, {
                 fontFamily: $scope.fontFamily.value.family,
                 fontSize: $scope.fontSize.value,
@@ -1247,6 +1262,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         },
 
         addSticker: function(sticker) {
+            // track history
+            $scope.history.addVersion();
 
             newPosition = this.newPosition();
             fabric.Image.fromURL(sticker.src, function(image) {
@@ -1261,6 +1278,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.canvas.setActiveObject(image);
             })
             $scope.canvas.renderAll();
+
         },
 
         applyFrame: function(frame) {
@@ -1287,12 +1305,16 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             canvas.clipTo = function(ctx) {
                 ctx.rect(0, 0, w, h)
             }
-            canvas.renderAll();
+            canvas.renderAll();         
         },
 
         addImage: function(src, callback) {
             var isOnlyOne = true;
             if (isOnlyOne) {
+
+                // track history
+                $scope.history.addVersion();
+
                 _.each(this.images, function(image) {
                     $scope.canvas.remove(image);
                 })
@@ -1349,7 +1371,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     ionic.Platform.ready(function() {
         $scope.painter.initDrawing();
-        $scope.painter.addImage('/img/example3.jpg');
+        //$scope.painter.addImage('/img/example3.jpg');
         $scope.webcam.init({
             window: $window,
             scope: $scope,
@@ -1382,12 +1404,45 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.pictureLoaded = true;
                 $scope.onPictureLoaded(dataURL);
                 $scope.changeToAction("filter");
-
-
             },
             inputId: '#take-picture-input'
         });
     });
+
+    // undo
+    var history = {
+        maxSteps: $scope.config.maxUndoSteps || 10,
+        data: [],
+        currentVersion: 0,
+        addVersion: function(undoFunc, params) {
+            var self = this;
+
+            while (self.data.length >= self.maxSteps) {
+                self.data.shift();
+            }
+            self.data.push({
+                action: undoFunc || function() {},
+                params: params || {},
+                data: JSON.stringify($scope.canvas)
+            });
+        },
+
+        backVersion: function() {
+            if (this.data.length == 0) {
+                return;
+            }
+    
+            var last = this.data.pop();
+            last.action(last.params);
+            $scope.canvas.clear();
+            $scope.canvas.loadFromJSON(last.data);
+            $scope.canvas.renderAll();
+        }
+    };
+    $scope.history = history;
+    $scope.startUndo = function() {
+        $scope.history.backVersion();
+    }
 
     // link button event for camera-upload button
     angular.element('#rool-picture-btn').bind('click', function(e) {
