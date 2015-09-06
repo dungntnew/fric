@@ -771,9 +771,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     $scope.fontSetting.changed = false;
                     $timeout.cancel(data.timeoutId);
                     data.timeoutId = null;　　　　　　　　　　　　
-                    // Now load data from server 
-                    $scope.applyTextSetting();
-                }, 1500);
+                    //$scope.applyTextSetting();
+                }, 100);
             })
         }
         _.each(fontDataList, function(data) {
@@ -812,7 +811,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             if (!$scope.text) return;
             $scope.text.fontFamily = $scope.fontFamily.value.family;
             $scope.text.fontSize = $scope.fontSize.value;
-            $scope.text.stroke = $scope.textColor.colorCode();
+            $scope.text.fill = $scope.textColor.colorCode();
             $scope.canvas.renderAll();
         }
 
@@ -835,9 +834,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
             // An elaborate, custom popup
             var textInputPopup = $ionicPopup.show({
-                template: '<input type="text" ng-model="textData.text">',
+                template: '<input type="text" maxlength="30" ng-model="textData.text">',
                 title: 'テキストを入力してください',
-                subTitle: 'Please use normal things',
+                subTitle: 'Please use normal things(limit 30 characters)',
                 scope: $scope,
                 buttons: [{
                     text: 'キャンセール'
@@ -955,7 +954,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 }
 
                 self.loadBackground(function(background) {
-                    painter.toDrawContent(function(content) {
+                    painter.toImageContent(function(content) {
                         var left = canvas.width / 2 + content.width / 2;
                         var top = canvas.height / 2 + content.height / 2;
                         console.log("[print content] size: " + canvas.width + " x " + canvas.height);
@@ -1021,8 +1020,36 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                         $scope.hideProcessingLoading();
                     }
                 }, 100);
+            },
+
+            viewImageNow: function() {
+                console.log('export data ..');
+                $scope.showProcessingLoading();
+                setTimeout(function() {
+                    var self = this;
+                    var canvas = $scope.canvas;
+
+                    try {
+                        var dataURL = canvas.toDataURL({
+                            format: 'png',
+                            multiplier: $scope.config.multiplier
+                        });
+                        var dwn = document.getElementById('viewImage');
+                        dwn.innerHTML = "<a href=" + dataURL + ">View Image</a>";
+
+                    } catch (e) {
+                        $scope.showAlert({
+                            title: 'ラー',
+                            message: "Cannot export data in your browser, \nerror: " + e
+                        })
+                    } finally {
+                        $scope.hideProcessingLoading();
+                    }
+                }, 100);
             }
+
         }
+        $scope.viewImageNow = $scope.previewer.viewImageNow;
         $scope.previewer.init();
         $scope.addTabselectedHandler($scope.previewer.tabId, function() {
             $scope.previewer.handler();
@@ -1105,34 +1132,30 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $scope.canvas.on('selection:cleared', function(e) {
                 $scope.hideTextSetting();
             });
+        },
+        toImageContent: function(callback){
+            var self = this;
+            var canvas = $scope.canvas;
+            canvas.deactivateAll();
+            try {
+                var dataURL = canvas.toDataURL({
+                    format: 'png',
+                    multiplier: $scope.config.multiplier
+                });
+                fabric.Image.fromURL(dataURL, function(image) {
+                    canvas.centerObject(image);
+                    if (callback) callback(image);
+                })
 
+            } catch (e) {
+                $scope.hideProcessingLoading();
+                $scope.showAlert({
+                    title: 'ラー',
+                    message: "Cannot export data in your browser, \nerror: " + e
+                })
+            } finally {
+            }
 
-            // $scope.canvas.on('object:moving', function(e) {
-            //     var el = e.target;
-            //     var canvas = $scope.canvas;
-            //     el.setCoords();
-
-            //     var w = canvas.width;
-            //     var h = canvas.height;
-            //     var left = -w / 2;
-            //     var right = w / 2;
-            //     var bottom = h / 2;
-            //     var top = -h / 2;
-
-            //     if (el.left < left) {
-            //         el.setLeft(left);
-            //     }
-            //     if (el.left > right) {
-            //         el.setLeft(right);
-            //     }
-            //     if (el.top < top) {
-            //         el.setTop(top);
-            //     }
-            //     if (el.top > bottom) {
-            //         el.setTop(bottom);
-            //     }
-
-            // });
         },
         toDrawContent: function(callback) {
             var self = this;
@@ -1192,12 +1215,22 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         texts: [],
 
         addNewText: function(content) {
-            var text = new fabric.Text(content);
+            var text = new fabric.Text(content, {
+                // fontFamily: $scope.fontFamily.value.family,
+                // fontSize: $scope.fontSize.value,
+                fill: $scope.textColor.colorCode(),
+                textAlign: 'center'
+            });
+
             var newPosition = this.newPosition();
 
             this.texts.push(text.set({
                 left: newPosition.x,
                 top: newPosition.y,
+                transparentCorners: false,
+                cornerColor: 'red',
+                cornerSize: 20,
+                borderColor: 'red'
             }));
 
             $scope.canvas.add(text);

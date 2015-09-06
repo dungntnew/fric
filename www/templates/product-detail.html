@@ -165,8 +165,10 @@
                   </div> <!-- end setting panel -->
 
                   <div ng-show="fontSetting.isTyping" ng-model="fontSetting.isTyping" class="row">
-                     <button class="col-100 button button-full button-balanced" ng-click="addNewText()">テキスト追加</button>
+                     <button class="col-50 button button-full button-balanced" ng-click="addNewText()">テキスト追加</button>
+                     <button class="col-50 button button-full button-balanced" ng-click="viewImageNow()">ViewImage</button>
                   </div>
+                  <div id="viewImage" class="row"></div>
 
         </div>
         <!-- end text setting button -->
