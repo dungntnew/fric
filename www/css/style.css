@@ -91,14 +91,6 @@ body {
 	content: url('../img/assets/btn/goBack.png');
 	width: 55px;
 }
-.button.disabled, .button[disabled] {
-    opacity: 1 !important;
-    cursor: default !important;
-    pointer-events: none;
-    background-color: #d4d4d4;
-    border: none;
-}
-
 
 .bar.bar-assertive .title{
 	font-weight: bold !important;
@@ -126,6 +118,7 @@ body {
 }
 
 .tab-icon-background {
+  background-position: center; 
   background-size: contain;
   background-clip: content-box;
   background-repeat: no-repeat;
@@ -169,7 +162,24 @@ body {
   margin-right: 8px;
 }
 
+.undo-btn {
+  width: 60px;
+  background-color: transparent !important;
+  border: none !important;
+  background-position: center; 
+  background-size: contain;
+  background-clip: content-box;
+  background-repeat: no-repeat;
+  background-image: url('../img/assets/btn/undo-btn.png');
+}
 
+.button.disabled, .button[disabled] {
+    opacity: 0.5 !important;
+    cursor: default !important;
+    pointer-events: none;
+    background-color: transparent !important;
+    border: none !important;
+}
 
 .action-bar {
 	position: absolute !important;

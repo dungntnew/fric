@@ -1,8 +1,7 @@
 <ion-view view-title="{{product.name}}" ng-controller="EditImageAppCtrl">
   
   <ion-nav-buttons side="right">
-      <button id="undo-btn" class="button button-balanced" ng-disabled="!shouldShowHistory()" ng-click="startUndo()">
-            Undo
+      <button id="undo-btn" class="button undo-btn" ng-disabled="!shouldShowHistory()" ng-click="startUndo()">
       </button>
   </ion-nav-buttons>
 
