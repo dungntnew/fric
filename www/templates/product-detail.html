@@ -1,5 +1,15 @@
 <ion-view view-title="{{product.name}}" ng-controller="EditImageAppCtrl">
+  
+  <ion-nav-buttons side="right">
+      <button id="undo-btn" class="button button-balanced" ng-click="startUndo()">
+            Undo
+      </button>
+  </ion-nav-buttons>
+
   <ion-content class="draw-content-view" scroll="false"> 
+
+
+
         <!-- main draw area -->
         <div class="row" id="frame-wrapper" ng-show="!shouldShowPreview()">
             <div ng-model="usingWebcam" ng-show="!usingWebcam">
