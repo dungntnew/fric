@@ -306,6 +306,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             return $scope.activeTabIndex == 4;
         }
 
+        $scope.shouldShowHistory = function(){
+            return $scope.history.remainStep() > 0;
+        }
+
         $scope.slideHasChanged = function(index) {
             var view = $scope.contentViews[index];
         }
@@ -1371,7 +1375,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             var self = this;
             
              // track history
-            $scope.history.addVersion();
+            //$scope.history.addVersion();
 
             if (self.image) {
                 $scope.canvas.remove(self.image);
@@ -1469,9 +1473,13 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     // undo
     var history = {
-        maxSteps: $scope.config.maxUndoSteps || 10,
+        maxSteps: $scope.config.maxUndoSteps || 1,
         data: [],
         currentVersion: 0,
+        remainStep: function() {
+            return this.data.length;
+        },
+
         addVersion: function(undoFunc, params) {
             var self = this;
 

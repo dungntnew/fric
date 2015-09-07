@@ -91,6 +91,13 @@ body {
 	content: url('../img/assets/btn/goBack.png');
 	width: 55px;
 }
+.button.disabled, .button[disabled] {
+    opacity: 1 !important;
+    cursor: default !important;
+    pointer-events: none;
+    background-color: #d4d4d4;
+    border: none;
+}
 
 
 .bar.bar-assertive .title{
