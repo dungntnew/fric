@@ -8,7 +8,7 @@
 	format("truetype"),url("PTS55F.svg#PTSans-Regular")
 	format("svg");font-weight:normal;font-style:normal;
 }
-/*
+
 @font-face {
   font-family:"07YasashisaGothic";
   src:url("07YasashisaGothic.ttf") 
@@ -68,15 +68,19 @@
   src:url("Spin Cycle OT.otf") 
   format("eot"),url("Spin Cycle OT.otf") 
 }
-*/
+
 body {
   cursor: url('http://ionicframework.com/img/finger.png'), auto;
   font-size: 62.5%;
   color: #5c5c5c;
   font-family:  "PT Sans", sans-serif;
   line-height: 1.5;
+  background-color: black;
 }
 
+.draw-content-view  {
+   background-color: white;
+}
 
 .header-bar-color {
 	background-color: #ff5a69 !important;
@@ -107,347 +111,63 @@ body {
    bottom: 50px !important;
 }
 
+.tabs-positive > .tabs, .tabs.tabs-positive {
+    border-color: #cccccc !important;
+    background-color: #cccccc !important;
+    background-image: linear-gradient(0deg, #cccccc, #cccccc 50%, transparent 50%) !important;
+    color: #fff !important;
+}
+
+.tab-icon-background {
+  background-size: contain;
+  background-clip: content-box;
+  background-repeat: no-repeat;
+}
+
+.tab-icon-camera {
+    background-image: url('../img/assets/btn/camera-tab.png');
+    margin-left: 8px;
+}
+.tab-icon-camera-active {
+  background-image: url('../img/assets/btn/camera-tab-active.png');
+  margin-left: 8px;
+}
+
+.tab-icon-frame {
+    background-image: url('../img/assets/btn/frame-tab.png');
+}
+.tab-icon-frame-active {
+  background-image: url('../img/assets/btn/frame-tab-active.png');
+}
+
+.tab-icon-sticker {
+    background-image: url('../img/assets/btn/stamp-tab.png');
+}
+.tab-icon-sticker-active {
+  background-image: url('../img/assets/btn/stamp-tab-active.png');
+}
+
+.tab-icon-text {
+    background-image: url('../img/assets/btn/text-tab.png');
+}
+.tab-icon-text-active {
+  background-image: url('../img/assets/btn/text-tab-active.png');
+}
+.tab-icon-review {
+    background-image: url('../img/assets/btn/review-tab.png');
+    margin-right: 8px;
+}
+.tab-icon-review-active {
+  background-image: url('../img/assets/btn/review-tab-active.png');
+  margin-right: 8px;
+}
+
+
+
 .action-bar {
 	position: absolute !important;
 	height: 50px !important;
 	padding: 0 !important;
-}
-
-.text-action-bar {
-	position: absolute !important;
-	height: 200px !important;
-	padding: 0 !important;
-}
-
-.text-action-bar .text-settting-info {
-	display:block !important;
-	min-height: 50px;
-	height: 50px;
-	text-align: center;
-}
-
-.text-action-bar .text-settting-info .message {
-	
-	font-weight: bold !important;
-	vertical-align: center;
-	color: white;
-    z-index: 1000 !important;
-    overflow: hidden !important;;
-    min-width: 30px !important;
-    height: 50px !important;
-    text-align: center !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    line-height: 44px !important;
-    background-color: rgba(0, 0, 0, 0.0);
-    border-radius: 10px;
-} 
-
-.text-action-bar .font-setting {
-	position: relative;
-	margin-top: 1px;
-	height: 100px;
-}
-
-.text-action-bar .scroll-content {
-	top: 0 !important;
-}
-
-.text-action-bar .list .item {
-	text-align: center;
-	padding: 2px;
-	border-color: rgba(221, 221, 221, 0);
-	border-width: 0px;
-}
-
-.text-action-bar .list .active {
-	background-color: rgba(0, 255, 21, 0.25);
-}
-
-.text-action-bar .range input {
-    margin: 0 !important;
-    margin-right: 15px !important;
-/*    padding: 0 !important;*/
-}
-
-.text-action-bar .range {
-	background-color: transparent !important;
-	color: red !important;
-/*    margin: 0 !important;
-    padding: 0 !important;	*/
-}
-.text-action-bar .text-color-range  {
-	height: 30px !important;
-}
-
-
-.text-action-bar .text-color-range .row, 
-.text-action-bar .text-color-range .col-40, 
-.text-action-bar .text-color-range .col-45, 
-.text-action-bar .text-color-range .col-10, 
-.text-action-bar .text-color-range .col-10 {
-	padding: 0px !important;
-	margin: 0px !important;
-
-}
-
-
-
-
-/* start custom input range */
-.text-action-bar .text-color-range input[type=range] {
-
-    -webkit-appearance: none !important;
-    
-    width: 300px;
-    background: transparent;
-}
-
-
-
-.text-action-bar .font-setting-row-2 {
-	padding: 0px !important;
-	margin: 0px !important;
-}
-
-.text-action-bar .text-color-range  input[type=range] {
-	-webkit-appearance: none;
-	 border: none;
-	 outline: none;
-	 background: transparent;
-	 color: transparent;
-}
-.text-action-bar .text-color-range  input[type=range]::-webkit-slider-runnable-track {
-    width: 20px;
-    height: 35px;
-    border: none;
-    outline: none;
-    background: transparent;
-    margin-left:0px;
-    margin-top: -25px;
-    color: green;
-}
-.text-action-bar .text-color-range  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    border: none;
-    outline: none;
-    height: 80px;
-    width: 2px;
-    text-align: center !important;
-    border-radius: 0;
-    background: green;
-    margin-top: 0px
-}
-.text-action-bar .text-color-range  input[type=range]:focus {
-    outline: none;
-     background: transparent;
-      border: none;
-      color: transparent;
-}
-
-.text-action-bar .text-color-range  input[type=range]::focus::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    border: none;
-    height: 60px;
-    width: 5px;
-    text-align: left;
-    margin:0;
-    padding: 0;
-    border-radius: 0;
-    background: transparent;
-    margin-bottom: -20px;
-}
-
-.text-action-bar .text-color-range  input[type=range]:focus::-webkit-slider-runnable-track {
-   background: #ccc;
-    width: 20px;
-    height: 45px;
-    border: none;
-    background: transparent;
-    margin-left:0px;
-    margin-top: -25px;
-    color: transparent;
-}
-
-.text-action-bar .text-color-range  input[type=range]::-moz-range-track {
-    width: 300px;
-    height: 5px;
-    background: transparent !important;
-    border: none !important;
-     outline: none  !important;
-    border-radius: 0;
-}
-
-
-
-.text-action-bar .text-color-range  input[type=range]::-moz-range-thumb {
-	 outline: none  !important;
-    border: none;
-    height: 30px;
-    width: 2px;
-    border-radius: 0;
-    background: black;
-}
-
-*.text-action-bar {
-    outline: 0  !important;
-    box-shadow: none  !important;
-    border-style: none  !important;
-}
-
-/*hide the outline behind the border*/
-.text-action-bar .text-color-range  input[type=range]:-moz-focusring{
-    outline: none  !important;
-    outline-offset: 0px;
-    background: none;
-    border-radius: 0;
-    border: none !important;
-    color: transparent;
-}
-
-.text-action-bar .text-color-range  input[type=range]::-ms-track {
-    width: 300px;
-    height: 5px;
-    
-    /*remove bg colour from the track, we'll use ms-fill-lower and ms-fill-upper instead */
-    background: transparent;
-    
-    /*leave room for the larger thumb to overflow with a transparent border */
-    border-color: transparent;
-    border-width: 6px 0;
-
-    /*remove default tick marks*/
-    color: transparent;
-}
-.text-action-bar .text-color-range  input[type=range]::-ms-fill-lower {
-    background: #777;
-    border-radius: 10px;
-}
-.text-action-bar .text-color-range  input[type=range]::-ms-fill-upper {
-    background: #ddd;
-    border-radius: 10px;
-}
-.text-action-bar .text-color-range  input[type=range]::-ms-thumb {
-    border: none;
-    height: 16px;
-    width: 16px;
-    border-radius: 50%;
-    background: goldenrod;
-}
-.text-action-bar .text-color-range  input[type=range]:focus::-ms-fill-lower {
-    background: #888;
-}
-.text-action-bar .text-color-range  input[type=range]:focus::-ms-fill-upper {
-    background: #ccc;
-}*/
-/* end custom track input range */
-
-
-.text-action-bar .color-preview-wrapper {
-	text-align: center !important;
-}
-
-.text-action-bar .color-preview {
-	border: none !important;
-	display: block !important;
-	height: 30px !important;
-	width:  30px !important;
-}
-
-
-.text-action-bar .text-color-wrapper {
-	position: relative;
-	border: none !important;
-}
-
-.text-action-bar .text-color-background {
-	height: 30px;
-    width: 100%;
-/*    border-left: 1px solid rgba(221, 221, 221, 0.5);
-    border-top: 1px solid rgba(221, 221, 221, 0.5);*/
-/*    border-bottom: 1px solid rgba(221, 221, 221, 0.5);*/
-    z-index: -1;
-	opacity: 1;
-	top: 0;
-	position: absolute;
-}
-
-.text-action-bar .text-color-background .active {
-	opacity: 1;
-}
-.text-action-bar .text-color-background .in-active {
-	opacity: 0.4;
-}
-
-
-
-.text-action-bar .text-color-background .col-9,
-.text-action-bar .text-color-background .col-10 {
-	margin-left: 0 !important;
-	margin-right: 0 !important;
-}
-
-.text-action-bar .text-color-range {
-	z-index: 1000;
-	opacity: 1;
-}
-
-.text-action-bar .text-color-background .col-9 {
-    -webkit-box-flex: 0;
-    -webkit-flex: 0 0 9%;
-    -moz-box-flex: 0;
-    -moz-flex: 0 0 9%;
-    -ms-flex: 0 0 9%;
-    flex: 0 0 9%;
-    max-width: 9%;
-}
-
-.text-action-bar .text-color-item {
-	margin-top: 0px !important;
-	margin-bottom: 0px !important;
-	height: 30px !important;
-	display: block;
-	margin-left: 0 !important;
-	margin-right: 0 !important;
-} 
-
-.text-action-bar .font-setting-row-2 {
-	border-bottom: 0.5px solid rgba(0, 0, 0, 0.7) !important;
-	margin-bottom: 1px;
-	height: 30px;
-}
-
-.text-action-bar .font-setting-row-1 ,
-.text-action-bar .font-setting-row-1 .col-40,
-.text-action-bar .font-setting-row-1 .col-45,
-.text-action-bar .font-setting-row-1 .col-10,
-.text-action-bar .font-setting-row-1 .col-10
- {
- 	margin-right: 0px !important;
-	margin-left: 5px !important;
-	padding: 0 !important;
-	overflow: hidden !important;
-}
-
-.text-action-bar .font-setting-row-2 ,
-.text-action-bar .font-setting-row-2 .col-40,
-.text-action-bar .font-setting-row-2 .col-45,
-.text-action-bar .font-setting-row-2 .col-10,
-.text-action-bar .font-setting-row-2 .col-10
- {
- 	margin-right: 0px !important;
-	margin-left: 0px !important;
-	padding: 0 !important;
-	overflow: hidden !important;
-}
-
-.text-action-bar .setting-text-done-btn {
-	margin-right: 0px;
-/*	margin-left: 5px;
-	margin-right: 5px;*/
-
 }
 
 .action-panel {
@@ -463,6 +183,37 @@ body {
 	display: none;
 }
 
+.text-action-bar {
+  display: none;
+}
+.review-action-bar {
+   display: none;
+}
+
+.text-add-panel {
+ }
+
+.text-setting {
+  position: relative !important;
+  height: 250px;
+  border-top: 1px solid;
+}
+
+.text-setting .content-x {
+  top: 45px !important;
+}
+
+.text-setting .content-x .item {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+  text-align: center !important;
+}
+
+.col-9 {
+  width: 9%;
+  height: 40px;
+}
+
 .frame-list-thumb {
     padding: 2px 2px 2px 2px;
     height: 60px;
@@ -471,9 +222,50 @@ body {
 .camera-buttons  button {
 	display: inline-block !important;
 	height: 60px;
-	margin: 0 !important;
-	padding: 0 !important;
+/*	margin: 0 !important;
+	padding: 0 !important;*/
 }
+
+.action-rool-btn {
+  display: block !important;;
+  margin: 0px auto !important;
+  text-align: center !important;
+  width: 150px !important;
+  min-height: 60px !important;
+  background-color: transparent;
+  border: none !important;
+  background-image: url('../img/assets/btn/camera-btn.png');
+    background-size: contain;
+  background-repeat: no-repeat;
+}
+
+
+.action-take-camera-btn {
+  display: block !important;;
+  margin: 0px auto !important;
+  text-align: center !important;
+  width: 150px !important;
+  min-height: 60px !important;
+  background-color: transparent;
+  border: none !important;
+  background-image: url('../img/assets/btn/camera-btn.png');
+    background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.action-take-folder-btn {
+  display: block !important;;
+  margin: 0px auto !important;
+  text-align: center !important;
+  width: 150px !important;
+  min-height: 60px !important;
+  background-color: transparent;
+  border: none !important;
+  background-image: url('../img/assets/btn/folder-btn.png');
+    background-size: contain;
+  background-repeat: no-repeat;
+}
+
 
 .fadein {
   -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
@@ -617,25 +409,6 @@ body {
 	margin: 0 !important;
 	padding: 0 !important;
 }
-
-
-
-/*.ion-camera:before {
-	content: url('/img/assets/btn/tab-camera.png');
-}
-.ion-star:before {
-	content: url('/img/assets/btn/tab-frame.png');
-}
-.ion-ionic:before {
-	content: url('/img/assets/btn/tab-stamp.png');
-}
-.ion-arrow-shrink:before {
-	content: url('/img/assets/btn/tab-text.png');
-}
-.ion-gear-a:before {
-	content: url('/img/assets/btn/tab-review.png');
-}
-*/
 
 
 

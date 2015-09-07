@@ -28,7 +28,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     $scope.config = $scope.config || {}
     $scope.config.widthToHeight = 320 / 240;
     $scope.config.contentHeight = 480; // height of content image ( should be 1/2 of printHeight)
-    $scope.config.maxViewContentHeight = 400; // height of content when view in app(css only)
+    $scope.config.maxViewContentHeight = 320; // height of content when view in app(css only)
 
     $scope.config.printHeight = 960; // height of paper when print  
     $scope.config.maxPreviewHeight = 420; //print pager when view in app(css only)
@@ -187,7 +187,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionId: 0,
             multipleTab: false,
             onSelectedHanlders: [],
-            actionBarClass: "action-bar"
+            actionBarClass: "action-bar",
+            inActiveClass: 'tab-icon-camera',
+            activeClass: 'tab-icon-camera-active'
         }, {
             id: 1,
             name: "fames",
@@ -196,7 +198,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionIds: [2],
             multipleTab: false,
             onSelectedHanlders: [],
-            actionBarClass: "action-bar"
+            actionBarClass: "action-bar",
+            inActiveClass: 'tab-icon-frame',
+            activeClass: 'tab-icon-frame-active'
         }, {
             id: 2,
             name: "stickers",
@@ -205,7 +209,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionIds: [3],
             multipleTab: false,
             onSelectedHanlders: [],
-            actionBarClass: "action-bar"
+            actionBarClass: "action-bar",
+                        inActiveClass: 'tab-icon-sticker',
+            activeClass: 'tab-icon-sticker-active'
         }, {
             id: 3,
             name: "text",
@@ -214,7 +220,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionIds: [4],
             multipleTab: false,
             onSelectedHanlders: [],
-            actionBarClass: "text-action-bar"
+            actionBarClass: "text-action-bar",
+                        inActiveClass: 'tab-icon-text',
+            activeClass: 'tab-icon-text-active'
         }, {
             id: 4,
             name: "review",
@@ -223,7 +231,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionIds: [],
             multipleTab: false,
             onSelectedHanlders: [],
-            actionBarClass: "action-bar"
+                        inActiveClass: 'tab-icon-review',
+            activeClass: 'tab-icon-review-active',
+            actionBarClass: "review-action-bar"
         }]
 
         $scope.actionBarClassName = "action-bar";
@@ -282,18 +292,33 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             return $scope.activeTabIndex == 4;
         }
 
+        $scope.textSettingIsActive = false;
+        $scope.shouldShowAddTextButton = function(){
+            return !$scope.textSettingIsActive && $scope.activeTabIndex == 3;
+        }
+
+        $scope.shouldShowTextSettingBar = function(){
+            return $scope.textSettingIsActive && $scope.activeTabIndex == 3;
+        }
+
+
         $scope.shouldShowPreview = function() {
             return $scope.activeTabIndex == 4;
         }
 
         $scope.slideHasChanged = function(index) {
             var view = $scope.contentViews[index];
-            console.log("content view changed to: " + view.name);
         }
 
         $scope.tabData = tabContentViews;
         $scope.frameWidth = 0;
         $scope.frameHeight = 0;
+        $scope.tabIconWithIndex = function(index){
+            var tab = tabContentViews[index];
+            var cl = $scope.activeTabIndex != index ? tab.inActiveClass : tab.activeClass;
+            return cl;
+
+        },
         $scope.selectTabWithIndex = function(index) {
 
             // handler if tab current tab
@@ -803,7 +828,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $scope.text = text;
             setTimeout(function() {
                 $scope.$apply(function() {
-                    $scope.fontSetting.isTyping = false;
+                    $scope.textSettingIsActive = true;
                     $scope.fontFamily.changeTo(text.fontFamily);
                     $scope.textColor.changeTo(text.stroke);
                     $scope.fontSize.changeTo(text.fontSize);
@@ -814,7 +839,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.hideTextSetting = function() {
             setTimeout(function() {
                 $scope.$apply(function() {
-                    $scope.fontSetting.isTyping = true;
+                    $scope.textSettingIsActive = false;
                 });
             });
 
@@ -1094,7 +1119,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         initDrawing: function() {
             fabric.Object.prototype.transparentCorners = false;
             var canvas = $scope.canvas = this.__canvas = new fabric.Canvas('canvas-content');
-            canvas.backgroundColor = 'black';
+            canvas.backgroundColor = 'transparent';
             canvas.selectionColor = 'rgba(0,255,0,0.3)';
 
             var contentWidth = $scope.config.contentHeight * $scope.config.widthToHeight;
@@ -1149,9 +1174,13 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                         });
                     });
                 }
+                else {
+                    $scope.hideTextSetting();
+                }
             });
             $scope.canvas.on('selection:cleared', function(e) {
                 $scope.hideTextSetting();
+                
             });
         },
         toImageContent: function(callback) {
@@ -1229,8 +1258,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 y: fabric.util.getRandomInt(h4, h4 * 2)
             }
         },
-
-        images: [],
+        image: null,
         widgets: [],
         texts: [],
 
@@ -1283,74 +1311,104 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
         applyFrame: function(frame) {
             var self = this;
-            var w = $scope.painter.width;
-            var h = $scope.painter.height;
+            
+            if (!self.image) {
+                return;
+            }
+
+            
             $scope.showProcessingLoading();
+
             fabric.loadSVGFromURL(frame.mask, function(objects, options) {
-                var image = $scope.painter.mask = fabric.util.groupSVGElements(objects, options);
-                image.scaleToHeight(h);
-                $scope.canvas.centerObject(image);
-                $scope.canvas.clipTo = function(ctx) {
-                    image.render(ctx);
+                var mask = $scope.painter.mask = fabric.lastMaskImage = fabric.util.groupSVGElements(objects, options);
+
+                var image = self.image;
+                var iw = image.width;
+                var ih = image.height;
+                var it = image.top;
+                var il = image.left;
+                var mw = mask.width;
+                var mh = mask.height;
+
+                if (iw/ih > mw/mh) {
+                    mask.scaleToHeight(ih);
                 }
+                else {
+                     mask.scaleToWidth(iw);
+                }
+                
+                var leftcenter = iw/2; 
+                var halfleft = mask.currentWidth/2;
+                var topCenter = ih/2;
+                var halfTop = mask.currentHeight/2;
+
+                mask.set({
+                    originX: 'left',
+                    originY: 'top',
+                    left: leftcenter - halfleft,
+                    top: topCenter - halfTop
+                });
+                mask.setCoords();
+
+                self.image.clipTo = function(ctx){
+                    fabric.lastMaskImage.render(ctx);
+                }                
                 $scope.canvas.renderAll();
                 $scope.hideProcessingLoading();
             });
         },
         setDefaultFrame: function() {
             this.mask = null;
-            var canvas = $scope.canvas;
-            var w = $scope.painter.width;
-            var h = $scope.painter.height;
-            canvas.clipTo = function(ctx) {
-                ctx.rect(0, 0, w, h)
+            self = this;
+            if (!self.image) {
+                return;
             }
-            canvas.renderAll();         
+            self.image.clipTo = null;
+            $scope.canvas.renderAll();
         },
 
         addImage: function(src, callback) {
-            var isOnlyOne = true;
-            if (isOnlyOne) {
+            var self = this;
+            
+             // track history
+            $scope.history.addVersion();
 
-                // track history
-                $scope.history.addVersion();
-
-                _.each(this.images, function(image) {
-                    $scope.canvas.remove(image);
-                })
-
-                var images = [];
-                var h = $scope.painter.height;
-                var w = $scope.painter.width;
-
-                fabric.Image.fromURL(src, function(image) {
-                    var iw = image.width;
-                    var ih = image.height;
-                    if (iw / ih > w / h) {
-                        image.scaleToWidth(w - 10);
-                    } else {
-
-                        image.scaleToHeight(h - 10);
-                    }
-                    image.set({
-                        transparentCorners: false,
-                        cornerColor: 'red',
-                        cornerSize: 20,
-                        borderColor: 'red'
-
-                    });
-
-                    //image.applyFilters();
-                    $scope.canvas.add(image);
-                    $scope.canvas.centerObject(image);
-                    $scope.canvas.sendToBack(image);
-                    $scope.canvas.setActiveObject(image);
-                    $scope.canvas.renderAll();
-                    if (callback) callback();
-                    images.push(image);
-                });
-                this.images = images;
+            if (self.image) {
+                $scope.canvas.remove(self.image);
             }
+            
+            var h = $scope.painter.height;
+            var w = $scope.painter.width;
+
+            fabric.Image.fromURL(src, function(image) {
+                var iw = image.width;
+                var ih = image.height;
+                if (iw / ih > w / h) {
+                    image.scaleToWidth(w - 10);
+                } else {
+
+                    image.scaleToHeight(h - 10);
+                }
+                image.set({
+                    originX: 'center',
+                    originY: 'center',
+                    transparentCorners: false,
+                    cornerColor: 'red',
+                    cornerSize: 20,
+                    borderColor: 'red'
+                });
+
+                //image.applyFilters();
+                $scope.canvas.add(image);
+                $scope.canvas.centerObject(image);
+                $scope.canvas.sendToBack(image);
+                $scope.canvas.setActiveObject(image);
+                $scope.canvas.renderAll();
+                
+                self.image = image;
+                if (callback) callback();
+            });
+            
         },
         crop: function() {
             var el = new fabric.Rect({
