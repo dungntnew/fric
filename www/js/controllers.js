@@ -1106,7 +1106,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         initDrawing: function() {
             fabric.Object.prototype.transparentCorners = false;
             var canvas = $scope.canvas = this.__canvas = new fabric.Canvas('canvas-content');
-            canvas.backgroundColor = 'black';
+            canvas.backgroundColor = 'transparent';
             canvas.selectionColor = 'rgba(0,255,0,0.3)';
 
             var contentWidth = $scope.config.contentHeight * $scope.config.widthToHeight;
@@ -1309,11 +1309,16 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 var ih = image.height;
                 var it = image.top;
                 var il = image.left;
-               
-                mask.scaleToHeight(ih);
                 var mw = mask.width;
                 var mh = mask.height;
 
+                if (iw/ih > mw/mh) {
+                    mask.scaleToHeight(ih);
+                }
+                else {
+                     mask.scaleToWidth(iw);
+                }
+                
                 var leftcenter = iw/2; 
                 var halfleft = mask.currentWidth/2;
                 var topCenter = ih/2;
