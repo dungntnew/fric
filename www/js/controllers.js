@@ -307,7 +307,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
 
         $scope.shouldShowHistory = function(){
-            return $scope.history.remainStep() > 0;
+            return $scope.activeTabIndex != 4 && $scope.history.remainStep() > 0;
         }
 
         $scope.slideHasChanged = function(index) {
