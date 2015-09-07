@@ -181,6 +181,17 @@ body {
     border: none !important;
 }
 
+.decided-design-btn {
+  width: 480px;
+  background-color: transparent !important;
+  border: none !important;
+  background-position: center; 
+  background-size: contain;
+  background-clip: content-box;
+  background-repeat: no-repeat;
+  background-image: url('../img/assets/btn/decided-design-btn.png');
+}
+
 .action-bar {
 	position: absolute !important;
 	height: 50px !important;
