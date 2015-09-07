@@ -75,11 +75,15 @@ body {
   color: #5c5c5c;
   font-family:  "PT Sans", sans-serif;
   line-height: 1.5;
-  background-color: black;
+  background-color: white;
 }
 
 .draw-content-view  {
    background-color: white;
+}
+
+.view-container {
+  background-color: white !important;
 }
 
 .header-bar-color {
@@ -217,6 +221,9 @@ body {
 .review-action-bar {
    display: none;
 }
+.camera-action-bar {
+   display: none;
+}
 
 .text-add-panel {
  }
@@ -247,6 +254,10 @@ body {
     height: 60px;
 }
 
+.frame-action {
+      margin-top: 0px   !important;
+}
+
 .camera-buttons  button {
 	display: inline-block !important;
 	height: 60px;
@@ -255,42 +266,47 @@ body {
 }
 
 .action-rool-btn {
-  display: block !important;;
   margin: 0px auto !important;
   text-align: center !important;
-  width: 150px !important;
   min-height: 60px !important;
-  background-color: transparent;
+  width: 150px !important;
+  background-color: transparent !important;
   border: none !important;
-  background-image: url('../img/assets/btn/camera-btn.png');
-    background-size: contain;
+  background-position: center; 
+  background-size: contain;
   background-repeat: no-repeat;
+
+  background-image: url('../img/assets/btn/camera-btn.png');
 }
 
 
 .action-take-camera-btn {
-  display: block !important;;
   margin: 0px auto !important;
   text-align: center !important;
-  width: 150px !important;
   min-height: 60px !important;
-  background-color: transparent;
+  width: 150px !important;
+  background-color: transparent !important;
   border: none !important;
+  background-position: center; 
+  background-size: contain;
+  background-repeat: no-repeat;
   background-image: url('../img/assets/btn/camera-btn.png');
-    background-size: contain;
+  background-size: contain;
   background-repeat: no-repeat;
 }
 
 .action-take-folder-btn {
-  display: block !important;;
   margin: 0px auto !important;
   text-align: center !important;
-  width: 150px !important;
   min-height: 60px !important;
-  background-color: transparent;
+  width: 150px !important;
+  background-color: transparent !important;
   border: none !important;
+  background-position: center; 
+  background-size: contain;
+  background-repeat: no-repeat;
   background-image: url('../img/assets/btn/folder-btn.png');
-    background-size: contain;
+  background-size: contain;
   background-repeat: no-repeat;
 }
 

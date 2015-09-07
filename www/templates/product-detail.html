@@ -23,6 +23,10 @@
         </div>
         <!-- end main draw area -->
 
+
+        
+
+
         <!-- tool-bar buttons -->
         <div class="frame-action row" ng-show="usingWebcam" ng-model="usingWebcam">
             <button id="take-picture-btn" class="col-100 button button-full button-balanced">
@@ -38,6 +42,21 @@
                 決定
             </button>
         </div>
+
+                <!-- camera -->
+        <div class="frame-action row" ng-show="shouldShowTakePictureToolBars()">
+          <div class="row" ng-show="!isMobile()">
+            <div class="col-100" style="text-align: center; width: 100%">
+              <button id="start-camera-btn"  class="button action-take-camera-btn"></button>
+              <button id="upload-picture-btn" class="button action-take-folder-btn"></button>
+            </div>
+          </div>
+          <div class="row" ng-show="isMobile()">
+              <button id="rool-picture-btn" class="button action-rool-btn"></button>
+          </div>
+        </div>
+        <!-- end camera-->
+        
         <div class="frame-action row" ng-show="shouldShowPreviewToolBars()">
             <button id="decided-design-btn" class="col-100 button button-full decided-design-btn">
                
@@ -73,25 +92,6 @@
     <div class="bar bar-subfooter" ng-class="actionBarClassName">
 
         <div style="position:relative; width=100%"></div>
-
-        <!-- camera -->
-        <div class="action-panel fadein fadeout" ng-show="shouldShowAction('takePicture', 0)">
-          <div class="row action-panel" ng-show="!isMobile()">
-            <div class="col-50">
-              <button id="start-camera-btn"  class="button action-take-camera-btn"></button>
-            </div>
-            <div class="col-50">
-            <button id="upload-picture-btn" class="button action-take-folder-btn"></button>
-            </div>
-            
-            
-          </div>
-          <div class="row action-panel" ng-show="isMobile()">
-              <button id="rool-picture-btn" class="button action-rool-btn"></button>
-          </div>
-        </div>
-        <!-- end camera-->
-
         <!-- filter -->
          <div class="action-panel fadein fadeout filter-buttons" ng-show="shouldShowAction('filter', 0)">
             <div class="background"></div>

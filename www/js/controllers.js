@@ -187,7 +187,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionId: 0,
             multipleTab: false,
             onSelectedHanlders: [],
-            actionBarClass: "action-bar",
+            actionBarClass: "camera-action-bar",
             inActiveClass: 'tab-icon-camera',
             activeClass: 'tab-icon-camera-active'
         }, {
@@ -288,6 +288,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.shouldShowPictureToolBars = function() {
             return $scope.pictureLoaded && $scope.activeTabIndex == 0;
         }
+        $scope.shouldShowTakePictureToolBars = function(){
+            return !$scope.pictureLoaded && $scope.activeTabIndex == 0;
+        }
         $scope.shouldShowPreviewToolBars = function() {
             return $scope.activeTabIndex == 4;
         }
@@ -347,6 +350,22 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 });
             }
         }
+        
+        $scope.isWaitForConfirmScreeen = false;
+        var handleScreenSize = function(w, h){
+            if (h <= 0) return;
+
+            if (w / h > 1 && $scope.isMobile()) {
+                if ($scope.isWaitForConfirmScreeen){
+                    return;
+                }
+                $scope.isWaitForConfirmScreeen = true;
+                $scope.showAlert({
+                    title: "注意！",
+                    message: "Please rotate screen now!!!"
+                }, function(){$scope.isWaitForConfirmScreeen = false;})
+            }
+        }
 
         var calculateFrameSize = function(frame, config, name) {
 
@@ -357,6 +376,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             var canvasRatio = $(frame).height() / $(frame).width();
             var newWidth = $window.innerWidth;
             var newHeight = $window.innerHeight;
+            handleScreenSize(newWidth, newHeight);
             var newWidthToHeight = newWidth / newHeight;
 
             newHeight = newWidth / widthToHeight;
@@ -1431,7 +1451,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     }
 
 
-    ionic.Platform.ready(function() {
+    // ionic.Platform.ready(function() {
+
+    // });
+
         $scope.painter.initDrawing();
         //$scope.painter.addImage('/img/example3.jpg');
         $scope.webcam.init({
@@ -1469,8 +1492,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             },
             inputId: '#take-picture-input'
         });
-    });
-
+   // -end in ready function
+        
     // undo
     var history = {
         maxSteps: $scope.config.maxUndoSteps || 1,
