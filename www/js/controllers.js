@@ -308,7 +308,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
         $scope.slideHasChanged = function(index) {
             var view = $scope.contentViews[index];
-            console.log("content view changed to: " + view.name);
         }
 
         $scope.tabData = tabContentViews;
@@ -317,7 +316,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.tabIconWithIndex = function(index){
             var tab = tabContentViews[index];
             var cl = $scope.activeTabIndex != index ? tab.inActiveClass : tab.activeClass;
-            console.log("class:" + cl);
             return cl;
 
         },
@@ -1248,8 +1246,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 y: fabric.util.getRandomInt(h4, h4 * 2)
             }
         },
-
-        images: [],
+        image: null,
         widgets: [],
         texts: [],
 
@@ -1296,70 +1293,95 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
         applyFrame: function(frame) {
             var self = this;
-            var w = $scope.painter.width;
-            var h = $scope.painter.height;
+            
+            if (!self.image) {
+                return;
+            }
+
+            
             $scope.showProcessingLoading();
+
             fabric.loadSVGFromURL(frame.mask, function(objects, options) {
-                var image = $scope.painter.mask = fabric.util.groupSVGElements(objects, options);
-                image.scaleToHeight(h);
-                $scope.canvas.centerObject(image);
-                $scope.canvas.clipTo = function(ctx) {
-                    image.render(ctx);
-                }
+                var mask = $scope.painter.mask = fabric.util.groupSVGElements(objects, options);
+
+                var image = self.image;
+                var iw = image.width;
+                var ih = image.height;
+                var it = image.top;
+                var il = image.left;
+               
+                mask.scaleToHeight(ih);
+                var mw = mask.width;
+                var mh = mask.height;
+
+                var leftcenter = iw/2; 
+                var halfleft = mask.currentWidth/2;
+                var topCenter = ih/2;
+                var halfTop = mask.currentHeight/2;
+
+                mask.set({
+                    originX: 'left',
+                    originY: 'top',
+                    left: leftcenter - halfleft,
+                    top: topCenter - halfTop
+                });
+                mask.setCoords();
+
+                self.image.clipTo = function(ctx){
+                    mask.render(ctx);
+                }                
                 $scope.canvas.renderAll();
                 $scope.hideProcessingLoading();
             });
         },
         setDefaultFrame: function() {
             this.mask = null;
-            var canvas = $scope.canvas;
-            var w = $scope.painter.width;
-            var h = $scope.painter.height;
-            canvas.clipTo = function(ctx) {
-                ctx.rect(0, 0, w, h)
+            self = this;
+            if (!self.image) {
+                return;
             }
-            canvas.renderAll();
+            self.image.clipTo = null;
+            $scope.canvas.renderAll();
         },
 
         addImage: function(src, callback) {
-            var isOnlyOne = true;
-            if (isOnlyOne) {
-                _.each(this.images, function(image) {
-                    $scope.canvas.remove(image);
-                })
-
-                var images = [];
-                var h = $scope.painter.height;
-                var w = $scope.painter.width;
-
-                fabric.Image.fromURL(src, function(image) {
-                    var iw = image.width;
-                    var ih = image.height;
-                    if (iw / ih > w / h) {
-                        image.scaleToWidth(w - 10);
-                    } else {
-
-                        image.scaleToHeight(h - 10);
-                    }
-                    image.set({
-                        transparentCorners: false,
-                        cornerColor: 'red',
-                        cornerSize: 20,
-                        borderColor: 'red'
-
-                    });
-
-                    //image.applyFilters();
-                    $scope.canvas.add(image);
-                    $scope.canvas.centerObject(image);
-                    $scope.canvas.sendToBack(image);
-                    $scope.canvas.setActiveObject(image);
-                    $scope.canvas.renderAll();
-                    if (callback) callback();
-                    images.push(image);
-                });
-                this.images = images;
+            var self = this;
+            if (self.image) {
+                $scope.canvas.remove(self.image);
             }
+            
+            var h = $scope.painter.height;
+            var w = $scope.painter.width;
+
+            fabric.Image.fromURL(src, function(image) {
+                var iw = image.width;
+                var ih = image.height;
+                if (iw / ih > w / h) {
+                    image.scaleToWidth(w - 10);
+                } else {
+
+                    image.scaleToHeight(h - 10);
+                }
+                image.set({
+                    originX: 'center',
+                    originY: 'center',
+                    transparentCorners: false,
+                    cornerColor: 'red',
+                    cornerSize: 20,
+                    borderColor: 'red'
+                });
+
+                //image.applyFilters();
+                $scope.canvas.add(image);
+                $scope.canvas.centerObject(image);
+                $scope.canvas.sendToBack(image);
+                $scope.canvas.setActiveObject(image);
+                $scope.canvas.renderAll();
+                
+                self.image = image;
+                if (callback) callback();
+            });
+            
         },
         crop: function() {
             var el = new fabric.Rect({
