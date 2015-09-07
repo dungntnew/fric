@@ -8,7 +8,7 @@
 	format("truetype"),url("PTS55F.svg#PTSans-Regular")
 	format("svg");font-weight:normal;font-style:normal;
 }
-/*
+
 @font-face {
   font-family:"07YasashisaGothic";
   src:url("07YasashisaGothic.ttf") 
@@ -68,7 +68,7 @@
   src:url("Spin Cycle OT.otf") 
   format("eot"),url("Spin Cycle OT.otf") 
 }
-*/
+
 body {
   cursor: url('http://ionicframework.com/img/finger.png'), auto;
   font-size: 62.5%;
