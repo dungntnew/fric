@@ -1116,6 +1116,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         });
     }());
     /* @endregion preview */
+    $scope.hideControls = ['ml', 'mt', 'mr', 'mb'];
 
     $scope.painter = {
 
@@ -1156,6 +1157,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             }, {
                 backstoreOnly: true
             });
+            canvas.centeredScaling = true;
+
             console.log("[painter] size: " + contentWidth + " x " + $scope.config.contentHeight);
             $scope.painter.width = contentWidth;
             $scope.painter.height = $scope.config.contentHeight;
@@ -1296,6 +1299,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 fill: $scope.textColor.colorCode(),
                 textAlign: 'center'
             });
+           
+            _.each($scope.hideControls, function(c){
+                text.setControlVisible(c, false);
+            });
 
             var newPosition = this.newPosition();
 
@@ -1319,6 +1326,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
             newPosition = this.newPosition();
             fabric.Image.fromURL(sticker.src, function(image) {
+                _.each($scope.hideControls, function(c){
+                  image.setControlVisible(c, false);
+                });
+
                 $scope.canvas.add(image.set({
                     left: newPosition.x,
                     top: newPosition.y,
@@ -1413,6 +1424,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
                     image.scaleToHeight(h - 10);
                 }
+                _.each($scope.hideControls, function(c){
+                  image.setControlVisible(c, false);
+                });
+                
                 image.set({
                     originX: 'center',
                     originY: 'center',

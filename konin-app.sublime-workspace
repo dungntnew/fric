@@ -8,18 +8,18 @@
 	"buffers":
 	[
 		{
-			"file": "www/css/style.css",
+			"file": "www/js/controllers.js",
 			"settings":
 			{
-				"buffer_size": 10157,
+				"buffer_size": 52982,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "www/js/controllers.js",
+			"file": "remove_button",
 			"settings":
 			{
-				"buffer_size": 49798,
+				"buffer_size": 2456,
 				"line_ending": "Unix"
 			}
 		},
@@ -27,7 +27,15 @@
 			"file": "www/templates/product-detail.html",
 			"settings":
 			{
-				"buffer_size": 6342,
+				"buffer_size": 6474,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "www/css/style.css",
+			"settings":
+			{
+				"buffer_size": 11283,
 				"line_ending": "Unix"
 			}
 		}
@@ -208,7 +216,7 @@
 				"Snippet: html"
 			]
 		],
-		"width": 579.0
+		"width": 531.0
 	},
 	"console":
 	{
@@ -240,25 +248,22 @@
 	[
 		"/Users/dungntnew/vdev/konin-app",
 		"/Users/dungntnew/vdev/konin-app/www",
-		"/Users/dungntnew/vdev/konin-app/www/css",
-		"/Users/dungntnew/vdev/konin-app/www/img",
 		"/Users/dungntnew/vdev/konin-app/www/img/assets",
-		"/Users/dungntnew/vdev/konin-app/www/img/assets/frames/images",
-		"/Users/dungntnew/vdev/konin-app/www/img/assets/frames/masks",
-		"/Users/dungntnew/vdev/konin-app/www/img/assets/products/templates",
 		"/Users/dungntnew/vdev/konin-app/www/js",
-		"/Users/dungntnew/vdev/konin-app/www/lib/fabric.js/dist",
+		"/Users/dungntnew/vdev/konin-app/www/lib",
 		"/Users/dungntnew/vdev/konin-app/www/templates"
 	],
 	"file_history":
 	[
+		"/Users/dungntnew/vdev/konin-app/www/js/controllers.js",
+		"/Users/dungntnew/vdev/konin-app/www/js/upload.js",
+		"/Users/dungntnew/vdev/konin-app/www/css/style.css",
+		"/Users/dungntnew/vdev/konin-app/www/index.html",
+		"/Users/dungntnew/vdev/konin-app/www/templates/product-detail.html",
+		"/Users/dungntnew/vdev/konin-app/www/lib/imageloader/dis/imageloader.all.min.js",
 		"/Users/dungntnew/vdev/konin-app/undo-redo",
 		"/Users/dungntnew/vdev/konin-app/www/x.html",
-		"/Users/dungntnew/vdev/konin-app/www/js/controllers.js",
-		"/Users/dungntnew/vdev/konin-app/www/css/style.css",
-		"/Users/dungntnew/vdev/konin-app/www/templates/product-detail.html",
 		"/Users/dungntnew/vdev/konin-app/www/js/services.js",
-		"/Users/dungntnew/vdev/konin-app/www/index.html",
 		"/Users/dungntnew/vdev/konin-app/www/templates/text-input-model.html",
 		"/Users/dungntnew/vdev/konin-app/www/css/takephoto.css",
 		"/Users/dungntnew/vdev/konin-app/maks.js",
@@ -267,7 +272,6 @@
 		"/Users/dungntnew/vdev/konin-app/www/js/webcam.js",
 		"/Users/dungntnew/vdev/airlink.scripts/bus/tools/scripts/sql/create_temp_tbl.sql",
 		"/Users/dungntnew/vdev/konin-app/www/js/fabric-zoom.js",
-		"/Users/dungntnew/vdev/konin-app/www/js/upload.js",
 		"/Users/dungntnew/vdev/konin-app/www/js/directives.js",
 		"/Users/dungntnew/vdev/konin-app/save",
 		"/Users/dungntnew/vdev/konin-app/remove_button",
@@ -313,6 +317,30 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"alert",
+			"read",
+			"readu",
+			"view-container",
+			"canvas",
+			"take-picture-canvas",
+			"background-color:black",
+			"background-color: black",
+			"frame-action",
+			"usingWebcam",
+			"rool-picture-btn",
+			"addImage",
+			"applyFrame",
+			"mask",
+			"applyFrame",
+			"<<",
+			">>",
+			"painter",
+			"activeClas",
+			"classF",
+			"class:",
+			"setDefaultFrame",
+			"images",
+			"applyFrame",
 			"selectTabWithIn",
 			"contentHei",
 			"text-setting",
@@ -416,31 +444,7 @@
 			"config.widthToHeig",
 			"widthToHeight",
 			"calculateFrameSize",
-			"painter",
-			"calculateDimensions",
-			"this.wid",
-			"frame-wrapper",
-			"canvas-preview",
-			"previewer",
-			"hideTextSetting",
-			"product",
-			"directive",
-			"pool-picture-bt",
-			"pool-picture-btn",
-			"$scope.uploader.start",
-			"$scope.uploader.start is not a function",
-			"changeToTab",
-			"addImage",
-			"changeTo",
-			"onTakenPicture",
-			"called",
-			"callback",
-			"isWebcamInitizalied",
-			"localMediaStream",
-			"onPictureUploaded\nonPictureUploaded",
-			"_process",
-			"callback",
-			"done"
+			"painter"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -459,54 +463,24 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "www/css/style.css",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 10157,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1816,
-								1816
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/CSS/CSS.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1096.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "www/js/controllers.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 49798,
+						"buffer_size": 52982,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7197,
-								7197
+								52472,
+								52472
 							]
 						],
 						"settings":
@@ -516,33 +490,57 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4475.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 1,
 					"type": "text"
-				}
-			]
-		},
-		{
-			"selected": 0,
-			"sheets":
-			[
+				},
 				{
-					"buffer": 2,
-					"file": "www/templates/product-detail.html",
-					"semi_transient": false,
+					"buffer": 1,
+					"file": "remove_button",
+					"semi_transient": true,
 					"settings":
 					{
-						"buffer_size": 6342,
+						"buffer_size": 2456,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2921,
-								2921
+								660,
+								660
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "www/templates/product-detail.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6474,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1807,
+								1815
 							]
 						],
 						"settings":
@@ -552,12 +550,47 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 605.0,
+						"translation.y": 416.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "www/css/style.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11283,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1936,
+								1936
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1015.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
 					"type": "text"
 				}
+			]
+		},
+		{
+			"sheets":
+			[
 			]
 		}
 	],
@@ -589,7 +622,7 @@
 		"cols":
 		[
 			0.0,
-			0.316244393808,
+			0.895568425263,
 			1.0
 		],
 		"rows":
@@ -713,7 +746,7 @@
 		],
 		"width": 0.0
 	},
-	"selected_group": 1,
+	"selected_group": 0,
 	"settings":
 	{
 	},
@@ -721,7 +754,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 200.0,
+	"side_bar_width": 322.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
