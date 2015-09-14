@@ -207,7 +207,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             view: 0,
             actionId: 3,
             actionIds: [3],
-            multipleTab: false,
+            multipleTab: true,
             onSelectedHanlders: [],
             actionBarClass: "action-bar",
             inActiveClass: 'tab-icon-sticker',
@@ -590,6 +590,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.getStickers = function() {
             return $scope.stickers;
         }
+
+        $scope.addTabselectedHandler(2, function(){
+            $scope.showStickers();
+        });
     }());
     /* @endregion stickers */
 
