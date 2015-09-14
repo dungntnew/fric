@@ -36,12 +36,19 @@
 
         <div class="frame-action row" ng-show="shouldShowPictureToolBars()">
             <button id="retake-picture-btn" class="col-50 button button-full button-balanced">
-                再撮影
+                再選択
             </button>
             <button id="decided-picture-btn" class="col-50 button button-full button-assertive">
                 決定
             </button>
         </div>
+
+        <div class="frame-action row" ng-show="shouldShowWidgetToolBars()">
+            <button id="remove-widget-btn" class="col-100 button button-full button-assertive">
+                削除
+            </button>
+        </div>
+
 
                 <!-- camera -->
         <div class="frame-action row" ng-show="shouldShowTakePictureToolBars()">

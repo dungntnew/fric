@@ -294,6 +294,11 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.shouldShowPreviewToolBars = function() {
             return $scope.activeTabIndex == 4;
         }
+        $scope.shouldShowWidgetToolBars = function(){
+            return !$scope.usingWebcam 
+                   &&
+                   $scope.painter.shouldShowWidgetToolBars();
+        }
 
         $scope.textSettingIsActive = false;
         $scope.shouldShowAddTextButton = function() {
@@ -1237,10 +1242,11 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 } else {
                     $scope.hideTextSetting();
                 }
+                $scope.selectedWidget = e.target;
             });
             $scope.canvas.on('selection:cleared', function(e) {
                 $scope.hideTextSetting();
-
+                $scope.selectedWidget = null;
             });
         },
         toImageContent: function(callback) {
@@ -1492,6 +1498,19 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             });
 
         },
+        shouldShowWidgetToolBars: function(){
+            return $scope.selectedWidget != null;
+
+        },
+        removeSelectedWidget: function() {
+            if ($scope.selectedWidget){
+                $scope.history.addVersion();
+                var widget = $scope.selectedWidget;
+                $scope.selectedWidget = null;
+                $scope.canvas.remove(widget);
+                $scope.canvas.renderAll();
+            }
+        },
         crop: function() {
             var el = new fabric.Rect({
                 fill: 'transparent',
@@ -1648,6 +1667,12 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     angular.element('#decided-design-btn').bind('click', function(e) {
         setTimeout(function() {
             $scope.previewer.exportData();
+        })
+    })
+
+    angular.element('#remove-widget-btn').bind('click', function(e) {
+        setTimeout(function() {
+            $scope.painter.removeSelectedWidget();
         })
     })
 })
