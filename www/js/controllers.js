@@ -901,6 +901,41 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $scope.textData = {
                 text: content
             }
+            var cancel = {
+                text: 'キャンセル',
+                type: 'button-light'
+            };
+            var remove = {
+                text: '削除',
+                type: 'button-assertive',
+                onTap: function(e) {
+                    $scope.painter.removeText(text);
+                }
+            }
+            var add = {
+                text: '<b>入力</b>',
+                type: 'button-positive',
+                onTap: function(e) {
+                    if (!$scope.textData.text) {
+                        e.preventDefault();
+                    } else {
+                        return $scope.textData.text;
+                    }
+                }
+            }
+            var update = {
+                text: '<b>更新</b>',
+                type: 'button-positive',
+                onTap: function(e) {
+                    if (!$scope.textData.text) {
+                        e.preventDefault();
+                    } else {
+                        return $scope.textData.text;
+                    }
+                }
+            }
+
+            var actions = text ? [remove, update]: [cancel, add];
 
             // An elaborate, custom popup
             var textInputPopup = $ionicPopup.show({
@@ -908,23 +943,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 title: 'テキストを入力してください',
                 subTitle: '制限（30文字)',
                 scope: $scope,
-                buttons: [{
-                    text: '<b>削除</b>',
-                    type: 'button-assertive',
-                    onTap: function(e) {
-                        $scope.painter.removeText(text);
-                    }
-                }, {
-                    text: '<b>入力</b>',
-                    type: 'button-positive',
-                    onTap: function(e) {
-                        if (!$scope.textData.text) {
-                            e.preventDefault();
-                        } else {
-                            return $scope.textData.text;
-                        }
-                    }
-                }]
+                buttons: actions
             });
             textInputPopup.then(function(res) {
                 if (!res) {
