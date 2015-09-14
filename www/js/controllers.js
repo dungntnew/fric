@@ -901,6 +901,12 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 subTitle: '制限（30文字)',
                 scope: $scope,
                 buttons: [{
+                    text: '<b>削除</b>',
+                    type: 'button-assertive',
+                    onTap: function(e) {
+                        $scope.painter.removeText(text);
+                    }
+                },{
                     text: '<b>入力</b>',
                     type: 'button-positive',
                     onTap: function(e) {
@@ -922,8 +928,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 } else {
                     setTimeout(function() {
                         $scope.$apply(function() {
-                            text.setText(res);
-                            $scope.canvas.renderAll();
+                            $scope.painter.setText(text, res);
                         })
                     })
 
@@ -1317,6 +1322,17 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
             $scope.canvas.add(text);
             $scope.canvas.setActiveObject(text);
+            $scope.canvas.renderAll();
+        },
+        setText: function(text, value){
+            text.setText(value);
+            $scope.canvas.renderAll();
+        },
+        removeText: function(text){
+            // track history
+            $scope.history.addVersion();
+
+            $scope.canvas.remove(text);
             $scope.canvas.renderAll();
         },
 
