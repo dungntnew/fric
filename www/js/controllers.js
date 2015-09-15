@@ -430,7 +430,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     width, height);
 
                 // send the pixels to a worker thread
-                var worker = new Worker('../lib/instagram_js_filter/js/worker.js');
+                var worker = new Worker('js/worker.js');
                 var obj = {
                     pixels: pixels,
                     effects: effect
