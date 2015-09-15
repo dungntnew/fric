@@ -962,7 +962,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 }
 
                 if (!text) {
-                    $scope.painter.addNewText(res);
+                    setTimeout(function(){
+                        $scope.painter.addNewText(res);
+                    })
                 } else {
                     setTimeout(function() {
                         $scope.$apply(function() {
