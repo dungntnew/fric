@@ -8,9 +8,8 @@
    max-height: 425px;
    text-align: center;
    margin: 0 auto;  
-   background-color:black;
-/*   background-image: url(data:image/gif;base64,R0lGODlhCgAKAIAAAOLi4v///yH5BAAHAP8ALAAAAAAKAAoAAAIRhB2ZhxoM3GMSykqd1VltzxQAOw==);
-   display: inline-block;*/
+   background-image: url(data:image/gif;base64,R0lGODlhCgAKAIAAAOLi4v///yH5BAAHAP8ALAAAAAAKAAoAAAIRhB2ZhxoM3GMSykqd1VltzxQAOw==);
+   display: inline-block;
 }
 
 #frame-wrapper, #frame-wrapper .row 
