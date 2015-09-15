@@ -1234,6 +1234,14 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             this.setupFrameSize();
             angular.element($window).bind('resize', this.setupFrameSize);
             this.setupEvents();
+            
+            var conerSize = $scope.isMobile() ? 40 : 30;
+            this.widgetConfig = {
+               transparentCorners: false,
+               cornerColor: 'blue',
+               cornerSize: conerSize,
+               borderColor: 'blue'
+            };
         },
 
         setupEvents: function() {
@@ -1369,15 +1377,12 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             });
 
             var newPosition = this.newPosition();
-
-            $scope.canvas.add(text.set({
+            text.set({
                 left: newPosition.x,
-                top: newPosition.y,
-                transparentCorners: false,
-                cornerColor: 'red',
-                cornerSize: 20,
-                borderColor: 'red'
-            }));
+                top: newPosition.y
+            });
+            text.set(this.widgetConfig);
+            $scope.canvas.add(text);
             $scope.canvas.setActiveObject(text);
             $scope.canvas.renderAll();
         },
@@ -1386,6 +1391,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $scope.canvas.renderAll();
         },
         addSticker: function(sticker) {
+            var self = this;
             $scope.history.addVersion();
 
             newPosition = this.newPosition();
@@ -1393,15 +1399,13 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 _.each($scope.hideControls, function(c) {
                     image.setControlVisible(c, false);
                 });
-
-                $scope.canvas.add(image.set({
+                image.set({
                     left: newPosition.x,
                     top: newPosition.y,
-                    transparentCorners: false,
-                    cornerColor: 'red',
-                    cornerSize: 20,
-                    borderColor: 'red'
-                }).scaleToHeight(150));
+                })
+                image.set(self.widgetConfig);
+                image.scaleToHeight(150);
+                $scope.canvas.add(image)
                 $scope.canvas.setActiveObject(image);
                 $scope.canvas.renderAll();
             });
@@ -1465,7 +1469,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         },
         addImage: function(src, callback) {
             var self = this;
-            
+
             //$scope.history.addVersion();
             var userImages = $scope.canvas.getObjects('user-image');
             _.each(userImages, function(image){
@@ -1491,11 +1495,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 image.set({
                     originX: 'center',
                     originY: 'center',
-                    transparentCorners: false,
-                    cornerColor: 'red',
-                    cornerSize: 20,
-                    borderColor: 'red'
                 });
+                image.set(self.widgetConfig);
 
                 $scope.canvas.add(image);
                 $scope.canvas.centerObject(image);
