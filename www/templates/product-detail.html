@@ -24,9 +24,6 @@
         <!-- end main draw area -->
 
 
-        
-
-
         <!-- tool-bar buttons -->
         <div class="frame-action row" ng-show="usingWebcam" ng-model="usingWebcam">
             <button id="take-picture-btn" class="col-100 button button-full button-balanced">
@@ -100,7 +97,12 @@
             <div class="background"></div>
             <div class="tabs tabs-icon-only">
                 <a ng-repeat="filter in filters" ng-click="applyFilter($index)" class="tab-item" href="#" ng-class="{active: activeFilterIndex == $index}">
-                    <img  ng-src="{{filter.src}}" title="{{filter.name}}"/>
+                    <div class="image-wrapper">
+                        <img  ng-src="{{filter.src}}" title="{{filter.name}}"/>
+                         <div class="caption">{{filter.name}}</div>
+                    </div>
+
+                    
                 </a>
             </div>
         </div> 
