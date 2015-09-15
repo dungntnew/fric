@@ -123,17 +123,11 @@
 
 
 			<div class="row"
-	   <ion-content class="content-x col-90" scroll="true">
+	   <ion-content class="content-x col-100" scroll="true">
 			<ion-scroll direction="x" class="wide-as-needed">
 			<img ng-repeat="sticker in stickers" ng-click="addSticker(sticker.id)" ng-src="{{sticker.src}}" title="{{sticker.name}}" class="tab-item"/>
 			</ion-scroll>
 			</ion-content>
-
-			<div class="col-10">
-			    <button class="button-sticker-more button ion-navicon button-balanced button-full " ng-click="showStickers()">
-			 </button>
-			</div>
-
 			</div>
 		</div>
        <!-- end sticker -->
