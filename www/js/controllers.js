@@ -273,7 +273,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         this.shouldShowAction = function(actionName, tabIndex) {
             console.log("should for aciton: " + actionName + " - index: " + tabIndex);
             console.log("current: " + $scope.actionName);
-            
+
 
             if ($scope.actionName == '') {
                 setDefaultActionForTab();
@@ -1564,9 +1564,13 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             var widget = $scope.selectedWidget;
             if (!widget) return false;
 
-            if (widget instanceof fabric.Text) {
+            if (widget.isType('text')) {
                 return false;
             }
+            if (widget.isType('user-image')){
+                return false;
+            }
+
             if ($scope.activeTabIndex == 0){
                 return false;
             }
