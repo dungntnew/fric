@@ -476,29 +476,33 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $scope.applyFilter = function(index) {
                 $scope.showProcessingLoading('処理中');
                 setTimeout(function() {
-                    var imageCanvas = $("#take-picture-canvas")[0];
-                    var metadata_id = $(imageCanvas).attr('data-caman-id');
+                    var canvas = $("#take-picture-canvas")[0];
+                    var effect = filterNames[index];
+                    var data = $(canvas).data('data-filter-name');
 
                     // ignore filter 
-                    if (metadata_id && $scope.activeFilterIndex == index) {
+                    if (data === effect) {
                         $scope.activeFilterIndex = -1;
 
                         // revert back to raw image canvas
-                        var picture = $("#take-picture-canvas")[0];
-                        var dataURL = picture.toDataURL();
+                        var dataURL = canvas.toDataURL();
                         $scope.painter.addImage(dataURL, function() {
-                            $scope.hideProcessingLoading();
+                            setTimeout(function(){
+                                $scope.hideProcessingLoading();
+                            }, 0);
                         });
                         return;
                     }
 
                     // process filter
                     $scope.activeFilterIndex = index;
-                    var effect = filterNames[index];
-                    var raw = $("#take-picture-canvas")[0];
-                    Filter.process(raw, effect, function(result, dataURL){
+                    
+                    $(canvas).data("data-filter-name", effect);
+                    Filter.process(canvas, effect, function(result, dataURL){
                         $scope.painter.addImage(dataURL, function() {
-                            $scope.hideProcessingLoading();
+                            setTimeout(function(){
+                                $scope.hideProcessingLoading();
+                            }, 0);
                         });
                     });  
                 });
@@ -506,26 +510,36 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
         $scope.onTakenPicture = function(canvas, canvasId) {
             var dataURL = canvas.toDataURL();
-            $(canvas).removeAttr("data-caman-id");
-            $scope.painter.addImage(dataURL);
+            $scope.showProcessingLoading('処理中');
+            $(canvas).data("data-filter-name", "");
+            $scope.painter.addImage(dataURL, function(){
+                setTimeout(function(){
+                    $scope.hideProcessingLoading();
+                }, 100);
+            });
         }
 
         $scope.onPictureLoaded = function(dataURL) {
-            $scope.painter.addImage(dataURL);
+            $scope.showProcessingLoading('処理中');
             var canvas = $("#take-picture-canvas")[0];
-            $(canvas).removeAttr("data-caman-id");
+            $(canvas).data("data-filter-name", "");
 
-            var image = new Image();
-            image.onload = function() {
-                var w = image.width;
-                var h = image.height;
-                canvas.width = w;
-                canvas.height = h;
-                var ctx = canvas.getContext('2d');
-                ctx.fillRect(0, 0, w, h);
-                ctx.drawImage(image, 0, 0, w, h);
-            };
-            image.src = dataURL;
+            $scope.painter.addImage(dataURL, function(){
+                var image = new Image();
+                image.onload = function() {
+                    var w = image.width;
+                    var h = image.height;
+                    canvas.width = w;
+                    canvas.height = h;
+                    var ctx = canvas.getContext('2d');
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.drawImage(image, 0, 0, w, h);
+                    setTimeout(function(){
+                       $scope.hideProcessingLoading();
+                    }, 100);
+                };
+                image.src = dataURL;
+            });
         }
     }());
     /* @endregion - filter */
@@ -1226,6 +1240,16 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             }, {
                 cssOnly: true
             });
+
+            $scope.canvas.forEachObject(function(obj) {
+                var setCoords = obj.setCoords.bind(obj);
+                obj.on({
+                    moving: setCoords,
+                    scaling: setCoords,
+                    rotating: setCoords
+                });
+            });
+
             //$scope.canvas.backgroundColor = 'rgba(0, 255, 0, 0.1)';
             console.log("[painter] view: " + size.width + " x " + size.height);
         },
@@ -1404,6 +1428,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 top: newPosition.y
             });
             text.set(this.widgetConfig);
+            text.setCoords();
             $scope.canvas.add(text);
             $scope.canvas.setActiveObject(text);
             $scope.canvas.renderAll();
@@ -1427,6 +1452,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 })
                 image.set(self.widgetConfig);
                 image.scaleToHeight(150);
+                image.setCoords();
                 $scope.canvas.add(image)
                 $scope.canvas.setActiveObject(image);
                 $scope.canvas.renderAll();
@@ -1519,11 +1545,13 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     originY: 'center',
                 });
                 image.set(self.widgetConfig);
+               
 
                 $scope.canvas.add(image);
                 $scope.canvas.centerObject(image);
                 $scope.canvas.sendToBack(image);
                 $scope.canvas.setActiveObject(image);
+                image.setCoords();
                 $scope.canvas.renderAll();
 
                 if (callback) callback();
@@ -1620,7 +1648,13 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $scope.canvas.clear();
             $scope.canvas.loadFromJSON(last.data, function(){
                 $scope.canvas.forEachObject(function(obj){
+                    var setCoords = obj.setCoords.bind(obj);
                     obj.set($scope.painter.widgetConfig);
+                    obj.on({
+                        moving: setCoords,
+                        scaling: setCoords,
+                        rotating: setCoords
+                    });
                 });
                 $scope.canvas.renderAll();
             });
