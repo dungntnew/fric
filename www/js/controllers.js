@@ -294,10 +294,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.shouldShowPreviewToolBars = function() {
             return $scope.activeTabIndex == 4;
         }
-        $scope.shouldShowWidgetToolBars = function(){
-            return !$scope.usingWebcam 
-                   &&
-                   $scope.painter.shouldShowWidgetToolBars();
+        $scope.shouldShowWidgetToolBars = function() {
+            return !$scope.usingWebcam &&
+                $scope.painter.shouldShowWidgetToolBars();
         }
 
         $scope.textSettingIsActive = false;
@@ -596,7 +595,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             return $scope.stickers;
         }
 
-        $scope.addTabselectedHandler(2, function(){
+        $scope.addTabselectedHandler(2, function() {
             $scope.showStickers();
         });
     }());
@@ -900,7 +899,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
 
         $scope.addTabselectedHandler(3, function() {
-             $scope.showTextInputPopup();
+            $scope.showTextInputPopup();
         });
 
 
@@ -918,7 +917,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 text: '削除',
                 type: 'button-assertive',
                 onTap: function(e) {
-                    $scope.painter.removeText(text);
+                    if (!$scope.selectedWidget) {
+                        $scope.selectedWidget = text;
+                    }
+                    $scope.painter.removeSelectedWidget();
                 }
             }
             var add = {
@@ -944,7 +946,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 }
             }
 
-            var actions = text ? [remove, update]: [cancel, add];
+            var actions = text ? [remove, update] : [cancel, add];
 
             // An elaborate, custom popup
             var textInputPopup = $ionicPopup.show({
@@ -1157,6 +1159,32 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     /* @endregion preview */
     $scope.hideControls = ['ml', 'mt', 'mr', 'mb'];
 
+    fabric.UserImage = fabric.util.createClass(fabric.Image, {
+        type: 'user-image',
+        initialize: function(element, options) {
+            this.callSuper('initialize', element, options);
+            this.set('name', 'user-image');
+        },
+
+        toObject: function() {
+            return fabric.util.object.extend(this.callSuper('toObject'), {
+                name: this.name
+            });
+        }
+    });
+    fabric.UserImage.fromObject = function(object, callback) {
+        fabric.util.loadImage(object.src, function(img) {
+            callback && callback(new fabric.UserImage(img, object));
+        });
+    };
+    fabric.UserImage.fromURL = function(url, callback, imgOptions) {
+        fabric.util.loadImage(url, function(img) {
+            callback(new fabric.UserImage(img, imgOptions));
+        }, null, imgOptions && imgOptions.crossOrigin);
+    };
+
+    fabric.UserImage.async = true;
+
     $scope.painter = {
 
         setupFrameSize: function() {
@@ -1218,7 +1246,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 var now = date.getTime();
                 if (now - lastTime < 500) {
 
-                    if (texts.indexOf(e.target) != -1) {
+                    if (e.target && e.target.isType('text')) {
                         setTimeout(function() {
                             $scope.$apply(function() {
                                 $scope.selectTabWithIndex(3, true);
@@ -1232,7 +1260,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             });
 
             $scope.canvas.on('object:selected', function(e) {
-                if (texts.indexOf(e.target) != -1) {
+                $scope.selectedWidget = e.target;
+                if (e.target && e.target.isType('text')) {
                     setTimeout(function() {
                         $scope.$apply(function() {
                             $scope.selectTabWithIndex(3, true);
@@ -1242,7 +1271,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 } else {
                     $scope.hideTextSetting();
                 }
-                $scope.selectedWidget = e.target;
+
             });
             $scope.canvas.on('selection:cleared', function(e) {
                 $scope.hideTextSetting();
@@ -1325,11 +1354,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             }
         },
         image: null,
-        widgets: [],
-        texts: [],
-
         addNewText: function(content) {
-            // track history
             $scope.history.addVersion();
 
             var text = new fabric.Text(content, {
@@ -1345,7 +1370,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
             var newPosition = this.newPosition();
 
-            this.texts.push(text.set({
+            $scope.canvas.add(text.set({
                 left: newPosition.x,
                 top: newPosition.y,
                 transparentCorners: false,
@@ -1353,8 +1378,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 cornerSize: 20,
                 borderColor: 'red'
             }));
-
-            $scope.canvas.add(text);
             $scope.canvas.setActiveObject(text);
             $scope.canvas.renderAll();
         },
@@ -1362,16 +1385,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             text.setText(value);
             $scope.canvas.renderAll();
         },
-        removeText: function(text) {
-            // track history
-            $scope.history.addVersion();
-
-            $scope.canvas.remove(text);
-            $scope.canvas.renderAll();
-        },
-
         addSticker: function(sticker) {
-            // track history
             $scope.history.addVersion();
 
             newPosition = this.newPosition();
@@ -1389,25 +1403,24 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     borderColor: 'red'
                 }).scaleToHeight(150));
                 $scope.canvas.setActiveObject(image);
-            })
-            $scope.canvas.renderAll();
-
+                $scope.canvas.renderAll();
+            });
         },
-
         applyFrame: function(frame) {
             var self = this;
 
-            if (!self.image) {
+            var userImages = $scope.canvas.getObjects('user-image');
+            if (userImages.length == 0) {
                 return;
             }
-
+            var userImage = userImages[0];
 
             $scope.showProcessingLoading();
 
             fabric.loadSVGFromURL(frame.mask, function(objects, options) {
                 var mask = $scope.painter.mask = fabric.lastMaskImage = fabric.util.groupSVGElements(objects, options);
 
-                var image = self.image;
+                var image = userImage;
                 var iw = image.width;
                 var ih = image.height;
                 var it = image.top;
@@ -1433,38 +1446,36 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     top: topCenter - halfTop
                 });
                 mask.setCoords();
-
-                self.image.clipTo = function(ctx) {
-                    fabric.lastMaskImage.render(ctx);
-                }
+                userImage.set({
+                    clipTo: function(ctx) {
+                        fabric.lastMaskImage.render(ctx);
+                    }
+                });
                 $scope.canvas.renderAll();
                 $scope.hideProcessingLoading();
             });
         },
         setDefaultFrame: function() {
             this.mask = null;
-            self = this;
-            if (!self.image) {
-                return;
-            }
-            self.image.clipTo = null;
+            var userImages = $scope.canvas.getObjects('user-image');
+            _.each(userImages, function(image){
+                image.set({clipTo: null});
+            });
             $scope.canvas.renderAll();
         },
-
         addImage: function(src, callback) {
             var self = this;
-
-            // track history
+            
             //$scope.history.addVersion();
-
-            if (self.image) {
-                $scope.canvas.remove(self.image);
-            }
+            var userImages = $scope.canvas.getObjects('user-image');
+            _.each(userImages, function(image){
+                 $scope.canvas.remove(image);
+            });
 
             var h = $scope.painter.height;
             var w = $scope.painter.width;
 
-            fabric.Image.fromURL(src, function(image) {
+            fabric.UserImage.fromURL(src, function(image) {
                 var iw = image.width;
                 var ih = image.height;
                 if (iw / ih > w / h) {
@@ -1486,51 +1497,34 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     borderColor: 'red'
                 });
 
-                //image.applyFilters();
                 $scope.canvas.add(image);
                 $scope.canvas.centerObject(image);
                 $scope.canvas.sendToBack(image);
                 $scope.canvas.setActiveObject(image);
                 $scope.canvas.renderAll();
 
-                self.image = image;
                 if (callback) callback();
             });
-
         },
-        shouldShowWidgetToolBars: function(){
-            return $scope.selectedWidget != null;
+        shouldShowWidgetToolBars: function() {
+            var widget = $scope.selectedWidget;
+            if (!widget) return false;
 
+            if (widget instanceof fabric.Text) {
+                return false;
+            }
+            return true;
         },
         removeSelectedWidget: function() {
-            if ($scope.selectedWidget){
+            var widget = $scope.selectedWidget;
+            if (widget) {
                 $scope.history.addVersion();
-                var widget = $scope.selectedWidget;
-                $scope.selectedWidget = null;
                 $scope.canvas.remove(widget);
                 $scope.canvas.renderAll();
+                $scope.selectedWidget = null;
             }
-        },
-        crop: function() {
-            var el = new fabric.Rect({
-                fill: 'transparent',
-                originX: 'left',
-                originY: 'top',
-                stroke: '#ccc',
-                strokeDashArray: [2, 2],
-                opacity: 1,
-                width: 1,
-                height: 1
-            });
-            el.visible = false;
-            $scope.canvas.add(el);
         }
     }
-
-
-    // ionic.Platform.ready(function() {
-
-    // });
 
     $scope.painter.initDrawing();
     //$scope.painter.addImage('/img/example3.jpg');

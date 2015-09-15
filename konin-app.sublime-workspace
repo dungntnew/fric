@@ -11,15 +11,7 @@
 			"file": "www/js/controllers.js",
 			"settings":
 			{
-				"buffer_size": 52982,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "remove_button",
-			"settings":
-			{
-				"buffer_size": 2456,
+				"buffer_size": 55379,
 				"line_ending": "Unix"
 			}
 		},
@@ -27,15 +19,7 @@
 			"file": "www/templates/product-detail.html",
 			"settings":
 			{
-				"buffer_size": 6474,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "www/css/style.css",
-			"settings":
-			{
-				"buffer_size": 11283,
+				"buffer_size": 6483,
 				"line_ending": "Unix"
 			}
 		}
@@ -216,7 +200,7 @@
 				"Snippet: html"
 			]
 		],
-		"width": 531.0
+		"width": 579.0
 	},
 	"console":
 	{
@@ -248,22 +232,30 @@
 	[
 		"/Users/dungntnew/vdev/konin-app",
 		"/Users/dungntnew/vdev/konin-app/www",
+		"/Users/dungntnew/vdev/konin-app/www/css",
+		"/Users/dungntnew/vdev/konin-app/www/img",
 		"/Users/dungntnew/vdev/konin-app/www/img/assets",
+		"/Users/dungntnew/vdev/konin-app/www/img/assets/frames",
+		"/Users/dungntnew/vdev/konin-app/www/img/assets/stickers",
+		"/Users/dungntnew/vdev/konin-app/www/img/products",
+		"/Users/dungntnew/vdev/konin-app/www/img/products/thumbnails",
 		"/Users/dungntnew/vdev/konin-app/www/js",
 		"/Users/dungntnew/vdev/konin-app/www/lib",
+		"/Users/dungntnew/vdev/konin-app/www/lib/jquery",
 		"/Users/dungntnew/vdev/konin-app/www/templates"
 	],
 	"file_history":
 	[
-		"/Users/dungntnew/vdev/konin-app/www/js/controllers.js",
-		"/Users/dungntnew/vdev/konin-app/www/js/upload.js",
 		"/Users/dungntnew/vdev/konin-app/www/css/style.css",
-		"/Users/dungntnew/vdev/konin-app/www/index.html",
+		"/Users/dungntnew/Desktop/manga_app_data/json/chapterInfo.json",
+		"/Users/dungntnew/vdev/konin-app/www/x.html",
+		"/Users/dungntnew/vdev/konin-app/www/js/controllers.js",
+		"/Users/dungntnew/vdev/konin-app/www/js/services.js",
 		"/Users/dungntnew/vdev/konin-app/www/templates/product-detail.html",
+		"/Users/dungntnew/vdev/konin-app/www/js/upload.js",
+		"/Users/dungntnew/vdev/konin-app/www/index.html",
 		"/Users/dungntnew/vdev/konin-app/www/lib/imageloader/dis/imageloader.all.min.js",
 		"/Users/dungntnew/vdev/konin-app/undo-redo",
-		"/Users/dungntnew/vdev/konin-app/www/x.html",
-		"/Users/dungntnew/vdev/konin-app/www/js/services.js",
 		"/Users/dungntnew/vdev/konin-app/www/templates/text-input-model.html",
 		"/Users/dungntnew/vdev/konin-app/www/css/takephoto.css",
 		"/Users/dungntnew/vdev/konin-app/maks.js",
@@ -284,7 +276,6 @@
 		"/Users/dungntnew/vdev/bussearch/bussearch/handlers/__init__.py",
 		"/Users/dungntnew/vdev/bussearch/bussearch/forms/__init__.py",
 		"/Users/dungntnew/vdev/bussearch/bussearch/forms/bus_search.py",
-		"/Users/dungntnew/Desktop/manga_app_data/json/chapterInfo.json",
 		"/Users/dungntnew/vdev/bussearch/bussearch/service/querybuilder.py",
 		"/Users/dungntnew/vdev/bussearch/config.yml",
 		"/Users/dungntnew/vdev/bussearch/bussearch/service/es_search.py",
@@ -317,6 +308,32 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"widgets",
+			"painter",
+			"multiple",
+			"addTabSelect",
+			"sticker",
+			"category",
+			"showTextInputPopup",
+			"selectTabWithIndex",
+			"Event",
+			"selectTabWithIndex",
+			"onSelectedHanlders",
+			"setTabselectedAction",
+			"multipleTab",
+			"multi",
+			"addNewText",
+			"addOn",
+			"addNewText",
+			"addTabSelect",
+			"onSelecte",
+			"addNewText",
+			"showTextInputPopup",
+			"addNewText",
+			"fabric.Object",
+			"inline-btn",
+			"remove-btn",
+			"painter",
 			"alert",
 			"read",
 			"readu",
@@ -418,33 +435,7 @@
 			"applyFrame",
 			"previer",
 			"previwer",
-			"previer",
-			"calculateFrameSize",
-			"setupFrameSize",
-			"resize",
-			"addImage",
-			"clone",
-			"applyFrame",
-			"applyF",
-			"frames",
-			"canvas-bg",
-			"mask",
-			"mask1",
-			"frames",
-			"previe",
-			"maxViewPreviewHeight",
-			"setupPreviewSize",
-			"setupFrameSize",
-			"calculateFrameSize",
-			"widthToHeight",
-			"calculateFrameSize",
-			"console.log(\"painter setup frame size:",
-			"console.log(\"painter setup frame size: \" + size.width + \" x \" + size.height);",
-			"cal",
-			"config.widthToHeig",
-			"widthToHeight",
-			"calculateFrameSize",
-			"painter"
+			"previer"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -463,7 +454,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -472,15 +463,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 52982,
+						"buffer_size": 55379,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								52472,
-								52472
+								50507,
+								50507
 							]
 						],
 						"settings":
@@ -490,57 +481,33 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "remove_button",
-					"semi_transient": true,
-					"settings":
-					{
-						"buffer_size": 2456,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								660,
-								660
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 22147.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
 					"type": "text"
-				},
+				}
+			]
+		},
+		{
+			"selected": 0,
+			"sheets":
+			[
 				{
-					"buffer": 2,
+					"buffer": 1,
 					"file": "www/templates/product-detail.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6474,
+						"buffer_size": 6483,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1807,
-								1815
+								1757,
+								1774
 							]
 						],
 						"settings":
@@ -550,47 +517,12 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 416.0,
+						"translation.y": 431.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "www/css/style.css",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 11283,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1936,
-								1936
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/CSS/CSS.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1015.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
+					"stack_index": 1,
 					"type": "text"
 				}
-			]
-		},
-		{
-			"sheets":
-			[
 			]
 		}
 	],
@@ -622,7 +554,7 @@
 		"cols":
 		[
 			0.0,
-			0.895568425263,
+			0.5,
 			1.0
 		],
 		"rows":
@@ -658,7 +590,11 @@
 		"selected_items":
 		[
 			[
-				"sty",
+				"controlle",
+				"www/js/controllers.js"
+			],
+			[
+				"style",
 				"www/css/style.css"
 			],
 			[
@@ -666,7 +602,7 @@
 				"www/js/services.js"
 			],
 			[
-				"style",
+				"sty",
 				"www/css/style.css"
 			],
 			[
@@ -754,7 +690,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 322.0,
+	"side_bar_width": 229.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
