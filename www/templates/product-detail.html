@@ -93,7 +93,7 @@
 
         <div style="position:relative; width=100%"></div>
         <!-- filter -->
-         <div class="action-panel fadein fadeout filter-buttons" ng-show="shouldShowAction('filter', 0)">
+         <div class="action-panel filter-buttons" ng-show="shouldShowAction('filter', 0)">
             <div class="background"></div>
             <div class="tabs tabs-icon-only">
                 <a ng-repeat="filter in filters" ng-click="applyFilter($index)" class="tab-item" href="#" ng-class="{active: activeFilterIndex == $index}">
@@ -109,7 +109,7 @@
         <!-- end filter-->
 
        <!-- frame -->
-       <div class="action-panel fadein fadeout frame-buttons" ng-show="shouldShowAction('frame', 1)">
+       <div class="action-panel frame-buttons" ng-show="shouldShowAction('frame', 1)">
 		    <div class="background"></div>
 		    <div class="tabs tabs-icon-only">
 		        <a ng-repeat="frame in frames" ng-click="applyFrame($index)" class="tab-item" href="#" ng-class="{active: activeFrameIndex == $index}">
@@ -120,7 +120,7 @@
        <!-- end frame -->
 
        <!-- sticker -->
-       <div class="action-panel fadein fadeout sticker-buttons" ng-show="shouldShowAction('sticker', 2)">
+       <div class="action-panel sticker-buttons" ng-show="shouldShowAction('sticker', 2)">
 			<div class="background"></div>
 
 

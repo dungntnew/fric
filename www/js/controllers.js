@@ -271,6 +271,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
 
         this.shouldShowAction = function(actionName, tabIndex) {
+            console.log("should for aciton: " + actionName + " - index: " + tabIndex);
+            console.log("current: " + $scope.actionName);
+            
 
             if ($scope.actionName == '') {
                 setDefaultActionForTab();
@@ -1562,6 +1565,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             if (!widget) return false;
 
             if (widget instanceof fabric.Text) {
+                return false;
+            }
+            if ($scope.activeTabIndex == 0){
                 return false;
             }
             return true;
