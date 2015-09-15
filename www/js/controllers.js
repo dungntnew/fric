@@ -1239,10 +1239,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             
             var conerSize = $scope.isMobile() ? 40 : 30;
             this.widgetConfig = {
-               transparentCorners: false,
-               cornerColor: 'blue',
+               transparentCorners: true,
+               cornerColor: '#ff5a69',
                cornerSize: conerSize,
-               borderColor: 'blue'
+               borderColor: '#ff5a69'
             };
         },
 
