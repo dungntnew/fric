@@ -289,11 +289,13 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
 
         $scope.shouldShowPictureToolBars = function() {
-            return $scope.pictureLoaded && $scope.activeTabIndex == 0;
+            return $scope.pictureLoaded && 
+                   ($scope.activeTabIndex == 0 || $scope.activeTabIndex == 1);
         }
         $scope.shouldShowTakePictureToolBars = function() {
-            return !$scope.pictureLoaded && $scope.activeTabIndex == 0;
+            return ($scope.activeTabIndex == 0 || $scope.activeTabIndex == 1);
         }
+        
         $scope.shouldShowPreviewToolBars = function() {
             return $scope.activeTabIndex == 4;
         }
@@ -334,7 +336,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
         }
 
-        $scope.selectTabWithIndex = function(index, ignoreAction) {
+        $scope.selectTabWithIndex = function(index, ignoreAction, onSelectedFunc) {
 
             // handler if tab current tab
             var tab = tabContentViews[$scope.activeTabIndex];
@@ -357,6 +359,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 newTab.onSelectedHanlders.forEach(function(f) {
                     if (f) f();
                 });
+
+                if (onSelectedFunc) onSelectedFunc();
             }
         }
 
@@ -1713,12 +1717,28 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     });
 
     angular.element('#retake-picture-btn').bind('click', function(e) {
-        if ($scope.useWebcam) {
-            $scope.webcam.start();
-            $scope.usingWebcam = true;
+        var readyLateFunc = function(){
+            if ($scope.useWebcam) {
+                $scope.webcam.start();
+                $scope.usingWebcam = true;
+            }
+            $scope.pictureLoaded = false;
         }
-        $scope.pictureLoaded = false;
-        $scope.changeToAction("takePicture");
+
+        if ($scope.activeTabIndex != 0){
+            setTimeout(function(){
+                $scope.$apply(function(){
+                    $scope.selectTabWithIndex(0, false, function(){
+                       readyLateFunc();
+                    });
+                });
+            });
+
+        }else {
+            $scope.changeToAction("takePicture");
+            readyLateFunc();
+        }
+
     });
 
     angular.element('#decided-picture-btn').bind('click', function(e) {
