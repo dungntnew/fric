@@ -1596,8 +1596,13 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             var last = this.data.pop();
             last.action(last.params);
             $scope.canvas.clear();
-            $scope.canvas.loadFromJSON(last.data);
-            $scope.canvas.renderAll();
+            $scope.canvas.loadFromJSON(last.data, function(){
+                $scope.canvas.forEachObject(function(obj){
+                    obj.set($scope.painter.widgetConfig);
+                });
+                $scope.canvas.renderAll();
+            });
+            
         }
     };
     $scope.history = history;
