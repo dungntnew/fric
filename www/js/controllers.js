@@ -416,73 +416,93 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     /* @region - filter */
     (function() {
-        $scope.availableFilterNames = ["vintage",
-            "lomo", "clarity", "sinCity",
-            "sunrise", "crossProcess", "orangePeel",
-            "love", "grungy", "jarques", "pinhole",
-            "oldBoot", "glowingSun", "hazyDays",
-            "herMajesty", "nostalgia",
-            "hemingway", "concentrate"
-        ]
 
-        $scope.activeFilterIndex = -1;
-        filterDisplayNames = ['lo_fi', 'mayfair', 'valencia', 'walden', 'xpro'];
-        filterNames = ['vintage', 'lomo', 'sinCity', 'love', 'sunrise', 'clarity']
-        $scope.filters = [];
+            /*== create filter object ==*/
+            Filter = {};
 
-        for (var i = 0; i < filterDisplayNames.length; i++) {
-            $scope.filters.push({
-                id: i,
-                name: filterDisplayNames[i],
-                filter: filterNames[i],
-                src: 'img/assets/filters/' + (i + 1) + '.png'
-            });
-        }
+            // process with canvas TAG
+            Filter.process = function(canvas, effect, callback) {
+                // extract pixels data from canvas input
+                var width = canvas.width;
+                var height = canvas.height;
+                var context = canvas.getContext('2d');
+                var pixels = context.getImageData(0, 0,
+                    width, height);
 
-        $scope.applyFilter = function(index) {
-            $scope.showProcessingLoading('処理中');
-            setTimeout(function() {
-                var imageCanvas = $("#take-picture-canvas")[0];
-                var metadata_id = $(imageCanvas).attr('data-caman-id');
+                // send the pixels to a worker thread
+                var worker = new Worker('../lib/instagram_js_filter/js/worker.js');
+                var obj = {
+                    pixels: pixels,
+                    effects: effect
+                };
+                worker.postMessage(obj);
 
-                // ignore filter 
-                if (metadata_id && $scope.activeFilterIndex == index) {
-                    $scope.activeFilterIndex = -1;
-                    Caman(imageCanvas, function() {
-                        this.revert();
-                        this.render(function() {
-                            var picture = $("#take-picture-canvas")[0];
-                            var dataURL = picture.toDataURL();
-                            $scope.painter.addImage(dataURL, function() {
-                                $scope.hideProcessingLoading();
-                            });
-
-                        })
-                    });
-                    return;
-                }
-
-
-                $scope.activeFilterIndex = index;
-                var effect = filterNames[index];
-                Caman("#take-picture-canvas", function() {
-                    if (effect in this) {
-                        this.revert();
-                        this[effect]();
-                        this.render(function() {
-                            var picture = $("#take-picture-canvas")[0];
-                            var dataURL = picture.toDataURL();
-                            $scope.painter.addImage(dataURL, function() {
-                                $scope.hideProcessingLoading();
-                            });
-                        });
-                    } else {
-                        $scope.hideProcessingLoading();
+                // get message from the worker thread
+                worker.onmessage = function(e) {
+                    // debug
+                    if (typeof e.data === "string") {
+                        console.log("Worker: " + e.data);
+                        return;
                     }
-                });
+                    
+                    // create result canvas
+                    var out = document.createElement('canvas');
+                    out.width = width;
+                    out.height = height;
+                    // put pixels to new canvas
+                    context = out.getContext("2d");
+                    context.putImageData(e.data.pixels, 0, 0);
+                    var dataURL = out.toDataURL();
+                    if (callback) callback(out, dataURL);
+                };
+                return;
+            };
+            /*== end == */
 
-            }, 50);
-        }
+            $scope.activeFilterIndex = -1;
+            filterDisplayNames = ['lo_fi', 'mayfair', 'valencia', 'walden', 'xpro'];
+            filterNames = ['lofi', 'mayfair', 'valencia', 'walden', 'xpro2'];
+            $scope.filters = [];
+
+            for (var i = 0; i < filterDisplayNames.length; i++) {
+                $scope.filters.push({
+                    id: i,
+                    name: filterDisplayNames[i],
+                    filter: filterNames[i],
+                    src: 'img/assets/filters/' + (i + 1) + '.png'
+                });
+            }
+
+            $scope.applyFilter = function(index) {
+                $scope.showProcessingLoading('処理中');
+                setTimeout(function() {
+                    var imageCanvas = $("#take-picture-canvas")[0];
+                    var metadata_id = $(imageCanvas).attr('data-caman-id');
+
+                    // ignore filter 
+                    if (metadata_id && $scope.activeFilterIndex == index) {
+                        $scope.activeFilterIndex = -1;
+
+                        // revert back to raw image canvas
+                        var picture = $("#take-picture-canvas")[0];
+                        var dataURL = picture.toDataURL();
+                        $scope.painter.addImage(dataURL, function() {
+                            $scope.hideProcessingLoading();
+                        });
+                        return;
+                    }
+
+                    // process filter
+                    $scope.activeFilterIndex = index;
+                    var effect = filterNames[index];
+                    var raw = $("#take-picture-canvas")[0];
+                    Filter.process(raw, effect, function(result, dataURL){
+                        $scope.painter.addImage(dataURL, function() {
+                            $scope.hideProcessingLoading();
+                        });
+                    });  
+                });
+            }
 
         $scope.onTakenPicture = function(canvas, canvasId) {
             var dataURL = canvas.toDataURL();
