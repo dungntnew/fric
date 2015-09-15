@@ -187,6 +187,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionId: 0,
             multipleTab: false,
             onSelectedHanlders: [],
+            onDesectedHandlers: [],
             actionBarClass: "camera-action-bar",
             inActiveClass: 'tab-icon-camera',
             activeClass: 'tab-icon-camera-active'
@@ -198,6 +199,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionIds: [2],
             multipleTab: false,
             onSelectedHanlders: [],
+            onDesectedHandlers: [],
             actionBarClass: "action-bar",
             inActiveClass: 'tab-icon-frame',
             activeClass: 'tab-icon-frame-active'
@@ -209,6 +211,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionIds: [3],
             multipleTab: true,
             onSelectedHanlders: [],
+            onDesectedHandlers: [],
             actionBarClass: "action-bar",
             inActiveClass: 'tab-icon-sticker',
             activeClass: 'tab-icon-sticker-active'
@@ -220,6 +223,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionIds: [4],
             multipleTab: true,
             onSelectedHanlders: [],
+            onDesectedHandlers: [],
             actionBarClass: "text-action-bar",
             inActiveClass: 'tab-icon-text',
             activeClass: 'tab-icon-text-active'
@@ -231,6 +235,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             actionIds: [],
             multipleTab: false,
             onSelectedHanlders: [],
+            onDesectedHandlers: [],
             inActiveClass: 'tab-icon-review',
             activeClass: 'tab-icon-review-active',
             actionBarClass: "review-action-bar"
@@ -251,6 +256,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
         $scope.addTabselectedHandler = function(tabId, handler) {
             $scope.tabData[tabId].onSelectedHanlders.push(handler);
+        };
+         $scope.addTabDeselectedHandler = function(tabId, handler) {
+            $scope.tabData[tabId].onDesectedHandlers.push(handler);
         };
 
         $scope.changeToAction = function(newAction) {
@@ -295,7 +303,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.shouldShowTakePictureToolBars = function() {
             return ($scope.activeTabIndex == 0 || $scope.activeTabIndex == 1);
         }
-        
+
         $scope.shouldShowPreviewToolBars = function() {
             return $scope.activeTabIndex == 4;
         }
@@ -343,6 +351,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
             if ($scope.activeTabIndex != index || tab.multipleTab) {
 
+                tab.onDesectedHandlers.forEach(function(f) {
+                    if (f) f();
+                });
+
                 $scope.preActiveTabIndex = $scope.activeTabIndex;
                 $scope.activeTabIndex = index;
                 setDefaultActionForTab();
@@ -351,8 +363,12 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
                 var newTab = tabContentViews[$scope.activeTabIndex];
                 $scope.actionBarClassName = newTab.actionBarClass;
+                
+                if (ignoreAction) {
+                    if (onSelectedFunc) onSelectedFunc();
+                    return;
+                }
 
-                if (ignoreAction) return;
                 if (newTab.action) {
                     newTab.action();
                 }
@@ -360,7 +376,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     if (f) f();
                 });
 
-                if (onSelectedFunc) onSelectedFunc();
+                if (!ignoreAction && onSelectedFunc) onSelectedFunc();
             }
         }
 
@@ -938,6 +954,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.addNewText = function() {
             $scope.showTextInputPopup();
         }
+        
+        $scope.addTabDeselectedHandler(3, function(){
+            $scope.painter.deselectWidget();
+        });
 
         $scope.addTabselectedHandler(3, function() {
             $scope.showTextInputPopup();
@@ -1310,8 +1330,14 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     if (e.target && e.target.isType('text')) {
                         setTimeout(function() {
                             $scope.$apply(function() {
-                                $scope.selectTabWithIndex(3, true);
-                                $scope.showTextInputPopup(e.target);
+                                if ($scope.activeTabIndex != 3){
+                                    $scope.selectTabWithIndex(3, true, function(){
+                                        $scope.showTextInputPopup(e.target);
+                                    });
+                                } else {
+                                    $scope.showTextInputPopup(e.target);
+                                }
+                                
                             });
                         });
 
@@ -1325,8 +1351,13 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 if (e.target && e.target.isType('text')) {
                     setTimeout(function() {
                         $scope.$apply(function() {
-                            $scope.selectTabWithIndex(3, true);
-                            $scope.showTextSetting(e.target);
+                            if ($scope.activeTabIndex != 3){
+                                $scope.selectTabWithIndex(3, true, function(){
+                                    $scope.showTextSetting(e.target);
+                                });
+                            }else {
+                                $scope.showTextSetting(e.target);
+                            }
                         });
                     });
                 } else {
@@ -1588,6 +1619,11 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.canvas.renderAll();
                 $scope.selectedWidget = null;
             }
+        },
+        deselectWidget: function() {
+            $scope.selectedWidget = null;
+            $scope.canvas.deactivateAll();
+            $scope.canvas.renderAll();
         }
     }
 
