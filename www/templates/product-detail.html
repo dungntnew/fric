@@ -15,8 +15,6 @@
               <canvas id="canvas-content"></canvas>
             </div>
             <canvas id="take-picture-canvas" ng-show="usingWebcam" ng-model="usingWebcam"></canvas>
-            <canvas id="filterred-take-picture-canvas" ng-show="usingWebcam" ng-model="usingWebcam"></canvas>
-            
             <video id="take-picture-video" src="" ng-hidden></video>
             <input type="file" id="take-picture-input" accept="image/*" ng-hidden>
         </div>
@@ -24,9 +22,6 @@
           <canvas id="canvas-preview"></canvas>
         </div>
         <!-- end main draw area -->
-
-
-        
 
 
         <!-- tool-bar buttons -->
@@ -102,7 +97,12 @@
             <div class="background"></div>
             <div class="tabs tabs-icon-only">
                 <a ng-repeat="filter in filters" ng-click="applyFilter($index)" class="tab-item" href="#" ng-class="{active: activeFilterIndex == $index}">
-                    <img  ng-src="{{filter.src}}" title="{{filter.name}}"/>
+                    <div class="image-wrapper">
+                        <img  ng-src="{{filter.src}}" title="{{filter.name}}"/>
+                         <div class="caption">{{filter.name}}</div>
+                    </div>
+
+                    
                 </a>
             </div>
         </div> 
