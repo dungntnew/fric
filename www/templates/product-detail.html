@@ -93,45 +93,59 @@
 
         <div style="position:relative; width=100%"></div>
         <!-- filter -->
-         <div class="action-panel filter-buttons" ng-show="shouldShowAction('filter', 0)">
-            <div class="background"></div>
-            <div class="tabs tabs-icon-only">
-                <a ng-repeat="filter in filters" ng-click="applyFilter($index)" class="tab-item" href="#" ng-class="{active: activeFilterIndex == $index}">
-                    <div class="image-wrapper">
-                        <img  ng-src="{{filter.src}}" title="{{filter.name}}"/>
-                         <div class="caption">{{filter.name}}</div>
-                    </div>
-
-                    
-                </a>
-            </div>
+        <div class="action-panel sticker-buttons" ng-show="shouldShowAction('filter', 0)">
+              <div class="background"></div>
+               <div class="row"
+                 <ion-content class="content-x col-100" scroll="true">
+                  <ion-scroll direction="x" class="wide-as-needed">
+                      <div ng-repeat="filter in filters" 
+                           ng-click="applyFilter($index)"
+                           ng-class="{active: activeFilterIndex == $index}" 
+                           class="tab-item">
+                           <img  ng-src="{{filter.src}}" 
+                                 title="{{filter.name}}"/>
+                           <div class="caption">{{filter.name}}</div>
+                      </div>
+                  </ion-scroll>
+                  </ion-content>
+              </div>
         </div> 
+
         <!-- end filter-->
 
        <!-- frame -->
-       <div class="action-panel frame-buttons" ng-show="shouldShowAction('frame', 1)">
-		    <div class="background"></div>
-		    <div class="tabs tabs-icon-only">
-		        <a ng-repeat="frame in frames" ng-click="applyFrame($index)" class="tab-item" href="#" ng-class="{active: activeFrameIndex == $index}">
-		            <img  ng-src="{{frame.src}}" title="{{frame.name}}"/>
-		        </a>
-		    </div>
-		</div> 
+       <div class="action-panel sticker-buttons" ng-show="shouldShowAction('frame', 1)">
+    		    <div class="background"></div>
+             <div class="row"
+               <ion-content class="content-x col-100" scroll="true">
+                <ion-scroll direction="x" class="wide-as-needed">
+                    <img ng-repeat="frame in frames" 
+                         ng-click="applyFrame($index)"
+                         ng-class="{active: activeFrameIndex == $index}" 
+                         ng-src="{{frame.src}}" 
+                         title="{{frame.name}}" 
+                         class="tab-item"/>
+                </ion-scroll>
+                </ion-content>
+            </div>
+		  </div> 
        <!-- end frame -->
 
        <!-- sticker -->
-       <div class="action-panel sticker-buttons" ng-show="shouldShowAction('sticker', 2)">
-			<div class="background"></div>
-
-
-			<div class="row"
-	   <ion-content class="content-x col-100" scroll="true">
-			<ion-scroll direction="x" class="wide-as-needed">
-			<img ng-repeat="sticker in stickers" ng-click="addSticker(sticker.id)" ng-src="{{sticker.src}}" title="{{sticker.name}}" class="tab-item"/>
-			</ion-scroll>
-			</ion-content>
-			</div>
-		</div>
+      <div class="action-panel sticker-buttons" ng-show="shouldShowAction('sticker', 2)">
+    			<div class="background"></div>
+    			<div class="row"
+        	   <ion-content class="content-x col-100" scroll="true">
+        			<ion-scroll direction="x" class="wide-as-needed">
+        			    <img ng-repeat="sticker in stickers" 
+                       ng-click="addSticker(sticker.id)" 
+                       ng-src="{{sticker.src}}" 
+                       title="{{sticker.name}}" 
+                       class="tab-item"/>
+        			</ion-scroll>
+        			</ion-content>
+    			</div>
+		  </div>
        <!-- end sticker -->
 
     </div> <!-- end action panel -->

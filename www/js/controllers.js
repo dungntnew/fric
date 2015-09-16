@@ -188,7 +188,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             multipleTab: false,
             onSelectedHanlders: [],
             onDesectedHandlers: [],
-            actionBarClass: "camera-action-bar",
+            actionBarClass: "action-bar",
             inActiveClass: 'tab-icon-camera',
             activeClass: 'tab-icon-camera-active'
         }, {
@@ -955,8 +955,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $scope.showTextInputPopup();
         }
         
-        $scope.addTabDeselectedHandler(3, function(){
-            $scope.painter.deselectWidget();
+        _.each([0, 1, 2, 3], function(tabId){
+            $scope.addTabDeselectedHandler(tabId, function(){
+                $scope.painter.deselectWidget();
+            });
         });
 
         $scope.addTabselectedHandler(3, function() {
