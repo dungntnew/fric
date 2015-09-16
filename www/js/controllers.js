@@ -511,7 +511,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                         var dataURL = canvas.toDataURL();
                         $scope.painter.addImage(dataURL, function() {
                             setTimeout(function(){
-                                $scope.hideProcessingLoading();
+                                $scope.hideProcessingLoading();                              
                             }, 0);
                         });
                         return;
@@ -525,7 +525,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                         $scope.painter.addImage(dataURL, function() {
                             setTimeout(function(){
                                 $scope.hideProcessingLoading();
-                            }, 0);
+                             }, 0);
                         });
                     });  
                 });
@@ -537,7 +537,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $(canvas).data("data-filter-name", "");
             $scope.painter.addImage(dataURL, function(){
                 setTimeout(function(){
-                    $scope.hideProcessingLoading();
+                       $scope.hideProcessingLoading();
                 }, 100);
             });
         }
@@ -559,12 +559,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     ctx.drawImage(image, 0, 0, w, h);
                     setTimeout(function(){
                        $scope.hideProcessingLoading();
-
-                       if ($scope.activeFrameIndex != -1){
-                            var index = $scope.activeFrameIndex;
-                            var frame = $scope.frames[index];
-                            $scope.painter.applyFrame(frame);
-                       }
                     }, 100);
                 };
                 image.src = dataURL;
@@ -1536,7 +1530,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
             fabric.loadSVGFromURL(frame.mask, function(objects, options) {
                 var mask = $scope.painter.mask = fabric.lastMaskImage = fabric.util.groupSVGElements(objects, options);
-
                 var image = userImage;
                 var iw = image.width;
                 var ih = image.height;
@@ -1570,6 +1563,56 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 });
                 $scope.canvas.renderAll();
                 $scope.hideProcessingLoading();
+            });
+        },
+        setLastFrame(callback) {
+            var self = this;
+
+            var userImages = $scope.canvas.getObjects('user-image');
+            if (userImages.length == 0) {
+                return;
+            }
+            var userImage = userImages[0];
+            var index = $scope.activeFrameIndex;
+            if (index == -1) {
+                return;
+            }
+
+            var frame = $scope.frames[index];
+            fabric.loadSVGFromURL(frame.mask, function(objects, options) {
+                var mask = $scope.painter.mask = fabric.lastMaskImage = fabric.util.groupSVGElements(objects, options);
+                var image = userImage;
+                var iw = image.width;
+                var ih = image.height;
+                var it = image.top;
+                var il = image.left;
+                var mw = mask.width;
+                var mh = mask.height;
+
+                if (iw / ih > mw / mh) {
+                    mask.scaleToHeight(ih);
+                } else {
+                    mask.scaleToWidth(iw);
+                }
+
+                var leftcenter = iw / 2;
+                var halfleft = mask.currentWidth / 2;
+                var topCenter = ih / 2;
+                var halfTop = mask.currentHeight / 2;
+
+                mask.set({
+                    originX: 'left',
+                    originY: 'top',
+                    left: leftcenter - halfleft,
+                    top: topCenter - halfTop
+                });
+                mask.setCoords();
+                userImage.set({
+                    clipTo: function(ctx) {
+                        fabric.lastMaskImage.render(ctx);
+                    }
+                });
+                if (callback) callback();
             });
         },
         setDefaultFrame: function() {
@@ -1617,9 +1660,17 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.canvas.sendToBack(image);
                 $scope.canvas.setActiveObject(image);
                 image.setCoords();
-                $scope.canvas.renderAll();
 
-                if (callback) callback();
+                // setup frame
+                if ($scope.activeFrameIndex != -1){
+                    self.setLastFrame(function(){
+                        $scope.canvas.renderAll();
+                        if (callback) callback();
+                    })
+                }else {
+                    $scope.canvas.renderAll();
+                    if (callback) callback();
+                }
             });
         },
         shouldShowWidgetToolBars: function() {
