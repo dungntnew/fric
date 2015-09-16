@@ -1,5 +1,7 @@
 .draw-content-view .row {
   padding: 0 !important;
+  margin: 0px auto;
+  text-align: center;
 }
 
 #frame-wrapper,
@@ -9,7 +11,6 @@
    text-align: center;
    margin: 0 auto;  
    background-image: url(data:image/gif;base64,R0lGODlhCgAKAIAAAOLi4v///yH5BAAHAP8ALAAAAAAKAAoAAAIRhB2ZhxoM3GMSykqd1VltzxQAOw==);
-   display: inline-block;
 }
 
 #frame-wrapper, #frame-wrapper .row 
