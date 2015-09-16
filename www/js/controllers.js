@@ -542,26 +542,22 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             });
         }
 
-        $scope.onPictureLoaded = function(dataURL) {
+        $scope.onPictureLoaded = function(dataURL, image) {
             $scope.showProcessingLoading('処理中');
             var canvas = $("#take-picture-canvas")[0];
             $(canvas).data("data-filter-name", "");
 
             $scope.painter.addImage(dataURL, function(){
-                var image = new Image();
-                image.onload = function() {
-                    var w = image.width;
-                    var h = image.height;
-                    canvas.width = w;
-                    canvas.height = h;
-                    var ctx = canvas.getContext('2d');
-                    ctx.fillRect(0, 0, w, h);
-                    ctx.drawImage(image, 0, 0, w, h);
-                    setTimeout(function(){
-                       $scope.hideProcessingLoading();
-                    }, 100);
-                };
-                image.src = dataURL;
+                var w = image.width;
+                var h = image.height;
+                canvas.width = w;
+                canvas.height = h;
+                var ctx = canvas.getContext('2d');
+                ctx.fillRect(0, 0, w, h);
+                ctx.drawImage(image, 0, 0, w, h);
+                setTimeout(function(){
+                   $scope.hideProcessingLoading();
+                }, 100);
             });
         }
     }());
@@ -1727,17 +1723,15 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         videoId: '#take-picture-video'
     });
     $scope.uploader.init({
-        window: $window,
-        scope: $scope,
-        fail: function(err) {
+         fail: function(err) {
             $scope.showAlert({
                 title: "警報！",
                 message: err
             });
         },
-        done: function(dataURL) {
+        done: function(dataURL, image) {
             $scope.pictureLoaded = true;
-            $scope.onPictureLoaded(dataURL);
+            $scope.onPictureLoaded(dataURL, image);
             $scope.changeToAction("filter");
         },
         inputId: '#take-picture-input'
