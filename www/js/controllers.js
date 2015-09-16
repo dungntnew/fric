@@ -1362,6 +1362,25 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     });
                 } else {
                     $scope.hideTextSetting();
+
+                    if (e.target && e.target.isType('user-image')) {
+                        if ($scope.activeTabIndex != 0 && $scope.activeTabIndex != 1){
+                            setTimeout(function(){
+                                $scope.$apply(function(){
+                                    $scope.selectTabWithIndex(0, true);
+                                })
+                            })       
+                        }
+                    }
+                    else {
+                        if ($scope.activeTabIndex != 2){
+                            setTimeout(function(){
+                                $scope.$apply(function(){
+                                    $scope.selectTabWithIndex(2, true);
+                                })
+                            })
+                        }
+                    }
                 }
 
             });
