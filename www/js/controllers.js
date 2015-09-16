@@ -559,6 +559,12 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     ctx.drawImage(image, 0, 0, w, h);
                     setTimeout(function(){
                        $scope.hideProcessingLoading();
+
+                       if ($scope.activeFrameIndex != -1){
+                            var index = $scope.activeFrameIndex;
+                            var frame = $scope.frames[index];
+                            $scope.painter.applyFrame(frame);
+                       }
                     }, 100);
                 };
                 image.src = dataURL;
