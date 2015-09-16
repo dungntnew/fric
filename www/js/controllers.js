@@ -1561,7 +1561,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.hideProcessingLoading();
             });
         },
-        setLastFrame(callback) {
+        setLastFrame: function(callback) {
             var self = this;
 
             var userImages = $scope.canvas.getObjects('user-image');
