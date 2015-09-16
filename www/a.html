@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+   
+  <meta charset="UTF-8">
+  <title>Example - example-example23-production</title>
+  
+  <script src="lib/jquery/dist/jquery.min.js"></script>
+    <script src="js/load-image.all.min.js"></script>
+         <script src="js/upload.js?v=1"></script> 
+
+
+  
+</head>
+<body ng-app="docsTabsExample">
+<center style="position: relative">
+<canvas id="c" width="320" height="240" 
+style="border: 1px solid green;width:80%; height:80%; color:blue; display:block;"></canvas>
+ 
+ <div>
+  <input type="file" id="take-picture-input" accept="image/*" ng-hidden>
+ </div>
+</center>
+<script>
+
+var uploader = uploaderHandler;
+
+var canvas = $("#c")[0];
+
+uploader.init({
+        window: {},
+        scope: {},
+        fail: function(err) {
+          alert("error: " + err);
+        },
+        done: function(dataURL, image) {
+          console.log(dataURL);
+
+          var w = image.width;
+          var h = image.height;
+          canvas.width = w;
+          canvas.height = h;
+          var ctx = canvas.getContext('2d');
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(image, 0, 0, w, h);
+        },
+        inputId: '#take-picture-input'
+});
+
+
+
+</script>
+</body>
+</html>

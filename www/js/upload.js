@@ -1,13 +1,8 @@
 var uploaderHandler = {
     init: function(options) {
         this.options = options || {};
-        this.window = options['window'] || {};
-        this.scope = options['scope'] || {};
         this.callback = options['done'] || function() {};
         this.fail = options['fail'] || function(e) {};
-        this.onBegin = options['onBegin'] || function() {};
-        this.onEnd = options['onEnd'] || function() {};
-
         this.options = options;
         this.initizalied = false;
 
@@ -19,65 +14,56 @@ var uploaderHandler = {
         this.register();
         this.initizalied = true;
     },
-
     register: function() {
         if (!window.File || !window.FileReader || !window.FormData) {
             this.onFail('your browser do not support file upload!');
             return;
         }
         var self = this;
-        var _handler = function(e) {
-            var file = e.target.files[0];
-            if (!file || !/^image\//i.test(file.type)) {
-                self.onFail('please select valid image file!');
-                return;
+
+        var _load = function (file, options) {
+            if (!loadImage(
+                    file,
+                    function(img) {
+                        if (!(img.src || img instanceof HTMLCanvasElement)) {
+                            self.onFail('Loading image file failed');
+                        } else {
+                            if (self.callback) {
+                                var dataURL = img.src || img.toDataURL();
+                                self.callback(dataURL, img);
+                            }
+                        }
+                    },
+                    options
+                )) {
+                self.onFail('Your browser does not support the URL or FileReader API');
             }
-            self._process(file);
-            self.onBegin();
         };
 
-        if (window.addEventListener) {
-            this.input.removeEventListener('change', _handler);
-            this.input.addEventListener('change', _handler, false);
-        } else if (window.attachEvent) {
-            this.input.detachEvent('onchange', _handler);
-            this.input.attachEvent("onchange", _handler);
-        } else {
-            this.onFail('your browser do not support file upload!');
-        }
-    },
-    onBegin: function() {},
-    onEnd: function() {},
-    onFail: function(error) {},
-
-    _process: function(file) {
-        self = this;
-        try {
-
-            var dataURL = window.URL.createObjectURL(file);
-            if (self.callback) {
-                self.callback(dataURL, function() {
-                    URL.revokeObjectURL(dataURL)
-                });
-            }
-            self.onEnd();
-        } catch (e) {
-            try {
-                var fileReader = new FileReader();
-                fileReader.onload = function(event) {
-                    var dataURL = event.target.result;
-                    if (self.callback) {
-                        self.callback(dataURL, function() {
-                            dataURL = null;
-                        });
-                    }
-                    self.onEnd();
+        var _handler = function(e) {
+            e.preventDefault();
+            e = e.originalEvent;
+            var target = e.dataTransfer || e.target,
+                file = target && target.files && target.files[0],
+                options = {
+                   maxWidth: 600,
+                   maxHeight: 300,
+                   minWidth: 100,
+                   minHeight: 50,
+                   canvas: false
                 };
-                fileReader.readAsDataURL(file);
-            } catch (e) {
-                self.onFail('your browser do not support file upload!');
-                self.onEnd();
+            if (!file) {
+                return;
             }
-        }
-    }
+
+            loadImage.parseMetaData(file, function (data) {
+                if (data.exif) {
+                    options.orientation = data.exif.get('Orientation');
+                }
+                _load(file, options);
+            });
+        };        
+        $(this.input).on('change', _handler);
+    },
+    onFail: function(error) {}
 }
