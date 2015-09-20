@@ -10,9 +10,10 @@
 }
 
 @font-face {
+  YasashisaGothic.otf
   font-family:"07YasashisaGothic";
-  src:url("07YasashisaGothic.ttf") 
-  format("woff"),url("07YasashisaGothic.ttf") 
+  src:url("YasashisaGothic.otf") 
+  format("eot"),url("YasashisaGothic.otf") 
 }
 
 @font-face {

@@ -730,12 +730,12 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 id: 0,
                 lang: 'jp',
                 displayName: 'やさしさゴシック',
-                family: '07YasashisaGothic',
+                family: 'YasashisaGothic',
             }, {
                 id: 1,
                 lang: 'jp',
                 displayName: 'はななり明朝',
-                family: 'HannariMincho',
+                family: 'Hannari',
             }, {
                 id: 2,
                 lang: 'en',
