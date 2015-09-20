@@ -7,38 +7,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "www/js/controllers.js",
-			"settings":
-			{
-				"buffer_size": 60588,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "www/css/style.css",
-			"settings":
-			{
-				"buffer_size": 11511,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "www/templates/product-detail.html",
-			"settings":
-			{
-				"buffer_size": 6448,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "www/index.html",
-			"settings":
-			{
-				"buffer_size": 1742,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -248,19 +216,20 @@
 	[
 		"/Users/dungntnew/vdev/konin-app",
 		"/Users/dungntnew/vdev/konin-app/www",
+		"/Users/dungntnew/vdev/konin-app/www/css",
 		"/Users/dungntnew/vdev/konin-app/www/js",
-		"/Users/dungntnew/vdev/konin-app/www/lib",
-		"/Users/dungntnew/vdev/konin-app/www/lib/instagram_js_filter",
-		"/Users/dungntnew/vdev/konin-app/www/lib/instagram_js_filter/js",
 		"/Users/dungntnew/vdev/konin-app/www/templates"
 	],
 	"file_history":
 	[
-		"/Users/dungntnew/vdev/konin-app/www/templates/product-detail.html",
-		"/Users/dungntnew/vdev/konin-app/www/css/style.css",
-		"/Users/dungntnew/vdev/konin-app/www/css/takephoto.css",
 		"/Users/dungntnew/vdev/konin-app/www/index.html",
+		"/Users/dungntnew/vdev/konin-app/www/css/font-face.css",
+		"/Users/dungntnew/vdev/konin-app/www/css/takephoto.css",
+		"/Users/dungntnew/vdev/konin-app/www/css/style.css",
+		"/Users/dungntnew/vdev/konin-app/www/js/upload.js",
 		"/Users/dungntnew/vdev/konin-app/www/js/controllers.js",
+		"/Users/dungntnew/vdev/konin-app/www/a.html",
+		"/Users/dungntnew/vdev/konin-app/www/templates/product-detail.html",
 		"/Users/dungntnew/vdev/konin-app/www/lib/instagram_js_filter/js/worker.filter.js",
 		"/Users/dungntnew/vdev/konin-app/www/lib/instagram_js_filter/index.html",
 		"/Users/dungntnew/vdev/konin-app/www/lib/instagram_js_filter/js/filter.js",
@@ -269,7 +238,6 @@
 		"/Users/dungntnew/Desktop/manga_app_data/json/chapterInfo.json",
 		"/Users/dungntnew/vdev/konin-app/www/x.html",
 		"/Users/dungntnew/vdev/konin-app/www/js/services.js",
-		"/Users/dungntnew/vdev/konin-app/www/js/upload.js",
 		"/Users/dungntnew/vdev/konin-app/www/lib/imageloader/dis/imageloader.all.min.js",
 		"/Users/dungntnew/vdev/konin-app/undo-redo",
 		"/Users/dungntnew/vdev/konin-app/www/templates/text-input-model.html",
@@ -323,6 +291,21 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"setLastFrame",
+			"setLastFrame(callback)",
+			"onPictureLoaded",
+			"dropChangeHandler",
+			"displayImage",
+			"dropChangeHandler",
+			"uploader",
+			"applyFrame",
+			"applyFa",
+			"applyFrame",
+			"addImage",
+			"content-x ",
+			"Deselect",
+			"image-wrapper",
+			"  setTimeout(function(){\n                            $scope.$apply(function(){\n                                $scope.selectTabWidthIndex(0, true);\n                            })\n                        })",
 			"selectTabWithIndex",
 			"onDesectedHandlers",
 			"addTabDeselectedHandler",
@@ -435,22 +418,7 @@
 			"isTyping",
 			"text-action-bar",
 			"actionBarClass",
-			"actionBarClassName",
-			"text-setting",
-			"frame-action",
-			"text-setting",
-			"text-setting\n",
-			"text-setting",
-			"showTextSetting",
-			"Event",
-			"selectTabWithIndex",
-			"addTabselectedHandler",
-			"onSelectedHanlders",
-			"selectTabWithIndex",
-			"isTyping",
-			"fontSetting",
-			"history",
-			"applyFrame"
+			"actionBarClassName"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -471,129 +439,8 @@
 	"groups":
 	[
 		{
-			"selected": 3,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "www/js/controllers.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 60588,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								45769,
-								45769
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 19888.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "www/css/style.css",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 11511,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								4828,
-								4828
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/CSS/CSS.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 3157.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "www/templates/product-detail.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 6448,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2861,
-								2873
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 907.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "www/index.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1742,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1094,
-								1094
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 155.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		},
 		{
@@ -666,16 +513,20 @@
 		"selected_items":
 		[
 			[
+				"contro",
+				"www/js/controllers.js"
+			],
+			[
+				"pho",
+				"www/css/takephoto.css"
+			],
+			[
 				"style",
 				"www/css/style.css"
 			],
 			[
 				"product",
 				"www/templates/product-detail.html"
-			],
-			[
-				"contro",
-				"www/js/controllers.js"
 			],
 			[
 				"phot",

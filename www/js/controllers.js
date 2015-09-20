@@ -279,10 +279,6 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
 
         this.shouldShowAction = function(actionName, tabIndex) {
-            console.log("should for aciton: " + actionName + " - index: " + tabIndex);
-            console.log("current: " + $scope.actionName);
-
-
             if ($scope.actionName == '') {
                 setDefaultActionForTab();
             }
