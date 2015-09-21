@@ -108,6 +108,46 @@ body {
   background-image: url('../img/assets/btn/undo-btn.png');
 }
 
+
+.confirm-title {
+  width: 80px;
+}
+
+.popup {
+  -webkit-border-radius:4px !important;
+  -moz-border-radius:4px !important;
+  border-radius:4px !important;
+  
+  -webkit-box-shadow:2px 2px 6px 1px #d2d2d2;
+  -moz-box-shadow:2px 2px 6px 1px #d2d2d2;
+  box-shadow:2px 2px 6px 1px #d2d2d2;
+}
+
+.popup-body {
+  text-align: center;
+  font-size: 18px;
+}
+
+.popup-head {
+  border: none !important;
+}
+
+.button-confirm {
+   border: none !important;
+  background-color: transparent;
+  background-position: center; 
+  background-size: contain;
+  background-clip: content-box;
+  background-repeat: no-repeat;
+  background-image: url('../img/assets/btn/confirm.png')
+}
+
+.popup-container .activated {
+   border: none !important;
+   background-color: transparent !important;
+}
+
+
 .button.disabled, .button[disabled] {
     opacity: 0.5 !important;
     cursor: default !important;
