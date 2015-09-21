@@ -31,14 +31,11 @@
             </button>
         </div>
 
-        <div class="frame-action row" ng-show="shouldShowPictureToolBars()">
-<!--             <button id="retake-picture-btn" class="col-100 button button-full button-balanced">
-                再選択
-            </button> -->
-<!--             <button id="decided-picture-btn" class="col-50 button button-full button-assertive">
-                決定
-            </button> -->
+        <div class="frame-action row" ng-show="isSelectOther()">
+            <button id="retake-picture-btn" class="col-100 button action-reselect-image-btn">
+            </button>
         </div>
+
 
         <div class="frame-action row" ng-show="shouldShowWidgetToolBars()">
             <button id="remove-widget-btn" class="col-100 button button-full button-assertive">
@@ -76,9 +73,28 @@
             <ion-panel>
             <ion-content class="content-x" scroll="true">
                 <ul class="list">
-                     <li class="item"  ng-repeat="font in fontFamily.fonts"  ng-class="{active: fontFamily.value==font}"  style="font-family: {{font.family}}" ng-click="fontFamily.select(font)">
+                     <li 
+                     ng-repeat="font in fontFamily.fontJP()"  
+                     ng-class="{active: fontFamily.value==font}"  
+                     style="font-family: {{font.family}}" 
+                     ng-click="fontFamily.select(font)" 
+                     class="item {{fontFamily.itemClassFor(font)}}" >
                            {{font.displayName}}
                      </li>
+                     <li class="item item-divider" >
+                       【英語のみ】
+                     </li>
+                     <li 
+                     ng-repeat="font in fontFamily.fontEN()"  
+                     ng-class="{active: fontFamily.value==font}"  
+                     style="font-family: {{font.family}}" 
+                     ng-click="fontFamily.select(font)" 
+                     class="item {{fontFamily.itemClassFor(font)}}" >
+                           {{font.displayName}}
+                     </li>
+
+                     <li class="item blank" ></li>
+                     <li class="item blank" ></li>
                  </ul>
             </ion-content>
             </ion-panel>

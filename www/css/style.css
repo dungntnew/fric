@@ -273,6 +273,12 @@ body {
   text-align: center !important;
 }
 
+.text-setting .blank {
+  border: none !important;
+  height: 20px !important;
+}
+
+
 .col-9 {
   width: 9%;
   height: 40px;
@@ -335,6 +341,21 @@ body {
   background-size: contain;
   background-repeat: no-repeat;
   background-image: url('../img/assets/btn/folder-btn.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.action-reselect-image-btn {
+  margin: 0px auto !important;
+  text-align: center !important;
+  min-height: 60px !important;
+  width: 150px !important;
+  background-color: transparent !important;
+  border: none !important;
+  background-position: center; 
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../img/assets/btn/select-other-img.jpg');
   background-size: contain;
   background-repeat: no-repeat;
 }

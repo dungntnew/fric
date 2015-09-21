@@ -297,12 +297,17 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $ionicSlideBoxDelegate.slide(viewId);
         }
 
-        $scope.shouldShowPictureToolBars = function() {
-            return $scope.pictureLoaded && 
+        $scope.isSelectOther = function() {
+            return ($scope.pictureLoaded && !$scope.isWaitReselect)
+                   && 
                    ($scope.activeTabIndex == 0 || $scope.activeTabIndex == 1);
         }
+
         $scope.shouldShowTakePictureToolBars = function() {
-            return ($scope.activeTabIndex == 0 || $scope.activeTabIndex == 1);
+            
+            return (!$scope.pictureLoaded  || $scope.isWaitReselect)
+                   && 
+                   ($scope.activeTabIndex == 0 || $scope.activeTabIndex == 1);
         }
 
         $scope.shouldShowPreviewToolBars = function() {
@@ -703,11 +708,36 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             value: null,
             timeoutId: null,
             watch: 'fontFamily.value.displayName',
+            fontJP: function(){
+                var jpFonts = [];
+                this.fonts.forEach(function(font){
+                    if (font.lang === 'jp')
+                       jpFonts.push(font);
+                });
+                return jpFonts;
+            },
+            fontEN: function(){
+                var enFonts = [];
+                this.fonts.forEach(function(font){
+                    if (font.lang === 'en')
+                       enFonts.push(font);
+                });
+                return enFonts;
+            },
+
             display: function() {
                 return this.name + ' ' + this.value.displayName;
             },
             select: function(font) {
                 this.value = font;
+            },
+            itemClassFor: function(font){
+                if (font.family === ''){
+                    return 'blank';
+                }
+            },
+            isBlank: function(font) {
+                return font.family === '';
             },
             find: function(fontName) {
                 for (var i = 0; i < this.fonts.length; i++) {
@@ -1716,6 +1746,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         done: function(canvas, canvasId) {
             $scope.usingWebcam = false;
             $scope.pictureLoaded = true;
+            $scope.isWaitReselect = false;
             $scope.onTakenPicture(canvas, canvasId);
             $scope.changeToAction("filter");
 
@@ -1732,6 +1763,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         },
         done: function(dataURL, image) {
             $scope.pictureLoaded = true;
+            $scope.isWaitReselect = false;
             $scope.onPictureLoaded(dataURL, image);
             $scope.changeToAction("filter");
         },
@@ -1826,28 +1858,23 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     });
 
     angular.element('#retake-picture-btn').bind('click', function(e) {
-        var readyLateFunc = function(){
-            if ($scope.useWebcam) {
-                $scope.webcam.start();
-                $scope.usingWebcam = true;
-            }
-            $scope.pictureLoaded = false;
-        }
-
-        if ($scope.activeTabIndex != 0){
-            setTimeout(function(){
-                $scope.$apply(function(){
-                    $scope.selectTabWithIndex(0, false, function(){
-                       readyLateFunc();
-                    });
+        if ($scope.isMobile()) {
+            $scope.webcam.clear();
+            setTimeout(function() {
+                $scope.$apply(function() {
+                    $scope.useWebcam = false;
+                    $scope.usingWebcam = false;
                 });
             });
-
-        }else {
-            $scope.changeToAction("takePicture");
-            readyLateFunc();
+            angular.element('#take-picture-input').trigger('click');
         }
-
+        else {
+            setTimeout(function() {
+                $scope.$apply(function() {
+                   $scope.isWaitReselect = true;
+               });
+            });
+        }
     });
 
     angular.element('#decided-picture-btn').bind('click', function(e) {
