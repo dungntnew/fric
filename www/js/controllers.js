@@ -389,6 +389,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.isWaitForConfirmScreeen = false;
         var handleScreenSize = function(w, h) {
             if (h <= 0) return;
+            //if (!$scope.isMobile()) return;
 
             if (w / h > 1 && $scope.isMobile()) {
                 if ($scope.isWaitForConfirmScreeen) {
