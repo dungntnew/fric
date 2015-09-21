@@ -1151,9 +1151,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     painter.toImageContent(function(content) {
                         var left = canvas.width / 2 + content.width / 2;
                         var top = canvas.height / 2 + content.height / 2;
-                        console.log("[print content] size: " + canvas.width + " x " + canvas.height);
-                        console.log("[exported content] size: " + content.width + " x " + content.height);
-                        console.log("[content place] l-t: " + left + " - " + top);
+                        // console.log("[print content] size: " + canvas.width + " x " + canvas.height);
+                        // console.log("[exported content] size: " + content.width + " x " + content.height);
+                        // console.log("[content place] l-t: " + left + " - " + top);
 
                         content.set({
                             originX: 'center',
@@ -1878,7 +1878,21 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
     });
 
+
+    angular.element('#continue-edit-btn').bind('click', function(e) {
+        setTimeout(function() {
+            $scope.$apply(function() {
+                var tabIndex = $scope.preActiveTabIndex;
+                $scope.selectTabWithIndex(tabIndex, true);
+            });
+
+        })
+    })
+
+
     angular.element('#decided-picture-btn').bind('click', function(e) {
+
+        $scope.lastUsedTabIndex = $scope.activeTabIndex;
         setTimeout(function() {
             $scope.$apply(function() {
                 $scope.selectTabWithIndex(1);
@@ -1898,6 +1912,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $scope.painter.removeSelectedWidget();
         })
     })
+    
 })
 
 

@@ -59,10 +59,17 @@
         <!-- end camera-->
         
         <div class="frame-action row" ng-show="shouldShowPreviewToolBars()">
-            <button id="decided-design-btn" class="col-100 button button-full decided-design-btn">
-               
-            </button>
-
+              
+               <div class="col-100" style="text-align: center; width: 100%">
+               <div class="row">
+               <button id="decided-design-btn"  class="button decided-design-btn"></button>
+               </div>
+               <div class="row">
+              <button id="continue-edit-btn" class="button continue-edit-btn button-positive">
+                続けて編集する
+              </button>
+              </div>
+              </div>
         </div>
 
            <!-- text setting button -->
@@ -110,6 +117,9 @@
         <div style="position:relative; width=100%"></div>
         <!-- filter -->
         <div class="action-panel sticker-buttons" ng-show="shouldShowAction('filter', 0)">
+              <div class="sticker-title-message">
+                <span>フィルタを選択してください</span>
+              </div>
               <div class="background"></div>
                <div class="row"
                  <ion-content class="content-x col-100" scroll="true">

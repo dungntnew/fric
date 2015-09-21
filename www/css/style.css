@@ -216,6 +216,9 @@ body {
 
 .decided-design-btn {
   width: 480px;
+  margin: 0px auto !important;
+  text-align: center !important;
+
   background-color: transparent !important;
   border: none !important;
   background-position: center; 
@@ -223,6 +226,12 @@ body {
   background-clip: content-box;
   background-repeat: no-repeat;
   background-image: url('../img/assets/btn/decided-design-btn.png');
+}
+
+.continue-edit-btn {
+  margin: 0px auto !important;
+  text-align: center !important;
+  background-repeat: no-repeat;
 }
 
 .action-bar {
@@ -272,6 +281,9 @@ body {
   }
 }
 
+.sticker-title-message {
+   font-size: 11px;
+}
 
 
 .text-setting .content-x {
