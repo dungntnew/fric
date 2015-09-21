@@ -137,16 +137,74 @@ body {
   background-color: transparent;
   background-position: center; 
   background-size: contain;
-  background-clip: content-box;
+/*  background-clip: content-box;*/
   background-repeat: no-repeat;
   background-image: url('../img/assets/btn/confirm.png')
 }
+
+.text-input-popup .button-cancel {
+  border: none !important;
+  background-color: transparent;
+  background-position: center; 
+  background-size: contain;
+/*  background-clip: content-box;*/
+  background-repeat: no-repeat;
+  background-image: url('../img/assets/btn/cancel-btn.png')
+
+}
+
+.text-input-popup .button-remove {
+  border: none !important;
+  background-color: transparent;
+  background-position: center; 
+  background-size: contain;
+/*  background-clip: content-box;*/
+  background-repeat: no-repeat;
+  background-image: url('../img/assets/btn/cancel-btn.png')
+
+}
+
+
+.text-input-popup .button-input {
+  border: none !important;
+  background-color: transparent;
+  background-position: center; 
+  background-size: contain;
+/*  background-clip: content-box;*/
+  background-repeat: no-repeat;
+  background-image: url('../img/assets/btn/input-btn.png')
+}
+
+.text-input-popup textarea {
+  background-color: #E4E4E4;
+  height: 60px;
+}
+
 
 .popup-container .activated {
    border: none !important;
    background-color: transparent !important;
 }
 
+
+.text-input-popup .popup-head{
+  background-color: #ff5a69;
+  -webkit-border-top-left-radius:4px !important;
+  -moz-border-top-left-radius:4px !important;
+  border-top-left-radius:4px !important;
+  -webkit-border-top-right-radius:4px !important;
+  -moz-border-top-right-radius:4px !important;
+  border-top-right-radius:4px !important;
+}
+
+.text-input-popup  .note {
+  font-size: 11px;
+}
+
+.text-input-popup .popup-title {
+  color: white !important;
+  font-weight: bold;
+}
 
 .button.disabled, .button[disabled] {
     opacity: 0.5 !important;

@@ -102,10 +102,15 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             title: "注意！",
             message: "------"
         }
+        data.title = '<img class="confirm-title" src="img/assets/btn/notice.png"/>';
 
-        var alertPopup = $ionicPopup.alert({
+        var alertPopup = $ionicPopup.show({
             title: data.title,
-            template: data.message
+            template: data.message,
+            buttons:[{
+                text: '',
+                type: 'button-confirm'
+            }]
         });
         alertPopup.then(function(res) {
             console.log('Thank you for not eating my delicious ice cream cone');
@@ -965,12 +970,12 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 text: content
             }
             var cancel = {
-                text: 'キャンセル',
-                type: 'button-light'
+                text: '',
+                type: 'button-cancel'
             };
             var remove = {
-                text: '削除',
-                type: 'button-assertive',
+                text: '',
+                type: 'button-remove',
                 onTap: function(e) {
                     if (!$scope.selectedWidget) {
                         $scope.selectedWidget = text;
@@ -979,8 +984,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 }
             }
             var add = {
-                text: '<b>入力</b>',
-                type: 'button-positive',
+                text: '',
+                type: 'button-input',
                 onTap: function(e) {
                     if (!$scope.textData.text) {
                         e.preventDefault();
@@ -990,8 +995,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 }
             }
             var update = {
-                text: '<b>更新</b>',
-                type: 'button-positive',
+                text: '',
+                type: 'button-input',
                 onTap: function(e) {
                     if (!$scope.textData.text) {
                         e.preventDefault();
@@ -1001,13 +1006,13 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 }
             }
 
-            var actions = text ? [remove, update] : [cancel, add];
+            var actions = text ? [update, remove] : [add, cancel];
 
             // An elaborate, custom popup
             var textInputPopup = $ionicPopup.show({
-                template: '<input type="text" maxlength="30" ng-model="textData.text">',
+                cssClass: 'text-input-popup',
+                template: '<textarea rows="2" type="text" maxlength="30" ng-model="textData.text"/><span class="note">(全角30文字まで)</span>',
                 title: 'テキストを入力してください',
-                subTitle: '制限（30文字)',
                 scope: $scope,
                 buttons: actions
             });
@@ -1705,7 +1710,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         fail: function(err) {
             $scope.showAlert({
                 title: "警報！",
-                message: err
+                message: "カメラが起動できません。"
             });
         },
         done: function(canvas, canvasId) {
