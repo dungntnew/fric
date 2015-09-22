@@ -6,7 +6,7 @@ basic effects
 
 // basic filter for enhancing photos
 Worker.filter.enhance = function(pix){
-  console.log('Basic enhancement');
+  
   for (var i = 0, n = pix.length; i < n; i += 4){
     pix[i]    = pix[i]    * 1.24; // red
     pix[i+1]  = pix[i+1]  * 1.33; // green
@@ -16,7 +16,7 @@ Worker.filter.enhance = function(pix){
 
 // grayscale
 Worker.filter.grayscale = function(pix){
-  console.log('Grayscale enhancement');
+ 
   for (var i = 0, n = pix.length; i < n; i += 4){
     // calculated from NTSC
     var grayscale = pix[i] * .29 + pix[i+1] * .58 + pix[i+2] * .11;
@@ -27,7 +27,7 @@ Worker.filter.grayscale = function(pix){
 };
 
 Worker.filter.sepia = function(pix){
-  console.log('Sepia enhancement');
+ 
   for (var i = 0, n = pix.length; i < n; i += 4){
     pix[i]    = pix[i]    * 1.07;
     pix[i+1]  = pix[i+1]  * .74;
@@ -46,7 +46,7 @@ Worker.filter.luminance = function(pix){
 };
 
 Worker.filter.negaposi = function(pix){
-  console.log('Nega-Posi enhancement');
+ 
   for (var i = 0, n = pix.length; i < n; i += 4){
     pix[i]    = 255 - pix[i];
     pix[i+1]  = 255 - pix[i+1];
@@ -55,14 +55,14 @@ Worker.filter.negaposi = function(pix){
 };
 
 Worker.filter.opacity = function(pix, value){
-  console.log('Opacity enhancement');
+ 
   for (var i = 0, n = pix.length; i < n; i += 4){
     pix[i+3] = pix[i+3] * value;
   }
 };
 
 Worker.filter.brighten = function(pix, value){
-  console.log('Worker.filter.brighten');
+ 
   for (var i = 0, n = pix.length; i < n; i += 4){
     pix[i]    += value;
     pix[i+1]  += value;
@@ -71,7 +71,7 @@ Worker.filter.brighten = function(pix, value){
 };
 
 Worker.filter.darken = function(pix, value){
-  console.log('Worker.filter.darken');
+  
   for (var i = 0, n = pix.length; i < n; i += 4){
     pix[i]    -= value;
     pix[i+1]  -= value;
@@ -80,7 +80,7 @@ Worker.filter.darken = function(pix, value){
 };
 
 Worker.filter.threshold = function(pix){
-  console.log('Threshold enhancement');
+  
   var
     red,
     green,
@@ -102,7 +102,7 @@ Worker.filter.threshold = function(pix){
   }
 };
 Worker.filter.hueRotate = function(pix, deg){
-  console.log('Hue Rotate enhancement');
+  
   for (var i = 0, n = pix.length; i < n; i += 4){
     var
       hsv,
@@ -118,7 +118,7 @@ Worker.filter.hueRotate = function(pix, deg){
   }
 }
 Worker.filter.saturate = function(pix, num){
-  console.log('Saturate enhancement');
+ 
   for (var i = 0, n = pix.length; i < n; i += 4){
     var
       hsv,
@@ -238,7 +238,7 @@ Worker.filter.XYMirror = function(pix) {
 Instagram effects
 =====================================*/
 Worker.filter.lark = function(pix){
-  console.log('Worker.filter.lark');
+  
 
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
@@ -281,7 +281,7 @@ Worker.filter.lark = function(pix){
   }
 };
 Worker.filter.reyes = function(pix){
-  console.log('Worker.filter.reyes');
+ 
 
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
@@ -324,8 +324,7 @@ Worker.filter.reyes = function(pix){
   }
 };
 Worker.filter.juno = function(pix){
-  console.log('Worker.filter.juno');
-
+  
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -367,7 +366,7 @@ Worker.filter.juno = function(pix){
   }
 };
 Worker.filter.slumber = function(pix){
-  console.log('Worker.filter.slumber');
+  
 
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
@@ -410,7 +409,7 @@ Worker.filter.slumber = function(pix){
   }
 };
 Worker.filter.crema = function(pix){
-  console.log('Worker.filter.crema');
+  
 
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
@@ -449,7 +448,7 @@ Worker.filter.crema = function(pix){
   }
 };
 Worker.filter.ludwig = function(pix){
-  console.log('Worker.filter.ludwig');
+  
 
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
@@ -488,7 +487,7 @@ Worker.filter.ludwig = function(pix){
   }
 };
 Worker.filter.aden = function(pix){
-  console.log('Worker.filter.aden');
+  
 
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
@@ -527,7 +526,7 @@ Worker.filter.aden = function(pix){
   }
 };
 Worker.filter.perpetua = function(pix){
-  console.log('Worker.filter.perpetua');
+  
 
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
@@ -566,7 +565,7 @@ Worker.filter.perpetua = function(pix){
   }
 };
 Worker.filter.amaro = function(pix){
-  console.log('Worker.filter.amaro');
+ 
 
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
@@ -609,7 +608,7 @@ Worker.filter.amaro = function(pix){
   }
 };
 Worker.filter.mayfair = function(pix){
-  console.log('Worker.filter.mayfair');
+ 
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -650,7 +649,7 @@ Worker.filter.mayfair = function(pix){
   }
 };
 Worker.filter.rise = function(pix){
-  console.log('Worker.filter.rise');
+ 
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -693,7 +692,7 @@ Worker.filter.rise = function(pix){
   }
 };
 Worker.filter.hudson = function(pix){
-  console.log('Worker.filter.hudson');
+ 
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -736,7 +735,7 @@ Worker.filter.hudson = function(pix){
   }
 };
 Worker.filter.valencia = function(pix){
-  console.log('Worker.filter.valencia');
+  
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -779,7 +778,7 @@ Worker.filter.valencia = function(pix){
   }
 };
 Worker.filter.xpro2 = function(pix){
-  console.log('Worker.filter.xpro2');
+ 
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -822,7 +821,7 @@ Worker.filter.xpro2 = function(pix){
   }
 };
 Worker.filter.sierra = function(pix){
-  console.log('Worker.filter.sierra');
+ 
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -866,7 +865,7 @@ Worker.filter.sierra = function(pix){
   }
 };
 Worker.filter.willow = function(pix){
-  console.log('Worker.filter.willow');
+ 
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -904,7 +903,7 @@ Worker.filter.willow = function(pix){
   }
 };
 Worker.filter.lofi = function(pix){
-  console.log('Worker.filter.lofi');
+  
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -948,7 +947,7 @@ Worker.filter.lofi = function(pix){
   }
 };
 Worker.filter.earlybird = function(pix){
-  console.log('Worker.filter.earlybird');
+  
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -991,7 +990,7 @@ Worker.filter.earlybird = function(pix){
   }
 };
 Worker.filter.brannan = function(pix){
-  console.log('Worker.filter.brannan');
+  
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -1030,7 +1029,7 @@ Worker.filter.brannan = function(pix){
   }
 };
 Worker.filter.inkwell = function(pix){
-  console.log('Worker.filter.inkwell');
+  
   for (var i = 0, n = pix.length; i < n; i += 4){
     var val = pix[i] * .33 + pix[i+1] * .58 + pix[i+2] * .22;
     pix[i]    = val;
@@ -1039,7 +1038,7 @@ Worker.filter.inkwell = function(pix){
   }
 };
 Worker.filter.hefe = function(pix){
-  console.log('Worker.filter.hefe');
+  
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -1075,7 +1074,7 @@ Worker.filter.hefe = function(pix){
   }
 };
 Worker.filter.nashville = function(pix){
-  console.log('Worker.filter.nashville');
+  
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -1116,7 +1115,7 @@ Worker.filter.nashville = function(pix){
   }
 };
 Worker.filter.sutro = function(pix){
-  console.log('Worker.filter.sutro');
+  
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -1155,7 +1154,7 @@ Worker.filter.sutro = function(pix){
   }
 };
 Worker.filter.toaster = function(pix){
-  console.log('Worker.filter.toaster');
+  
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -1194,7 +1193,7 @@ Worker.filter.toaster = function(pix){
   }
 };
 Worker.filter.walden = function(pix){
-  console.log('Worker.filter.walden');
+  
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -1234,7 +1233,7 @@ Worker.filter.walden = function(pix){
   }
 };
 Worker.filter.nineteenSeventySeven = function(pix){
-  console.log('Worker.filter.nineteenSeventySeven');
+  
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);
@@ -1274,7 +1273,7 @@ Worker.filter.nineteenSeventySeven = function(pix){
   }
 };
 Worker.filter.kelvin = function(pix){
-  console.log('Worker.filter.kelvin');
+  
   var lag_r  = new Lagrange(0, 0, 1, 1);
   var lag_g  = new Lagrange(0, 0, 1, 1);
   var lag_b  = new Lagrange(0, 0, 1, 1);

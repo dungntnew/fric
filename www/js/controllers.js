@@ -473,7 +473,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 worker.onmessage = function(e) {
                     // debug
                     if (typeof e.data === "string") {
-                        console.log("Worker: " + e.data);
+                        // console.log("Worker: " + e.data);
                         return;
                     }
                     
@@ -541,6 +541,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             }
 
         $scope.onTakenPicture = function(canvas, canvasId) {
+            $scope.activeFilterIndex = -1;
             var dataURL = canvas.toDataURL();
             $scope.showProcessingLoading('処理中');
             $(canvas).data("data-filter-name", "");
@@ -552,6 +553,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
 
         $scope.onPictureLoaded = function(dataURL, image) {
+            $scope.activeFilterIndex = -1;
             $scope.showProcessingLoading('処理中');
             var canvas = $("#take-picture-canvas")[0];
             $(canvas).data("data-filter-name", "");
