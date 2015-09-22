@@ -333,7 +333,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
 
         $scope.shouldShowHistory = function() {
-            return $scope.activeTabIndex != 4 && $scope.history.remainStep() > 0;
+            return $scope.activeTabIndex == 4 
+                   ||
+                   $scope.history.remainStep() > 0;
         }
 
         $scope.slideHasChanged = function(index) {
@@ -1819,6 +1821,16 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     };
     $scope.history = history;
     $scope.startUndo = function() {
+        if ($scope.activeTabIndex == 4){
+            setTimeout(function() {
+                $scope.$apply(function() {
+                    var tabIndex = $scope.preActiveTabIndex;
+                    $scope.selectTabWithIndex(tabIndex, true);
+                });
+
+            });
+            return;
+        }
         $scope.history.backVersion();
     }
 
@@ -1886,7 +1898,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.selectTabWithIndex(tabIndex, true);
             });
 
-        })
+        });
     })
 
 
