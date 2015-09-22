@@ -1093,7 +1093,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     cssOnly: true
                 });
                 $scope.previewCanvas.renderAll();
-                console.log("[previewer] view: " + size.width + " x " + size.height);
+                //console.log("[previewer] view: " + size.width + " x " + size.height);
             },
 
             init: function() {
@@ -1116,7 +1116,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     var newHeight = object.height * scale;
                     $scope.printSizeWidth = newWidth;
                     $scope.printSizeHeight = newHeight;
-                    console.log("[previewer] size: " + newWidth + " x " + newHeight);
+                    //console.log("[previewer] size: " + newWidth + " x " + newHeight);
 
 
                     $scope.previewCanvas.setDimensions({
@@ -1312,7 +1312,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             });
 
             //$scope.canvas.backgroundColor = 'rgba(0, 255, 0, 0.1)';
-            console.log("[painter] view: " + size.width + " x " + size.height);
+            //console.log("[painter] view: " + size.width + " x " + size.height);
         },
 
         initDrawing: function() {
@@ -1333,7 +1333,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             });
             canvas.centeredScaling = true;
 
-            console.log("[painter] size: " + contentWidth + " x " + $scope.config.contentHeight);
+            //console.log("[painter] size: " + contentWidth + " x " + $scope.config.contentHeight);
             $scope.painter.width = contentWidth;
             $scope.painter.height = $scope.config.contentHeight;
             this.setDefaultFrame();
