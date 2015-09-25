@@ -491,9 +491,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             };
             /*== end == */
 
-            $scope.activeFilterIndex = -1;
-            filterDisplayNames = ['lo_fi', 'mayfair', 'valencia', 'walden', 'xpro'];
-            filterNames = ['lofi', 'mayfair', 'valencia', 'walden', 'xpro2'];
+            $scope.activeFilterIndex = 0;
+            filterDisplayNames = ['none', 'lo_fi', 'mayfair', 'valencia', 'walden', 'xpro'];
+            filterNames = ['none', 'lofi', 'mayfair', 'valencia', 'walden', 'xpro2'];
             $scope.filters = [];
 
             for (var i = 0; i < filterDisplayNames.length; i++) {
@@ -501,7 +501,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     id: i,
                     name: filterDisplayNames[i],
                     filter: filterNames[i],
-                    src: 'img/assets/filters/' + (i + 1) + '.png'
+                    src: 'img/assets/filters/' + i + '.png'
                 });
             }
 
@@ -513,8 +513,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     var data = $(canvas).data('data-filter-name');
 
                     // ignore filter 
-                    if (data === effect) {
-                        $scope.activeFilterIndex = -1;
+                    if (index == 0) {
+                        $scope.activeFilterIndex = 0;
 
                         // revert back to raw image canvas
                         var dataURL = canvas.toDataURL();
@@ -541,7 +541,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             }
 
         $scope.onTakenPicture = function(canvas, canvasId) {
-            $scope.activeFilterIndex = -1;
+            $scope.activeFilterIndex = 0;
             var dataURL = canvas.toDataURL();
             $scope.showProcessingLoading('処理中');
             $(canvas).data("data-filter-name", "");
@@ -553,7 +553,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
 
         $scope.onPictureLoaded = function(dataURL, image) {
-            $scope.activeFilterIndex = -1;
+            $scope.activeFilterIndex = 0;
             $scope.showProcessingLoading('処理中');
             var canvas = $("#take-picture-canvas")[0];
             $(canvas).data("data-filter-name", "");
