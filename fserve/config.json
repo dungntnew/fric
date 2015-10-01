@@ -1,0 +1,13 @@
+{
+	"pdf_export_path": "pdf",
+	"temp_path": "temp",
+	"pdf_size_width": 640,
+	"pdf_size_height": 480,
+	"template_width": 2000,
+	"template_height": 1600,
+	"edit_area_width": 400,
+	"edit_area_height": 400,
+	"multiplier": 2,
+	"ERR_LOAD_JSON": "Fail for load json data.",
+	"ERR_EXPORT_PNG": "Fail for export png."
+}
