@@ -506,6 +506,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             }
 
             $scope.applyFilter = function(index) {
+                if (index == $scope.activeFilterIndex) 
+                    return;
+                
                 $scope.showProcessingLoading('処理中');
                 setTimeout(function() {
                     var canvas = $("#take-picture-canvas")[0];
@@ -558,17 +561,19 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             var canvas = $("#take-picture-canvas")[0];
             $(canvas).data("data-filter-name", "");
 
-            $scope.painter.addImage(dataURL, function(){
-                var w = image.width;
-                var h = image.height;
-                canvas.width = w;
-                canvas.height = h;
-                var ctx = canvas.getContext('2d');
-                ctx.fillRect(0, 0, w, h);
-                ctx.drawImage(image, 0, 0, w, h);
+            var w = image.width;
+            var h = image.height;
+            canvas.width = w;
+            canvas.height = h;
+            var ctx = canvas.getContext('2d');
+            ctx.fillRect(0, 0, w, h);
+            ctx.drawImage(image, 0, 0, w, h);
+
+            var dataURL = canvas.toDataURL();
+            $scope.painter.addImage(dataURL, function() {
                 setTimeout(function(){
-                   $scope.hideProcessingLoading();
-                }, 100);
+                    $scope.hideProcessingLoading();                              
+                }, 0);
             });
         }
     }());
@@ -1428,6 +1433,11 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             var canvas = $scope.canvas;
             canvas.deactivateAll();
             try {
+                var json = JSON.stringify($scope.canvas);
+                console.log("=============");
+                console.log(json);
+                console.log("==============");
+                
                 var dataURL = canvas.toDataURL({
                     format: 'png',
                     multiplier: $scope.config.multiplier
