@@ -48,11 +48,13 @@ var fetch_order_info = function(order_id, callback) {
 	});
 	connection.connect();
 
-	var query = 'SELECT plg_kedit_json_path json_path';
-	query += ' SELECT plg_kedit_tpl_path template_path';
+	var query = 'SELECT plg_kedit_json_path as json_path';
+	query += ',plg_kedit_user_picture_path as user_picture_path';
+	query += ',plg_kedit_tpl_path as template_path';
 	query += ' FROM dtb_order';
 	query += ' WHERE order_id=' + order_id;
 	query += ' LIMIT 1';
+
 
 	connection.query(query, function(err, rows, fields) {
 		if (err) {
@@ -73,6 +75,8 @@ app.get('/api/export/:order_id', function(req, res) {
 
 
 	var order_id = req.params['order_id'];
+	var use_json = !config.use_direct_png_file;
+
 	fetch_order_info(order_id, function(order, err) {
 		if (err) {
 			return handler_error(res,
@@ -80,37 +84,39 @@ app.get('/api/export/:order_id', function(req, res) {
 				err
 			);
 		}
-		exprtHandler(order);
-	});
-
-	var exprtHandler = function(order) {
 
 		var json_path = order.json_path;
-		fs.readFile(json_path, 'utf8', function(err, json) {
+		var user_picture_path = order.user_picture_path;
+		var export_dir = path.dirname(use_json ? json_path : user_picture_path);
+		var export_name = path.basename(use_json ? json_path : user_picture_path, use_json ? '.json': '.png');
+		var export_path = path.resolve(export_dir, export_name + '.png');
 
-			// handle load json fail error.
-			if (err) {
-				return handler_error(res,
-					config.ERR_LOAD_JSON,
-					err,
-					json_path
-				);
-			}
 
-			// build params for printer
-		    var export_dir = path.dirname(json_path);
-		    var export_name = path.basename(json_path, '.json');
-		    var export_path = path.resolve(export_dir, export_name + '.png');
+		if (use_json) {
+			fs.readFile(json_path, 'utf8', function(err, json) {
+				if (err) {
+					return handler_error(res,
+						config.ERR_LOAD_JSON,
+						err,
+						json_path
+					);
+				}
+				var params = {
+					json: json,
+					template_path: order.template_path,
+					outpath: export_path
+				};
+				printer.handler(params, printerHandler);
+			});
+		} else {
 			var params = {
-				json: json,
+				user_picture_path: user_picture_path,
 				template_path: order.template_path,
 				outpath: export_path
 			};
-
-			// start printer module
 			printer.handler(params, printerHandler);
-		});
-	}
+		}
+	});
 
 	var printerHandler = function(export_path, err) {
 		// handle printer error.

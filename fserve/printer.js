@@ -3,11 +3,11 @@ var path = require('path');
 var f = require('fabric');
 var __fabric = global.fabric = f.fabric;
 __fabric.Object.prototype.transparentCorners = false;
-
 var fontLoader = require('./font');
 
 var printer = {
     config: {},
+    identify: "KEdit_App_Printer_Server",
 
     init: function(config) {
         this.config = config;
@@ -15,10 +15,17 @@ var printer = {
 
     handler: function(params, callback) {
         var self = this;
-        if (!params.json || !params.template_path) {
-            callback(false, 'invalid params');
-            return;
-        };
+        if (this.config.use_direct_png_file) {
+            if (!params.template_path || !params.user_picture_path) {
+                callback(false, 'invalid params');
+                return;
+            }
+        } else {
+            if (!params.json || !params.template_path) {
+                callback(false, 'invalid params');
+                return;
+            }
+        }
 
         this._blend(params, function(canvas, error) {
             if (error) {
@@ -32,9 +39,9 @@ var printer = {
 
     _applyFont: function(canvas) {
         fonts = fontLoader.load();
-        fonts.forEach(function(f){
+        fonts.forEach(function(f) {
             var font = new canvas.Font(f.family, f.path);
-            f.faces.forEach(function(options){
+            f.faces.forEach(function(options) {
                 font.addFace(options.path, options.weight, options.decoration);
             });
             //canvas.contextContainer.addFont(font);
@@ -97,7 +104,13 @@ var printer = {
         }
         self._load(params, _ready);
     },
-      _template: function(params, callback) {
+    _direct_content: function(params, callback) {
+     var dataURL = params.user_picture_path;
+        __fabric.Image.fromURL(dataURL, function(image) {
+            if (callback) callback(image);
+        });
+    },
+    _template: function(params, callback) {
         var self = this;
         var src = params.template_path;
 
@@ -133,21 +146,29 @@ var printer = {
         canvas.selection = false;
         canvas.renderAll();
 
-
+       
         self._template(params, function(background, error) {
             if (error) {
                 if (callback) callback(null, error);
                 return;
             }
 
-            self._content(params, function(content, error) {
+            var content_fetcher = self.config.use_direct_png_file 
+                        ? self._direct_content
+                        : self._content;
+
+            content_fetcher(params, function(content, error) {
                 if (error) {
                     if (callback) callback(null, error);
                     return;
                 }
 
+                var contentHeight = self.config.edit_area_height;
+                content.scaleToHeight(contentHeight);
+
                 var left = w / 2 + content.width / 2;
                 var top = h / 2 + content.height / 2;
+
 
                 content.set({
                     originX: 'center',

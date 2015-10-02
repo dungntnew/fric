@@ -14,6 +14,7 @@
 	"edit_area_width": 400,
 	"edit_area_height": 400,
 	"multiplier": 2,
+	"use_direct_png_file": true,
 	"ERR_LOAD_JSON": "Fail for load json data.",
 	"ERR_EXPORT_PNG": "Fail for export png.",
 	"ERR_LOAD_ORDER": "Fail for load order."
