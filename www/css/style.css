@@ -160,7 +160,7 @@ body {
   background-size: contain;
 /*  background-clip: content-box;*/
   background-repeat: no-repeat;
-  background-image: url('../img/assets/btn/cancel-btn.png')
+  background-image: url('../img/assets/btn/remove_btn-text.jpg')
 
 }
 
@@ -234,6 +234,34 @@ body {
   background-repeat: no-repeat;
 }
 
+.desc_select_sticker_btn {
+  border: none !important;
+  background-color: transparent;
+  background-position: center; 
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../img/assets/btn/stamp_select_btn.jpg')
+}
+
+.desc_select_filter_btn {
+  border: none !important;
+  background-color: transparent;
+  background-position: center; 
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../img/assets/btn/filter_select_btn.jpg')
+}
+
+.desc_select_frame_btn {
+  border: none !important;
+  background-color: transparent;
+  background-position: center; 
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../img/assets/btn/frame_select_btn.jpg')
+}
+
+
 .action-bar {
 	position: absolute !important;
 	height: 80px !important;
@@ -294,11 +322,35 @@ body {
   padding-top: 5px !important;
   padding-bottom: 5px !important;
   text-align: center !important;
+  border-top: none !important;
 }
 
 .text-setting .blank {
   border: none !important;
   height: 20px !important;
+}
+
+.text-setting .font-seperator {
+    padding-top: 10px !important;
+    padding-bottom: 0px !important;
+    text-align: center;
+    background-color: white !important;
+    border: none !important;
+}
+
+.text-setting .font-seperator > p {
+    min-width: 90%;
+    width: 90%;
+    height: 100%;
+    display: block;
+    margin: 0px auto;
+    padding: 0 !important;
+
+    font-size: 14px !important;
+    color: #ff5a69 !important;
+    font-weight: bold !important;
+    text-align: center;
+    border-bottom: 1px solid #ff5a69;
 }
 
 
@@ -353,6 +405,23 @@ body {
   background-repeat: no-repeat;
 }
 
+.action-take-camera-pc-btn {
+  margin: 0px auto !important;
+  text-align: center !important;
+  min-height: 60px !important;
+  width: 150px !important;
+  background-color: transparent !important;
+  border: none !important;
+  background-position: center; 
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../img/assets/btn/camera_btn_pc.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+
+
 .action-take-folder-btn {
   margin: 0px auto !important;
   text-align: center !important;
@@ -383,21 +452,42 @@ body {
   background-repeat: no-repeat;
 }
 
+.action-shoot-image-btn {
+  margin: 0px auto !important;
+  text-align: center !important;
+  min-height: 60px !important;
+  width: 150px !important;
+  background-color: transparent !important;
+  border: none !important;
+  background-position: center; 
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../img/assets/btn/shoot.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.action-remove-image-btn {
+  margin: 0px auto !important;
+  text-align: center !important;
+  min-height: 60px !important;
+  width: 150px !important;
+  background-color: transparent !important;
+  border: none !important;
+  background-position: center; 
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../img/assets/btn/remove_btn.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
 .image-wrapper {
     position: relative;
     width: 100%;
     height: 47px !important;
     margin: 0 auto; 
     background: white;
-}
-
-.image-wrapper .caption {
-  width: 100%;
-  color: white;
-  text-align: center;
-  position: absolute;
-  top: 0;
-  left: 0;
 }
 
 
@@ -411,6 +501,22 @@ body {
   overflow-y: hidden;
   white-space: nowrap;
   width: 100%;
+}
+
+.item-wrapper {
+ position: relative;
+}
+
+.caption {
+  color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  line-height: 76px;
+  font-weight: bold;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .sticker-buttons .content-x  {
