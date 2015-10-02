@@ -26,8 +26,7 @@
 
         <!-- tool-bar buttons -->
         <div class="frame-action row" ng-show="usingWebcam" ng-model="usingWebcam">
-            <button id="take-picture-btn" class="col-100 button button-full button-balanced">
-                撮影
+            <button id="take-picture-btn" class="col-100 button action-shoot-image-btn">
             </button>
         </div>
 
@@ -38,8 +37,7 @@
 
 
         <div class="frame-action row" ng-show="shouldShowWidgetToolBars()">
-            <button id="remove-widget-btn" class="col-100 button button-full button-assertive">
-                削除
+            <button id="remove-widget-btn" class="col-100 button action-remove-image-btn ">
             </button>
         </div>
 
@@ -48,7 +46,7 @@
         <div class="frame-action row" ng-show="shouldShowTakePictureToolBars()">
           <div class="row" ng-show="!isMobile()">
             <div class="col-100" style="text-align: center; width: 100%">
-              <button id="start-camera-btn"  class="button action-take-camera-btn"></button>
+              <button id="start-camera-btn"  class="button action-take-camera-pc-btn"></button>
               <button id="upload-picture-btn" class="button action-take-folder-btn"></button>
             </div>
           </div>
@@ -75,6 +73,10 @@
             <ion-panel>
             <ion-content class="content-x" scroll="true">
                 <ul class="list">
+                     <li class="item item-divider font-seperator" > <p>
+                       日本語
+                       </p>
+                     </li>
                      <li 
                      ng-repeat="font in fontFamily.fontJP()"  
                      ng-class="{active: fontFamily.value==font}"  
@@ -83,8 +85,10 @@
                      class="item {{fontFamily.itemClassFor(font)}}" >
                            {{font.displayName}}
                      </li>
-                     <li class="item item-divider" >
-                       【英語のみ】
+                     <li class="item item-divider font-seperator" > 
+                       <p>
+                       英語
+                       </p>
                      </li>
                      <li 
                      ng-repeat="font in fontFamily.fontEN()"  
@@ -112,9 +116,7 @@
         <div style="position:relative; width=100%"></div>
         <!-- filter -->
         <div class="action-panel sticker-buttons" ng-show="shouldShowAction('filter', 0)">
-              <div class="sticker-title-message">
-                <span>フィルタを選択してください</span>
-              </div>
+              <div class="row">
               <div class="background"></div>
                <div class="row"
                  <ion-content class="content-x col-100" scroll="true">
@@ -122,7 +124,7 @@
                       <div ng-repeat="filter in filters" 
                            ng-click="applyFilter($index)"
                            ng-class="{active: activeFilterIndex == $index}" 
-                           class="tab-item">
+                           class="tab-item item-wrapper">
                            <img  ng-src="{{filter.src}}" 
                                  title="{{filter.name}}"/>
                            <div class="caption">{{filter.name}}</div>
