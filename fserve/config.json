@@ -4,7 +4,6 @@
 	"db_user": "eccube_db_user",
 	"db_password": "abcd1234",
 	"db_name": "eccube_db",
-
 	"pdf_export_path": "pdf",
 	"temp_path": "temp",
 	"pdf_size_width": 640,
@@ -17,5 +16,7 @@
 	"use_direct_png_file": true,
 	"ERR_LOAD_JSON": "Fail for load json data.",
 	"ERR_EXPORT_PNG": "Fail for export png.",
-	"ERR_LOAD_ORDER": "Fail for load order."
+	"ERR_LOAD_ORDER": "Fail for load order.",
+	"IMAGE_SAVE_RSS_URL": "http://vhost/html/upload/save_image/",
+	"IMAGE_SAVE_REALDIR": "/home/vagrant/dev/kedit_ecc/html/upload/save_image/"
 }

@@ -17,12 +17,16 @@ var printer = {
         var self = this;
         if (this.config.use_direct_png_file) {
             if (!params.template_path || !params.user_picture_path) {
-                callback(false, 'invalid params');
+                var message = !params.template_path ? 'invalid template path - ': '';
+                message += !params.user_picture_path ? 'invalid picture path': '';
+                callback(false, message);
                 return;
             }
         } else {
             if (!params.json || !params.template_path) {
-                callback(false, 'invalid params');
+                var message = !params.template_path ? 'invalid template path - ': '';
+                message += !params.json ? 'invalid json path': '';
+                callback(false, message);
                 return;
             }
         }
