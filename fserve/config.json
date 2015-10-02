@@ -1,4 +1,10 @@
 {
+	"db_host": "localhost",
+	"db_port": 3306,
+	"db_user": "eccube_db_user",
+	"db_password": "abcd1234",
+	"db_name": "eccube_db",
+
 	"pdf_export_path": "pdf",
 	"temp_path": "temp",
 	"pdf_size_width": 640,
@@ -9,5 +15,6 @@
 	"edit_area_height": 400,
 	"multiplier": 2,
 	"ERR_LOAD_JSON": "Fail for load json data.",
-	"ERR_EXPORT_PNG": "Fail for export png."
+	"ERR_EXPORT_PNG": "Fail for export png.",
+	"ERR_LOAD_ORDER": "Fail for load order."
 }
