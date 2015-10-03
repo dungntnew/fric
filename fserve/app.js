@@ -43,7 +43,7 @@ var handler_error = function(res, message, error, variable) {
 	res.json(reply);
 }
 
-var fetch_order_info = function(order_id, callback) {
+var fetch_order_info = function(order_detail_id, callback) {
 	var connection = mysql.createConnection({
 		host: config.db_host,
 		port: config.db_port,
@@ -57,7 +57,7 @@ var fetch_order_info = function(order_id, callback) {
 	query += ',plg_kedit_user_picture_path as user_picture_path';
 	query += ',plg_kedit_tpl_path as template_path';
 	query += ' FROM dtb_order_detail';
-	query += ' WHERE order_id=' + order_id;
+	query += ' WHERE order_detail_id=' + order_detail_id;
 	query += ' LIMIT 1';
 	console.log("==========\n");
 	console.log(query);
@@ -71,7 +71,7 @@ var fetch_order_info = function(order_id, callback) {
 		}
 
 		if (rows.length == 0) {
-			callback(null, 'not found order for order_id' + order_id);
+			callback(null, 'not found order for order_detail_id ' + order_detail_id);
 			return;
 		}
 		callback(rows[0]);
@@ -93,13 +93,13 @@ var validate_order = function(order) {
 	return true;
 }
 
-app.get('/api/export/:order_id', function(req, res) {
+app.get('/api/export/:order_detail_id', function(req, res) {
 
 
-	var order_id = req.params['order_id'];
+	var order_detail_id = req.params['order_detail_id'];
 	var use_json = !config.use_direct_png_file;
 
-	fetch_order_info(order_id, function(order, err) {
+	fetch_order_info(order_detail_id, function(order, err) {
 		if (err ) {
 			return handler_error(res,
 				config.ERR_LOAD_ORDER,
@@ -109,7 +109,7 @@ app.get('/api/export/:order_id', function(req, res) {
 		if (!validate_order(order)) {
 			return handler_error(res,
 				config.ERR_LOAD_ORDER,
-				'Invalid Order'
+				'Invalid order detail - template path or user picture not set'
 			);
 		}
 
@@ -117,7 +117,7 @@ app.get('/api/export/:order_id', function(req, res) {
 		var export_name = path.basename(use_json 
 			            ? order.json_path 
 			            : order.user_picture_path, use_json ? '.json' : '.png');
-		export_name += '_' + order_id + '.png';
+		export_name += '_' + order_detail_id + '.png';
         
 		var json_path = use_json ? path.resolve(config.IMAGE_SAVE_REALDIR, order.json_path): '';
 		var user_picture_path = !use_json ? path.resolve(config.IMAGE_SAVE_REALDIR, order.user_picture_path): '';
