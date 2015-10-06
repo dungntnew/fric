@@ -15,6 +15,7 @@
         	iFrameId: '#kEditAppIFrame',
         	iFramePath: "<!--{$app_path}-->",
         	iframe: {},
+            wrapper:{},
         	iFrameWindow: {},
             uploadApi: "<!--{$upload_api}-->",
             productListApi: "<!--{$product_list_api}-->",
@@ -22,10 +23,20 @@
             resize: function() {
             	var height = $(window).height();
             	var width = $(window).width();
-            	$(this.iframe).css({
+            	$(this.wrapper).css({
             		'width': width,
             		'height': height
             	});
+                var appWidth = width > 500 ?  500: width;
+                var marginLeft = (width - appWidth) / 2;
+              
+                $(self.iframe).css({
+                    'width': appWidth,
+                    'margin-left': marginLeft,
+                    'margin-top': 0,
+                    'height': '100%'
+
+                });
             },
 
             checkSupport: function(){
@@ -46,22 +57,39 @@
                 //     alert(self.errorMessage);
                 //     return;
                 // }
+                self.wrapper = $('<div></div>');
+                var height = $(window).height();
+                var width = $(window).width();
 
+                $(self.wrapper).css({
+
+                    'position': 'absolute',
+                    'top': 0,
+                    'left': 0,
+                    'width': width,
+                    'height': '100%',
+                    'vertical-align': 'middle',
+                    'display': 'table-cell',
+                    'background-color': 'black',
+                    'z-index': 1000
+                }).appendTo('body');
+                
+                var appWidth = width > 500 ?  500: width;
+                var marginLeft = (width - appWidth) / 2;
         		self.iframe = $('<iframe />', {
 				    id: self.iFrameId
 				})[0];
 				$(self.iframe).css({
-					'display': 'none',
-					'position': 'absolute',
-		            'top': 0,
-		            'left': 0,
-		            'background-color': 'black',
-		            'z-index': 1000
-				}).appendTo('body');
+		            'width': appWidth,
+                    'margin-left': marginLeft,
+                    'margin-top': 0,
+                    'height': '100%'
+
+				}).appendTo(self.wrapper);
 
         		self.isKEditAppLoaded = false;
         		
-        		$(self.iframe).hide();
+        		$(self.wrapper).hide();
         		$(window).resize(function(){
         			self.resize();
         		});
@@ -114,7 +142,7 @@
         		}
                 $(window).scrollTop(0);
                 $('body').css('overflowY', 'hidden');
-        		$(self.iframe).fadeIn();
+        		$(self.wrapper).fadeIn();
 
         		self.app.startup();
         	},
@@ -146,7 +174,7 @@
                             var res = JSON.parse(data);
                             if (res['success']) {
                                 console.log("upload success!");
-                                $(self.iframe).fadeOut();
+                                $(self.wrapper).fadeOut();
                             }else {
                                 self.onUploadFail(e);
                             }
@@ -169,7 +197,7 @@
             onUploadFail: function(err){
                 console.log("upload image fail with error:");
                 console.log(err);
-                $(self.iframe).fadeOut();
+                $(self.wrapper).fadeOut();
             },
         	onLoadFail: function(err) {
         		console.log("KEdit App Load Error " + err);
