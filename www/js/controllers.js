@@ -137,11 +137,45 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 })
 
 .controller('ProductListCtrl', function($scope, Products) {
-    $scope.products = Products.all();
+    var handleError = function(err) {
+        console.log('ProductListCtrl load product error: ' + err);
+        $scope.products = window.products = Products.all();
+    }
+
+    var protocol = window.location.protocol;
+    var hostname = window.location.hostname;
+    var api_host = protocol + '//' + hostname;
+    var api_path = api_host + '/html/products/list.php?kedit_app_fetch_product=true';
+
+    var jqxhr = $.getJSON(api_path,
+            function(res) {
+                if (res.success) {
+                    var products = JSON.parse(res.products);
+                    $scope.products = window.products = products;
+                    _.each(products, function(product) {
+                        product.relative_tpl_path = product.template;
+                        product.template = res.image_path + product.template;
+                        product.thumbnail = res.image_path + product.thumbnail;
+                    });
+                } else {
+                    handleError(JSON.stringify(res));
+                }
+            })
+        .done(function(r) {})
+        .fail(function(e) {
+            handleError(e);
+        });
 })
 
 .controller('ProductDetailCtrl', function($scope, $stateParams, Products) {
-    $scope.product = Products.get($stateParams.productId);
+    if (!window.products) {
+        console.log("window.products not set yet");
+    }
+    $scope.product = _.findWhere(window.products, {
+        id: $stateParams.productId
+    });
+
+    $scope.product = $scope.product || Products.get($stateParams.productId);
 })
 
 .controller('EditImageAppCtrl', function($scope, $window,
