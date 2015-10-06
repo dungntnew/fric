@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# login without password
+#ssh-copy-id  -i ~/.ssh/id_rsa.pub  eccube@157.7.121.167
+
+cd `dirname $0`/../
+HOMEDIR=`pwd`
+source ${HOMEDIR}/bin/renv.sh
+
+if [ $# -lt 1 ]
+then
+        echo "Usage : $0 m|p|r|z"
+        exit
+fi
+
+case "$1" in
+
+m) 
+echo "====== start upload media ======="
+cd $HOMEDIR
+tar cvzf - www | ssh $USER@$HOST "cd $HTML_PLG_DIR/KEditPlugin/; rm -rf www; tar xvzf -";
+
+    ;;
+p)  
+echo  "start upload plugin"
+cd $HOMEDIR
+tar cvzf - KEditPlugin | ssh $USER@$HOST "cd $DATA_PLG_DIR; rm -rf KEditPlugin; tar xvzf -";
+    ;;
+r)
+  ssh $USER@$HOST "cd $TPL_CACHE_DIR; rm -vrf ./*";
+  ;;
+z)
+  cd $HOMEDIR
+  mkdir -p KEditPlugin/www;
+  cd ./KEditPlugin 
+  tar cvzf ../KEditPlugin.tar.gz *
+  cd $HOMEDIR
+  echo "done: $HOMEDIR/KEditPlugin.tar.gz";
+  ;;
+*) echo "Task $1 is not processed"
+   ;;
+esac
