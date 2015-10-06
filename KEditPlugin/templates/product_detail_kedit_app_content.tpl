@@ -110,22 +110,12 @@
         	},
         	onFinish: function(data) {
         		var self = this;
-        		self.fillData(data);
-                self.saveTempData(data, function(err){
-                    $(self.iframe).fadeOut();
-                });
-        	},
-        	preData: function() {
-        	},
-        	fillData: function(data) {
-        	},
-            saveTempData: function(data, callback){
                 var transactionid = $("*[name=transactionid]").val();
                 var product_id = data["product_id"];
                 var exported_data_url = data['exported_data_url'];
                 var template_url = data['template_url'];
                 var encodedContentData = encodeURIComponent(exported_data_url);
-                var uploadTempApiUrl = this.uploadApi;
+                var uploadTempApiUrl = self.uploadApi;
 
                 console.log("transactionid: " + transactionid);
 
@@ -141,18 +131,34 @@
                         'kedit_summit': true 
                     },
                     success: function(data){
-                        //alert(data );
-                        var d = JSON.parse(data);
-                        var url = decodeURIComponent(d['url']);
-                        if (callback) callback();
+                        try {
+                            var res = JSON.parse(data);
+                            if (res['success']) {
+                                console.log("upload success!");
+                                $(self.iframe).fadeOut();
+                            }else {
+                                self.onUploadFail(e);
+                            }
+                            
+                        }
+                        catch(e) {
+                            self.onUploadFail(e);
+                        }
                     },
                     error: function(xhr,status,error) {
-                        //alert(error);
                         console.log(error);
-
-                        if (callback) callback(error);
+                        self.onUploadFail(error);
                     }
                 });
+        	},
+        	preData: function() {
+        	},
+        	fillData: function(data) {
+        	},
+            onUploadFail: function(err){
+                console.log("upload image fail with error:");
+                console.log(err);
+                $(self.iframe).fadeOut();
             },
         	onLoadFail: function(err) {
         		console.log("KEdit App Load Error " + err);

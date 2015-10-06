@@ -237,9 +237,6 @@ class KEditPlugin extends SC_Plugin_Base {
      * 
      */
     function front_products_detail_after($objPage) {
-        var_dump(KEDIT_UPLOAD_DATA_API);
-        var_dump(KEDIT_PRODUCT_LIST_API);
-
         if ($_POST['kedit_summit']) {
             try {
                 $transactionid = $_POST['transactionid'];
