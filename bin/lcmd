@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# quick reload change util command in local env
 # login without password
 #ssh-copy-id  -i ~/.ssh/id_rsa.pub  eccube@157.7.121.167
 

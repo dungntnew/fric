@@ -1,3 +1,4 @@
+# setup env for remote server
 USER=eccube
 HOST=157.7.121.167
 PASSWORD=eccube

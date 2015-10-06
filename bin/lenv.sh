@@ -1,6 +1,7 @@
-USER=eccube
-HOST=157.7.121.167
-PASSWORD=eccube
+# env for local development
+USER=vagrant
+HOST=vhost
+PASSWORD=vagrant
 
 ECC_ROOT=/Users/dungntnew/vdev/kedit_ecc
 HTML_PLG_DIR=/Users/dungntnew/vdev/kedit_ecc/html/plugin/

@@ -3,9 +3,11 @@
 # login without password
 #ssh-copy-id  -i ~/.ssh/id_rsa.pub  eccube@157.7.121.167
 
+# quick deploy change for remote cmmand
+
 cd `dirname $0`/../
 HOMEDIR=`pwd`
-
+source ${HOMEDIR}/bin/renv.sh;
 
 if [ $# -lt 1 ]
 then
@@ -13,7 +15,7 @@ then
       exit
 fi
 
-source ${HOMEDIR}/bin/renv.sh;
+
 case "$1" in
 
 m) 

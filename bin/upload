@@ -1,0 +1,12 @@
+#!/bin/bash
+# re-upload plugin to ecc remote server
+cd `dirname $0`/../
+
+# clear all template in remote
+./bin/cmd r
+
+# re-upload plugin folder
+./bin/cmd p
+
+# re-upload plugin-media folder
+./bin/cmd m

@@ -1,2 +1,5 @@
 #!/bin/bash
-ssh eccube@157.7.121.167
+# go to eccube server
+HOMEDIR=`pwd`
+source ${HOMEDIR}/bin/renv.sh;
+ssh $USER@$HOST
