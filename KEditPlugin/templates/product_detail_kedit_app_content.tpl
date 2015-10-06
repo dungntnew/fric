@@ -16,10 +16,7 @@
         	iFramePath: "<!--{$app_path}-->",
         	iframe: {},
         	iFrameWindow: {},
-            imageHost: '<!--{$app_image_path}-->',
-            itemListJson: '<!--{$app_product_items}-->',
             
-
             resize: function() {
             	var height = $(window).height();
             	var width = $(window).width();
@@ -80,10 +77,7 @@
 	        		}
 
 	        		self.app.setupAppData({
-	        			data: { 
-                            items: self.preData(),
-                            host: self.imageHost 
-                        },
+	        			data: {},
 	        			callback: function(data) {
 	        				self.onFinish(data);
 	        			}
@@ -119,22 +113,6 @@
                 });
         	},
         	preData: function() {
-
-                // check where itemListJson is created
-                // by php else using api 
-                if (this.itemListJson && this.itemListJson.length > 0){
-                    var jsonListData = JSON.parse(this.itemListJson);
-
-                    if (jsonListData && jsonListData.length > 0){
-                        return jsonListData;
-                    }else{
-                        console.log("itemListJson not is json string. please check: app_product_items var");
-                        return [];
-                    }
-                }else {
-                    console.log("itemListJson is not generated from server. please check: app_product_items var");
-                    return [];
-                }
         	},
         	fillData: function(data) {
         	},

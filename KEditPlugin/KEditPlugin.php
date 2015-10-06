@@ -267,26 +267,11 @@ class KEditPlugin extends SC_Plugin_Base {
             return;
         }
 
-        if ($_GET['kedit_app_fetch_product']) {
-            $products = $this->fetchProducts();
-            $response = array(
-                'success' => true,
-                'products' => json_encode($products)
-            );
-            echo SC_Utils_Ex::jsonEncode($response);
-            exit;
-            return;
-        }
-
-
         $media_path = PLUGIN_HTML_URLPATH . $this->arrSelfInfo['plugin_code'] . "/www/";
         
-        $product_items = $this->fetchProducts();
         $objPage->ui_start_btn =  $media_path . "img/btn/kedit_start_btn.jpg";
         $objPage->app_path = $media_path . "index.html";
         $objPage->media_path = $media_path;
-        $objPage->app_image_path = IMAGE_SAVE_RSS_URL;
-        $objPage->app_product_items = json_encode($product_items);
     }
 
      /**
