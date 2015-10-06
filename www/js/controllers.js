@@ -107,7 +107,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         var alertPopup = $ionicPopup.show({
             title: data.title,
             template: data.message,
-            buttons:[{
+            buttons: [{
                 text: '',
                 type: 'button-confirm'
             }]
@@ -296,7 +296,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.addTabselectedHandler = function(tabId, handler) {
             $scope.tabData[tabId].onSelectedHanlders.push(handler);
         };
-         $scope.addTabDeselectedHandler = function(tabId, handler) {
+        $scope.addTabDeselectedHandler = function(tabId, handler) {
             $scope.tabData[tabId].onDesectedHandlers.push(handler);
         };
 
@@ -332,16 +332,14 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
 
         $scope.isSelectOther = function() {
-            return ($scope.pictureLoaded && !$scope.isWaitReselect)
-                   && 
-                   ($scope.activeTabIndex == 0 || $scope.activeTabIndex == 1);
+            return ($scope.pictureLoaded && !$scope.isWaitReselect) &&
+                ($scope.activeTabIndex == 0 || $scope.activeTabIndex == 1);
         }
 
         $scope.shouldShowTakePictureToolBars = function() {
-            
-            return (!$scope.pictureLoaded  || $scope.isWaitReselect)
-                   && 
-                   ($scope.activeTabIndex == 0 || $scope.activeTabIndex == 1);
+
+            return (!$scope.pictureLoaded || $scope.isWaitReselect) &&
+                ($scope.activeTabIndex == 0 || $scope.activeTabIndex == 1);
         }
 
         $scope.shouldShowPreviewToolBars = function() {
@@ -367,9 +365,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         }
 
         $scope.shouldShowHistory = function() {
-            return $scope.activeTabIndex == 4 
-                   ||
-                   $scope.history.remainStep() > 0;
+            return $scope.activeTabIndex == 4 ||
+                $scope.history.remainStep() > 0;
         }
 
         $scope.slideHasChanged = function(index) {
@@ -405,7 +402,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
                 var newTab = tabContentViews[$scope.activeTabIndex];
                 $scope.actionBarClassName = newTab.actionBarClass;
-                
+
                 if (ignoreAction) {
                     if (onSelectedFunc) onSelectedFunc();
                     return;
@@ -483,108 +480,108 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     /* @region - filter */
     (function() {
 
-            /*== create filter object ==*/
-            Filter = {};
+        /*== create filter object ==*/
+        Filter = {};
 
-            // process with canvas TAG
-            Filter.process = function(canvas, effect, callback) {
-                // extract pixels data from canvas input
-                var width = canvas.width;
-                var height = canvas.height;
-                var context = canvas.getContext('2d');
-                var pixels = context.getImageData(0, 0,
-                    width, height);
+        // process with canvas TAG
+        Filter.process = function(canvas, effect, callback) {
+            // extract pixels data from canvas input
+            var width = canvas.width;
+            var height = canvas.height;
+            var context = canvas.getContext('2d');
+            var pixels = context.getImageData(0, 0,
+                width, height);
 
-                // send the pixels to a worker thread
-                var worker = new Worker('js/worker.js');
-                var obj = {
-                    pixels: pixels,
-                    effects: effect
-                };
-                worker.postMessage(obj);
-
-                // get message from the worker thread
-                worker.onmessage = function(e) {
-                    // debug
-                    if (typeof e.data === "string") {
-                        // console.log("Worker: " + e.data);
-                        return;
-                    }
-                    
-                    // create result canvas
-                    var out = document.createElement('canvas');
-                    out.width = width;
-                    out.height = height;
-                    // put pixels to new canvas
-                    context = out.getContext("2d");
-                    context.putImageData(e.data.pixels, 0, 0);
-                    var dataURL = out.toDataURL();
-                    if (callback) callback(out, dataURL);
-                };
-                return;
+            // send the pixels to a worker thread
+            var worker = new Worker('js/worker.js');
+            var obj = {
+                pixels: pixels,
+                effects: effect
             };
-            /*== end == */
+            worker.postMessage(obj);
 
-            $scope.activeFilterIndex = 0;
-            filterDisplayNames = ['none', 'lo_fi', 'mayfair', 'valencia', 'walden', 'xpro'];
-            filterNames = ['none', 'lofi', 'mayfair', 'valencia', 'walden', 'xpro2'];
-            $scope.filters = [];
-
-            for (var i = 0; i < filterDisplayNames.length; i++) {
-                $scope.filters.push({
-                    id: i,
-                    name: filterDisplayNames[i],
-                    filter: filterNames[i],
-                    src: 'img/assets/filters/' + i + '.png'
-                });
-            }
-
-            $scope.applyFilter = function(index) {
-                if (index == $scope.activeFilterIndex) 
+            // get message from the worker thread
+            worker.onmessage = function(e) {
+                // debug
+                if (typeof e.data === "string") {
+                    // console.log("Worker: " + e.data);
                     return;
-                
-                $scope.showProcessingLoading('処理中');
-                setTimeout(function() {
-                    var canvas = $("#take-picture-canvas")[0];
-                    var effect = filterNames[index];
-                    var data = $(canvas).data('data-filter-name');
+                }
 
-                    // ignore filter 
-                    if (index == 0) {
-                        $scope.activeFilterIndex = 0;
+                // create result canvas
+                var out = document.createElement('canvas');
+                out.width = width;
+                out.height = height;
+                // put pixels to new canvas
+                context = out.getContext("2d");
+                context.putImageData(e.data.pixels, 0, 0);
+                var dataURL = out.toDataURL();
+                if (callback) callback(out, dataURL);
+            };
+            return;
+        };
+        /*== end == */
 
-                        // revert back to raw image canvas
-                        var dataURL = canvas.toDataURL();
-                        $scope.painter.addImage(dataURL, function() {
-                            setTimeout(function(){
-                                $scope.hideProcessingLoading();                              
-                            }, 0);
-                        });
-                        return;
-                    }
+        $scope.activeFilterIndex = 0;
+        filterDisplayNames = ['none', 'lo_fi', 'mayfair', 'valencia', 'walden', 'xpro'];
+        filterNames = ['none', 'lofi', 'mayfair', 'valencia', 'walden', 'xpro2'];
+        $scope.filters = [];
 
-                    // process filter
-                    $scope.activeFilterIndex = index;
-                    
-                    $(canvas).data("data-filter-name", effect);
-                    Filter.process(canvas, effect, function(result, dataURL){
-                        $scope.painter.addImage(dataURL, function() {
-                            setTimeout(function(){
-                                $scope.hideProcessingLoading();
-                             }, 0);
-                        });
-                    });  
+        for (var i = 0; i < filterDisplayNames.length; i++) {
+            $scope.filters.push({
+                id: i,
+                name: filterDisplayNames[i],
+                filter: filterNames[i],
+                src: 'img/assets/filters/' + i + '.png'
+            });
+        }
+
+        $scope.applyFilter = function(index) {
+            if (index == $scope.activeFilterIndex)
+                return;
+
+            $scope.showProcessingLoading('処理中');
+            setTimeout(function() {
+                var canvas = $("#take-picture-canvas")[0];
+                var effect = filterNames[index];
+                var data = $(canvas).data('data-filter-name');
+
+                // ignore filter 
+                if (index == 0) {
+                    $scope.activeFilterIndex = 0;
+
+                    // revert back to raw image canvas
+                    var dataURL = canvas.toDataURL();
+                    $scope.painter.addImage(dataURL, function() {
+                        setTimeout(function() {
+                            $scope.hideProcessingLoading();
+                        }, 0);
+                    });
+                    return;
+                }
+
+                // process filter
+                $scope.activeFilterIndex = index;
+
+                $(canvas).data("data-filter-name", effect);
+                Filter.process(canvas, effect, function(result, dataURL) {
+                    $scope.painter.addImage(dataURL, function() {
+                        setTimeout(function() {
+                            $scope.hideProcessingLoading();
+                        }, 0);
+                    });
                 });
-            }
+            });
+        }
 
         $scope.onTakenPicture = function(canvas, canvasId) {
             $scope.activeFilterIndex = 0;
             var dataURL = canvas.toDataURL();
             $scope.showProcessingLoading('処理中');
             $(canvas).data("data-filter-name", "");
-            $scope.painter.addImage(dataURL, function(){
-                setTimeout(function(){
-                       $scope.hideProcessingLoading();
+            $scope.painter.addImage(dataURL, function() {
+                setTimeout(function() {
+                    $scope.hideProcessingLoading();
                 }, 100);
             });
         }
@@ -605,8 +602,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
             var dataURL = canvas.toDataURL();
             $scope.painter.addImage(dataURL, function() {
-                setTimeout(function(){
-                    $scope.hideProcessingLoading();                              
+                setTimeout(function() {
+                    $scope.hideProcessingLoading();
                 }, 0);
             });
         }
@@ -752,19 +749,19 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             value: null,
             timeoutId: null,
             watch: 'fontFamily.value.displayName',
-            fontJP: function(){
+            fontJP: function() {
                 var jpFonts = [];
-                this.fonts.forEach(function(font){
+                this.fonts.forEach(function(font) {
                     if (font.lang === 'jp')
-                       jpFonts.push(font);
+                        jpFonts.push(font);
                 });
                 return jpFonts;
             },
-            fontEN: function(){
+            fontEN: function() {
                 var enFonts = [];
-                this.fonts.forEach(function(font){
+                this.fonts.forEach(function(font) {
                     if (font.lang === 'en')
-                       enFonts.push(font);
+                        enFonts.push(font);
                 });
                 return enFonts;
             },
@@ -775,8 +772,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             select: function(font) {
                 this.value = font;
             },
-            itemClassFor: function(font){
-                if (font.family === ''){
+            itemClassFor: function(font) {
+                if (font.family === '') {
                     return 'blank';
                 }
             },
@@ -1025,9 +1022,9 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.addNewText = function() {
             $scope.showTextInputPopup();
         }
-        
-        _.each([0, 1, 2, 3], function(tabId){
-            $scope.addTabDeselectedHandler(tabId, function(){
+
+        _.each([0, 1, 2, 3], function(tabId) {
+            $scope.addTabDeselectedHandler(tabId, function() {
                 $scope.painter.deselectWidget();
             });
         });
@@ -1096,7 +1093,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 }
 
                 if (!text) {
-                    setTimeout(function(){
+                    setTimeout(function() {
                         $scope.painter.addNewText(res);
                     })
                 } else {
@@ -1165,10 +1162,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                         backstoreOnly: true
                     });
 
-                    object.set({
-                        width: newWidth,
-                        height: newHeight
-                    });
+                    object.scaleToHeight(newHeight);
                     if (callback) callback(object);
                 }
 
@@ -1245,8 +1239,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                             format: 'png',
                             multiplier: $scope.config.multiplier
                         });
-                        var dwn = document.getElementById('download');
-                        dwn.innerHTML = "<a href=" + dataURL + ">View Image</a>";
+
 
                     } catch (e) {
                         $scope.showAlert({
@@ -1380,13 +1373,13 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             this.setupFrameSize();
             angular.element($window).bind('resize', this.setupFrameSize);
             this.setupEvents();
-            
+
             var conerSize = $scope.isMobile() ? 40 : 30;
             this.widgetConfig = {
-               transparentCorners: true,
-               cornerColor: '#ff5a69',
-               cornerSize: conerSize,
-               borderColor: '#ff5a69'
+                transparentCorners: true,
+                cornerColor: '#ff5a69',
+                cornerSize: conerSize,
+                borderColor: '#ff5a69'
             };
         },
 
@@ -1403,14 +1396,14 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     if (e.target && e.target.isType('text')) {
                         setTimeout(function() {
                             $scope.$apply(function() {
-                                if ($scope.activeTabIndex != 3){
-                                    $scope.selectTabWithIndex(3, true, function(){
+                                if ($scope.activeTabIndex != 3) {
+                                    $scope.selectTabWithIndex(3, true, function() {
                                         $scope.showTextInputPopup(e.target);
                                     });
                                 } else {
                                     $scope.showTextInputPopup(e.target);
                                 }
-                                
+
                             });
                         });
 
@@ -1424,11 +1417,11 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 if (e.target && e.target.isType('text')) {
                     setTimeout(function() {
                         $scope.$apply(function() {
-                            if ($scope.activeTabIndex != 3){
-                                $scope.selectTabWithIndex(3, true, function(){
+                            if ($scope.activeTabIndex != 3) {
+                                $scope.selectTabWithIndex(3, true, function() {
                                     $scope.showTextSetting(e.target);
                                 });
-                            }else {
+                            } else {
                                 $scope.showTextSetting(e.target);
                             }
                         });
@@ -1437,18 +1430,17 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     $scope.hideTextSetting();
 
                     if (e.target && e.target.isType('user-image')) {
-                        if ($scope.activeTabIndex != 0 && $scope.activeTabIndex != 1){
-                            setTimeout(function(){
-                                $scope.$apply(function(){
+                        if ($scope.activeTabIndex != 0 && $scope.activeTabIndex != 1) {
+                            setTimeout(function() {
+                                $scope.$apply(function() {
                                     $scope.selectTabWithIndex(0, true);
                                 })
-                            })       
+                            })
                         }
-                    }
-                    else {
-                        if ($scope.activeTabIndex != 2){
-                            setTimeout(function(){
-                                $scope.$apply(function(){
+                    } else {
+                        if ($scope.activeTabIndex != 2) {
+                            setTimeout(function() {
+                                $scope.$apply(function() {
                                     $scope.selectTabWithIndex(2, true);
                                 })
                             })
@@ -1462,20 +1454,53 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 $scope.selectedWidget = null;
             });
         },
+        finishEdit: function() {
+            $scope.showProcessingLoading();
+            var self = this;
+
+
+            var canvas = $scope.canvas;
+            canvas.deactivateAll();
+            try {
+
+                var dataURL = canvas.toDataURL({
+                    format: 'png',
+                    multiplier: $scope.config.multiplier
+                });
+                var product = $scope.product;
+                var data = {
+                    product_id: product.id,
+                    template_url: product.relative_tpl_path,
+                    exported_data_url: dataURL
+                };
+                $scope.hideProcessingLoading();
+                if (window.onAppFinishCallback) {
+                    window.onAppFinishCallback(data);
+                } else {
+                    console.log("onAppFinishCallback not set");
+                }
+
+
+            } catch (e) {
+                $scope.hideProcessingLoading();
+                $scope.showAlert({
+                    title: 'ラー',
+                    message: "Cannot export data in your browser, \nerror: " + e
+                })
+            } finally {}
+
+        },
         toImageContent: function(callback) {
             var self = this;
             var canvas = $scope.canvas;
             canvas.deactivateAll();
             try {
-                var json = JSON.stringify($scope.canvas);
-                console.log("=============");
-                console.log(json);
-                console.log("==============");
-                
+
                 var dataURL = canvas.toDataURL({
                     format: 'png',
                     multiplier: $scope.config.multiplier
                 });
+
                 fabric.Image.fromURL(dataURL, function(image) {
                     canvas.centerObject(image);
                     if (callback) callback(image);
@@ -1694,8 +1719,10 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         setDefaultFrame: function() {
             this.mask = null;
             var userImages = $scope.canvas.getObjects('user-image');
-            _.each(userImages, function(image){
-                image.set({clipTo: null});
+            _.each(userImages, function(image) {
+                image.set({
+                    clipTo: null
+                });
             });
             $scope.canvas.renderAll();
         },
@@ -1704,8 +1731,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
             //$scope.history.addVersion();
             var userImages = $scope.canvas.getObjects('user-image');
-            _.each(userImages, function(image){
-                 $scope.canvas.remove(image);
+            _.each(userImages, function(image) {
+                $scope.canvas.remove(image);
             });
 
             var h = $scope.painter.height;
@@ -1729,7 +1756,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     originY: 'center',
                 });
                 image.set(self.widgetConfig);
-               
+
 
                 $scope.canvas.add(image);
                 $scope.canvas.centerObject(image);
@@ -1738,12 +1765,12 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 image.setCoords();
 
                 // setup frame
-                if ($scope.activeFrameIndex != -1){
-                    self.setLastFrame(function(){
+                if ($scope.activeFrameIndex != -1) {
+                    self.setLastFrame(function() {
                         $scope.canvas.renderAll();
                         if (callback) callback();
                     })
-                }else {
+                } else {
                     $scope.canvas.renderAll();
                     if (callback) callback();
                 }
@@ -1756,11 +1783,11 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             if (widget.isType('text')) {
                 return false;
             }
-            if (widget.isType('user-image')){
+            if (widget.isType('user-image')) {
                 return false;
             }
 
-            if ($scope.activeTabIndex == 0){
+            if ($scope.activeTabIndex == 0) {
                 return false;
             }
             return true;
@@ -1804,7 +1831,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         videoId: '#take-picture-video'
     });
     $scope.uploader.init({
-         fail: function(err) {
+        fail: function(err) {
             $scope.showAlert({
                 title: "警報！",
                 message: err
@@ -1850,8 +1877,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             var last = this.data.pop();
             last.action(last.params);
             $scope.canvas.clear();
-            $scope.canvas.loadFromJSON(last.data, function(){
-                $scope.canvas.forEachObject(function(obj){
+            $scope.canvas.loadFromJSON(last.data, function() {
+                $scope.canvas.forEachObject(function(obj) {
                     var setCoords = obj.setCoords.bind(obj);
                     obj.set($scope.painter.widgetConfig);
                     obj.on({
@@ -1862,12 +1889,12 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 });
                 $scope.canvas.renderAll();
             });
-            
+
         }
     };
     $scope.history = history;
     $scope.startUndo = function() {
-        if ($scope.activeTabIndex == 4){
+        if ($scope.activeTabIndex == 4) {
             setTimeout(function() {
                 $scope.$apply(function() {
                     var tabIndex = $scope.preActiveTabIndex;
@@ -1926,12 +1953,11 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 });
             });
             angular.element('#take-picture-input').trigger('click');
-        }
-        else {
+        } else {
             setTimeout(function() {
                 $scope.$apply(function() {
-                   $scope.isWaitReselect = true;
-               });
+                    $scope.isWaitReselect = true;
+                });
             });
         }
     });
@@ -1961,7 +1987,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     angular.element('#decided-design-btn').bind('click', function(e) {
         setTimeout(function() {
-            $scope.previewer.exportData();
+            $scope.painter.finishEdit();
         })
     })
 
@@ -1970,7 +1996,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             $scope.painter.removeSelectedWidget();
         })
     })
-    
+
 })
 
 
