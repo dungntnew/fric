@@ -26,21 +26,31 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     // config rendering size
     $scope.config = $scope.config || {}
-    $scope.config.widthToHeight = 320 / 240;
-    $scope.config.contentHeight = 480; // height of content image ( should be 1/2 of printHeight)
-    $scope.config.maxViewContentHeight = 320; // height of content when view in app(css only)
 
-    $scope.config.printHeight = 960; // height of paper when print  
-    $scope.config.maxPreviewHeight = 420; //print pager when view in app(css only)
+    // use for export png image (content)
+    $scope.config.contentWidth =  960;
+    $scope.config.contentHeight = 720;
+    $scope.config.widthToHeight = 960/720;
+
+    // height of content when view in app(css only)
+    $scope.config.maxViewContentHeight = 320;
+    
+
+
+    // this number must be pre-set for all
+    // template file to get width / height 
+    // scale ratio 
+    $scope.config.templateWidth = 765;
+    $scope.config.templateHeight = 541;
+    $scope.config.previewWidthToHeight = 765 / 541;
+
+    //print pager when view in app(css only) 
+    $scope.config.maxPreviewHeight = 420;
+
+
     $scope.config.crossOrigin = ''; // other : 'Anonymous'
     $scope.config.multiplier = 1; // value multiplier using for export dataURL
 
-
-    //console.log("[app config] widthToHeight: " + $scope.config.widthToHeight);
-    //console.log("[app config] maxViewContentHeight: " + $scope.config.maxViewContentHeight + " px");
-    //console.log("[app config] maxPreviewHeight: " + $scope.config.maxPreviewHeight + " px");
-    //console.log("[app config] printHeight: " + $scope.config.printHeight + " px");
-    //console.log("[app config] contentHeight: " + $scope.config.contentHeight + " px");
 
     $scope.calculateDimensions = function(gesture) {
         $scope.w = $window.innerWidth;
@@ -1133,20 +1143,21 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.previewer = {
             setupPreviewSize: function() {
                 var frame = $("#preview-wrapper")[0];
+                var ratio = $scope.config.previewWidthToHeight;
+                var maxHeight = $scope.config.maxPreviewHeight;
                 var size = $scope.calculateFrameSize(frame, {
-                    widthToHeight: $scope.config.widthToHeight,
-                    maxHeight: $scope.config.maxPreviewHeight
+                    widthToHeight: ratio,
+                    maxHeight: maxHeight
                 }, 'setupPreviewSize');
+
                 $(frame).width(size.width);
                 $(frame).height(size.height);
+                $scope.previewCanvas
                 $scope.previewCanvas.setDimensions({
-                    width: size.width + 'px',
-                    height: size.height + 'px'
-                }, {
-                    cssOnly: true
+                    width: size.width,
+                    height: size.height
                 });
                 $scope.previewCanvas.renderAll();
-                //console.log("[previewer] view: " + size.width + " x " + size.height);
             },
 
             init: function() {
@@ -1163,36 +1174,19 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             loadBackground: function(callback) {
                 var self = this;
                 var src = $scope.product.template;
-                var objectLoadedHandler = function(object) {
-                    var scale = $scope.config.printHeight / object.height;
-                    var newWidth = object.width * scale;
-                    var newHeight = object.height * scale;
-                    $scope.printSizeWidth = newWidth;
-                    $scope.printSizeHeight = newHeight;
-                    //console.log("[previewer] size: " + newWidth + " x " + newHeight);
-
-
-                    $scope.previewCanvas.setDimensions({
-                        width: newWidth,
-                        height: newHeight
-                    }, {
-                        backstoreOnly: true
-                    });
-
-                    object.scaleToHeight(newHeight);
-                    if (callback) callback(object);
-                }
+                var canvas = $scope.previewCanvas;
 
                 fabric.util.loadImage(src, function(image) {
                     var object = new fabric.Image(image);
-                    objectLoadedHandler(object);
+                    object.scaleToHeight(canvas.height);
+                    if (callback) callback(object);
                 });
             },
-
 
             handler: function() {
                 var self = this;
                 var canvas = $scope.previewCanvas;
+
                 var painter = $scope.painter;
                 $scope.showProcessingLoading('写真処理中');
 
@@ -1203,21 +1197,20 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
                 self.loadBackground(function(background) {
                     painter.toImageContent(function(content) {
-                        var left = canvas.width / 2 + content.width / 2;
-                        var top = canvas.height / 2 + content.height / 2;
-                        // console.log("[print content] size: " + canvas.width + " x " + canvas.height);
-                        // console.log("[exported content] size: " + content.width + " x " + content.height);
-                        // console.log("[content place] l-t: " + left + " - " + top);
+                        var height = canvas.height / 2 * 0.8;
+                        content.scaleToHeight(height);
+                        content.setCoords();
+
+                        var left = canvas.width / 2 + content.getWidth() / 2;
+                        var top = canvas.height / 2 + content.getHeight() / 2;
 
                         content.set({
                             originX: 'center',
                             originY: 'center',
                             top: top,
                             left: left,
-                            scaleX: 0.8,
-                            scaleY: 0.8,
                             selectable: false
-                        })
+                        });
                         self.content = content;
                         canvas.add(content);
                         $scope.previewCanvas.setBackgroundImage(background,
@@ -1231,72 +1224,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     });
                 });
 
-            },
-            exportDataSVG: function() {
-                var filedata = $scope.previewCanvas.toSVG(); // the SVG file is now in filedata
-
-                var locfile = new Blob([filedata], {
-                    type: "image/svg+xml;charset=utf-8"
-                });
-                var locfilesrc = URL.createObjectURL(locfile); //mylocfile);
-
-                var dwn = document.getElementById('dwn');
-                dwn.innerHTML = "<a href=" + locfilesrc + " download='mysvg.svg'>Download</a>";
-
-            },
-            exportData: function() {
-                console.log('export data ..');
-                $scope.showProcessingLoading();
-                setTimeout(function() {
-                    var self = this;
-                    var canvas = $scope.previewCanvas;
-
-                    try {
-                        var dataURL = canvas.toDataURL({
-                            format: 'png',
-                            multiplier: $scope.config.multiplier
-                        });
-
-
-                    } catch (e) {
-                        $scope.showAlert({
-                            title: 'ラー',
-                            message: "Cannot export data in your browser, \nerror: " + e
-                        })
-                    } finally {
-                        $scope.hideProcessingLoading();
-                    }
-                }, 100);
-            },
-
-            viewImageNow: function() {
-                console.log('export data ..');
-                $scope.showProcessingLoading();
-                setTimeout(function() {
-                    var self = this;
-                    var canvas = $scope.canvas;
-
-                    try {
-                        var dataURL = canvas.toDataURL({
-                            format: 'png',
-                            multiplier: $scope.config.multiplier
-                        });
-                        var dwn = document.getElementById('viewImage');
-                        dwn.innerHTML = "<a href=" + dataURL + ">View Image</a>";
-
-                    } catch (e) {
-                        $scope.showAlert({
-                            title: 'ラー',
-                            message: "Cannot export data in your browser, \nerror: " + e
-                        })
-                    } finally {
-                        $scope.hideProcessingLoading();
-                    }
-                }, 100);
             }
-
         }
-        $scope.viewImageNow = $scope.previewer.viewImageNow;
         $scope.previewer.init();
         $scope.addTabselectedHandler($scope.previewer.tabId, function() {
             $scope.previewer.handler();
@@ -1369,21 +1298,15 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
             var canvas = $scope.canvas = this.__canvas = new fabric.Canvas('canvas-content');
             canvas.backgroundColor = 'transparent';
             canvas.selectionColor = 'rgba(0,255,0,0.3)';
-
-            var contentWidth = $scope.config.contentHeight * $scope.config.widthToHeight;
-            //console.log("****** with to height: " + $scope.config.widthToHeight);
-            //console.log("****** content height: " + $scope.config.contentHeight);
-
             canvas.setDimensions({
-                width: contentWidth,
+                width: $scope.config.contentWidth,
                 height: $scope.config.contentHeight
             }, {
                 backstoreOnly: true
             });
             canvas.centeredScaling = true;
 
-            //console.log("[painter] size: " + contentWidth + " x " + $scope.config.contentHeight);
-            $scope.painter.width = contentWidth;
+            $scope.painter.width = $scope.config.contentWidth;
             $scope.painter.height = $scope.config.contentHeight;
             this.setDefaultFrame();
             canvas.renderAll();
