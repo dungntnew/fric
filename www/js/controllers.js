@@ -141,13 +141,22 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         console.log('ProductListCtrl load product error: ' + err);
         $scope.products = window.products = Products.all();
     }
+    var productListApi = '';
+    if (parent.KEditAppData){
+        productListApi = parent.KEditAppData.listApi;
+    }
 
-    var protocol = window.location.protocol;
-    var hostname = window.location.hostname;
-    var api_host = protocol + '//' + hostname;
-    var api_path = api_host + '/html/products/list.php?kedit_app_fetch_product=true';
-
-    var jqxhr = $.getJSON(api_path,
+    if (productListApi === ''){
+        var protocol = window.location.protocol;
+        var hostname = window.location.hostname;
+        var api_host = protocol + '//' + hostname;
+        var api_path = api_host + '/products/list.php?kedit_app_fetch_product=true';
+        console.log("try auto build product list api");
+        console.log("auto generated list product api: ");
+        console.log(productListApi);
+    }
+    
+    var jqxhr = $.getJSON(productListApi,
             function(res) {
                 if (res.success) {
                     var products = JSON.parse(res.products);
