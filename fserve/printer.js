@@ -36,6 +36,9 @@ var printer = {
                 if (callback) callback(false, error);
                 return;
             }
+            var writePdf = function() {
+                
+            }
 
             self._toPNG(params, canvas, callback);
         });
