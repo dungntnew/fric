@@ -20,13 +20,13 @@ m)
 echo "====== start upload media ======="
 cd $HOMEDIR
 cp -r $HOMEDIR/www/index.html $HOMEDIR/www/index.php;
-tar cvzf - www | ssh $USER@$HOST "cd $HTML_PLG_DIR/KEditPlugin/; rm -rf www; tar xvzf -";
+tar cvzf - www | ssh $USER@$HOST "cd $HTML_PLG_DIR/KEditPlugin/; rm -rf www; tar xvzf -; chmod -R 777 www";
 
     ;;
 p)  
 echo  "start upload plugin"
 cd $HOMEDIR
-tar cvzf - KEditPlugin | ssh $USER@$HOST "cd $DATA_PLG_DIR; rm -rf KEditPlugin; tar xvzf -";
+tar cvzf - KEditPlugin | ssh $USER@$HOST "cd $DATA_PLG_DIR; rm -rf KEditPlugin; tar xvzf -; chmod -R 777 KEditPlugin/";
     ;;
 r)
   ssh $USER@$HOST "cd $TPL_CACHE_DIR; rm -vrf ./*";
