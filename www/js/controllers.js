@@ -1197,12 +1197,15 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
                 self.loadBackground(function(background) {
                     painter.toImageContent(function(content) {
-                        var height = canvas.height / 2 * 0.8;
-                        content.scaleToHeight(height);
+                        
+                        // all frame haft
+                        var fhw = canvas.width / 2;
+                        var fhh = canvas.height / 2; 
+                  
+                        content.scaleToHeight(fhh * 0.8);
                         content.setCoords();
-
-                        var left = canvas.width / 2 + content.getWidth() / 2;
-                        var top = canvas.height / 2 + content.getHeight() / 2;
+                        var left = fhw * 1.5;
+                        var top = fhh * 1.5; 
 
                         content.set({
                             originX: 'center',
