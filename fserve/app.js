@@ -97,7 +97,7 @@ app.get('/api/export/:order_detail_id/:override?', function(req, res) {
 
 
 	var order_detail_id = req.params['order_detail_id'];
-	var override = req.params['override'] || false;
+	var override = req.params['override'] || true;
 	var use_json = !config.use_direct_png_file;
 
 	fetch_order_info(order_detail_id, function(order, err) {

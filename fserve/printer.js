@@ -206,11 +206,6 @@ var printer = {
         var outstream = fs.createWriteStream(temppath);
         var stream = canvas.createPNGStream();
         
-        var w = this.config.template_width;
-        var h = this.config.template_height;
-        console.log("content w:h => " + w + ":" + h);
-
-        
         var toPDFHandler = function(){
             // A4: [595.28, 841.89],
             // DEFAULT_MARGINS = {
@@ -227,8 +222,10 @@ var printer = {
             });
             try {
                 console.log("== start print pdf ==");
-                console.log("== temp image path: ");
-                console.log(temppath);
+                if (!fs.existsSync(temppath)){
+                    callback(false, 'temp png path not exists: ' + temppath);
+                }
+
                 doc.pipe(fs.createWriteStream(outpath));
                 doc.image(temppath, 17, 29.76, {
                         width: size[0] - 17 * 2 
@@ -237,10 +234,11 @@ var printer = {
                     }
                 );
                 doc.end();
-                console.log("== end print image ==");
+                console.log("== end print pdf ==");
                 callback(outpath);
             }catch(e) {
-                 callback(false, 'export pdf fail.' + e);
+                console.log("== print pdf exeption: " + e);
+                callback(false, 'export pdf fail.' + e);
             }
         }
 
