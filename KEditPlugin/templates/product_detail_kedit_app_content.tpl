@@ -16,6 +16,8 @@
         	iFramePath: "<!--{$app_path}-->",
         	iframe: {},
         	iFrameWindow: {},
+            uploadApi: "<!--{$upload_api}-->",
+            productListApi: "<!--{$product_list_api}-->",
             
             resize: function() {
             	var height = $(window).height();
@@ -123,13 +125,14 @@
                 var exported_data_url = data['exported_data_url'];
                 var template_url = data['template_url'];
                 var encodedContentData = encodeURIComponent(exported_data_url);
+                var uploadTempApiUrl = this.uploadApi;
 
                 console.log("transactionid: " + transactionid);
 
                 $.ajax({
                     
                     type: "POST",
-                    ulr: "products/detail.php",
+                    ulr: uploadTempApiUrl,
                     data: { 
                         'transactionid': transactionid, 
                         'kedit_product_id': product_id,

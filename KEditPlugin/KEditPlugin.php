@@ -9,6 +9,8 @@ require_once PLUGIN_UPLOAD_REALDIR . "KEditPlugin/plg_KEditPlugin_Util.php";
  * @version $Id: $
  */
 define("KEDIT_NO_CACHE", true);
+define('KEDIT_UPLOAD_DATA_API', HTTP_URL . "products/detail.php?kedit_app_subbmit=true");
+define('KEDIT_PRODUCT_LIST_API', HTTP_URL . "products/list.php?kedit_app_fetch_product=true");
 
 class KEditPlugin extends SC_Plugin_Base {
 
@@ -235,6 +237,9 @@ class KEditPlugin extends SC_Plugin_Base {
      * 
      */
     function front_products_detail_after($objPage) {
+        var_dump(KEDIT_UPLOAD_DATA_API);
+        var_dump(KEDIT_PRODUCT_LIST_API);
+
         if ($_POST['kedit_summit']) {
             try {
                 $transactionid = $_POST['transactionid'];
@@ -274,6 +279,8 @@ class KEditPlugin extends SC_Plugin_Base {
         $objPage->ui_start_btn =  $media_path . "img/btn/kedit_start_btn.jpg";
         $index_file = KEDIT_NO_CACHE ? "index.php": "index.html";
         $objPage->app_path = $media_path . $index_file;
+        $objPage->upload_api = KEDIT_UPLOAD_DATA_API;
+        $objPage->product_list_api = KEDIT_PRODUCT_LIST_API;
         $objPage->media_path = $media_path;
     }
 
