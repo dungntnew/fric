@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html ng-app="app">
   <head>
@@ -34,7 +33,7 @@
     <!-- use for image loader -->
     <script src="js/load-image.all.min.js"></script>
     
-    <script src="js/eccube_hook.js?v=1"></script>
+    <script src="js/eccube_hook.js?v2"></script>
     <script src="js/app.js?v=1"></script>
     <script src="js/services.js?v=1"></script>
     <script src="js/directives.js?v=1"></script>

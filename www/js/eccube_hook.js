@@ -1,11 +1,17 @@
 window.setupAppData = function(params) {
   window.appData = params.data;
   window.onAppFinishCallback = params.callback;
-
-  console.log("setupdata done..");
+  console.log("iframe:setupdata done..");
 }
+
 window.startup = function() {
-	console.log("KEdit App Startup...");
+	console.log("iframe:KEdit App Startup...");
 };
 
-console.log("setupdata go here");
+console.log("iframe: on start load..");
+if (!parent.KEditAppData) {
+	console.log("iframe cannot access parent KEditAppData");
+}else {
+	console.log("parent app data is: ");
+	console.log(JSON.stringify(parent.KEditAppData));
+}

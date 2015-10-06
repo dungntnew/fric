@@ -89,6 +89,15 @@
         		};
                 var unix = Math.round(+new Date()/1000);
                 var appPath = self.iFramePath + '?v=' + unix
+
+                // bind variable to global window app
+                // this will be eccube hook access with path
+                // parent.kedit
+                window.KEditAppData = {
+                    appPath: appPath,
+                    listApi: self.productListApi,
+                    uploadApi: self.uploadApi
+                };
         		$(self.iframe).attr('src', appPath);
         		$(self.iframe).bind('load', onLoadHandler);
         	},
