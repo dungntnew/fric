@@ -220,14 +220,9 @@ var printer = {
             //   right: 72
             // };
             // unit: point (1 inch = 72 point)
+            var size = [892.9152, 1295.4312];
             var doc = new PDFDocument({
-                size: 'A4',
-                margins: {
-                  top: 72,
-                  bottom: 72,
-                  left: 72,
-                  right: 72
-                },
+                size: size,
                 layout: 'portrait'
             });
             try {
@@ -235,11 +230,10 @@ var printer = {
                 console.log("== temp image path: ");
                 console.log(temppath);
                 doc.pipe(fs.createWriteStream(outpath));
-                doc.image(temppath, 10, 10, {
-                        width: 575.28
+                doc.image(temppath, 17, 29.76, {
+                        width: size[0] - 17 * 2 
                                // scaleToWidth: 
                                // = page width - (margin left * 2)
-                               // = 595.28 - 10 * 2
                     }
                 );
                 doc.end();
