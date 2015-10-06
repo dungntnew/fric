@@ -113,11 +113,13 @@
         			return;
         		}
                 $(window).scrollTop(0);
+                $('body').css('overflowY', 'hidden');
         		$(self.iframe).fadeIn();
 
         		self.app.startup();
         	},
         	onFinish: function(data) {
+                $('body').css('overflowY', 'auto');
         		var self = this;
                 var transactionid = $("*[name=transactionid]").val();
                 var product_id = data["product_id"];
