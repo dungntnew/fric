@@ -1,0 +1,25 @@
+install notes:
+
+1. edit php.ini
+
+set upload max_file size => 100MB
+
+set post_max_size = 100M
+
+
+2. admin/system/parameter.php
+
+set FILE_SIZE
+=> 100MB
+
+3. in admin plugin manager
+
+A. upload plugin (admin only)
+B. copy media app to html/plugin/KEdit../media
+(because app large so cannot auto copy via post)
+
+cd html/plugin/KEditPlugin/
+scp ./media.zip eccube@157.7.121.167:/var/www/html/eccube-2_13/html/plugin/KEditPlugin/
+
+cd /var/www/html/eccube-2_13/html/plugin/KEditPlugin/
+rm -rf media && unzip media.zip
