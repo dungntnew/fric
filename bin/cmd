@@ -31,11 +31,13 @@ r)
   ;;
 z)
   cd $HOMEDIR
+  mkdir -p $HOMEDIR/temp;
   mkdir -p KEditPlugin/www;
   cd ./KEditPlugin 
-  tar cvzf ../KEditPlugin.tar.gz *
+  mv $HOMEDIR/temp/KEditPlugin.tar.gz $HOMEDIR/temp/KEditPlugin_bk.tar.gz
+  tar cvzf $HOMEDIR/temp/KEditPlugin.tar.gz *
   cd $HOMEDIR
-  echo "done: $HOMEDIR/KEditPlugin.tar.gz";
+  echo "done: $HOMEDIR/temp/KEditPlugin.tar.gz";
   ;;
 *) echo "Task $1 is not processed"
    ;;
