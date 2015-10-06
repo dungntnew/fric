@@ -1,6 +1,10 @@
 <?php
 
 require_once CLASS_REALDIR . 'helper/SC_Helper_Purchase.php';
+
+require_once PLUGIN_UPLOAD_REALDIR . "KEditPlugin/plg_KEditPlugin_Util.php";
+
+
 /**
  * 商品購入関連のヘルパークラス(拡張).
  *
@@ -91,7 +95,7 @@ class plg_KEditPlugin_SC_Helper_Purchase extends SC_Helper_Purchase
         $msg .= " order: $order_id";
         $msg .= " length: ". count($order_details);
 
-        $this->log($msg);
+        plg_KEditPlugin_Util::log($msg);
 
         $plg_kedit_flg = 0;
 
@@ -100,12 +104,12 @@ class plg_KEditPlugin_SC_Helper_Purchase extends SC_Helper_Purchase
             $exported_templates = $objQuery->select('*', 'plg_keditplugin as t1', 't1.transaction_id = ? and t1.product_id = ?',
             array($transaction_id, $order_detail['product_id']));
 
-            $this->log("template count: " . count($exported_templates));
+            plg_KEditPlugin_Util::log("template count: " . count($exported_templates));
 
             if (count($exported_templates) > 0) {
                 $template_data = $exported_templates[0];
                 
-                $this->log("start update: " . $template_data['upload_picture_url']);
+                plg_KEditPlugin_Util::log("start update: " . $template_data['upload_picture_url']);
 
                 $objQuery->update('dtb_order_detail', 
                        array('plg_kedit_user_picture_path' => $template_data['upload_picture_url'],
@@ -122,17 +126,6 @@ class plg_KEditPlugin_SC_Helper_Purchase extends SC_Helper_Purchase
                array($order_id)
        );
         // clear plg_keditplugin all record where transaction_id = ?
-    }
-    
-    // log util using database. 
-    // to use: create table log(msg TEXT);
-    function log($msg) {
-          $objQuery =& SC_Query_Ex::getSingletonInstance();
-            $objQuery->insert('log', array('msg' => $msg));
-        if (DB_LOG_ENABLE == 1) {
-            $objQuery =& SC_Query_Ex::getSingletonInstance();
-            $objQuery->insert('log', array('msg' => $msg));
-        }
     }
 
 }

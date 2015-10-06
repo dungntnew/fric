@@ -93,10 +93,11 @@ var validate_order = function(order) {
 	return true;
 }
 
-app.get('/api/export/:order_detail_id', function(req, res) {
+app.get('/api/export/:order_detail_id/:override?', function(req, res) {
 
 
 	var order_detail_id = req.params['order_detail_id'];
+	var override = req.params['override'] || false;
 	var use_json = !config.use_direct_png_file;
 
 	fetch_order_info(order_detail_id, function(order, err) {
@@ -117,7 +118,10 @@ app.get('/api/export/:order_detail_id', function(req, res) {
 		var export_name = path.basename(use_json 
 			            ? order.json_path 
 			            : order.user_picture_path, use_json ? '.json' : '.png');
-		export_name += '_' + order_detail_id + '.png';
+
+		export_temp_name = export_name +  '_' + order_detail_id + '.png';
+		export_name += '_' + order_detail_id + '.pdf';
+
         
 		var json_path = use_json ? path.resolve(config.IMAGE_SAVE_REALDIR, order.json_path): '';
 		var user_picture_path = !use_json ? path.resolve(config.IMAGE_SAVE_REALDIR, order.user_picture_path): '';
@@ -127,12 +131,13 @@ app.get('/api/export/:order_detail_id', function(req, res) {
 		// console.log("temp: " + template_path);
 
 		var export_path = path.resolve(config.IMAGE_SAVE_REALDIR, export_name);
+		var temppath = path.resolve(config.IMAGE_SAVE_REALDIR, export_temp_name);
 		var view_path = config.IMAGE_SAVE_RSS_URL +  export_name;
-
-        if (fs.existsSync(export_path)) {
+        
+        if (!override && fs.existsSync(export_path)) {
         	res.json({
 				status: true,
-				message: 'exist png',
+				message: 'exist pdf',
 				error: null,
 				data: view_path
 			});
@@ -151,7 +156,8 @@ app.get('/api/export/:order_detail_id', function(req, res) {
 				var params = {
 					json: json,
 					template_path: template_path,
-					outpath: export_path
+					outpath: export_path,
+					temppath: temppath
 				};
 				printer.handler(params, printerHandler);
 			});
@@ -159,7 +165,8 @@ app.get('/api/export/:order_detail_id', function(req, res) {
 			var params = {
 				user_picture_path: user_picture_path,
 				template_path: template_path,
-				outpath: export_path
+				outpath: export_path,
+				temppath: temppath
 			};
 			printer.handler(params, function(p, err){
 				printerHandler(export_path, view_path, err);
@@ -178,7 +185,7 @@ app.get('/api/export/:order_detail_id', function(req, res) {
 
 		res.json({
 			status: true,
-			message: 'export finish png',
+			message: 'export finish pdf',
 			error: null,
 			data: view_path
 		});

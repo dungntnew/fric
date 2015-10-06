@@ -31,6 +31,12 @@ class KEditPlugin extends SC_Plugin_Base {
      */
     function install($arrPlugin) {
 		$objQuery =& SC_Query_Ex::getSingletonInstance();
+
+        if (KEDIT_DEV_MODEL) {
+            $objQuery->query("CREATE TABLE plg_kedit_log (msg TEXT, create_date timestamp, update_date TIMESTAMP)");
+        }
+        $objQuery->query("CREATE TABLE plg_keditplugin (transaction_id VARCHAR(255),product_id INT, upload_picture_url VARCHAR(255), upload_template_url VARCHAR(255), create_date timestamp, update_date TIMESTAMP)");
+
         $objQuery->query("ALTER TABLE dtb_products ADD COLUMN plg_kedit_flg smallint DEFAULT 0");
         $objQuery->query("ALTER TABLE dtb_order ADD COLUMN plg_kedit_flg smallint DEFAULT 0");
         $objQuery->query("ALTER TABLE dtb_order_detail ADD COLUMN plg_kedit_json_path varchar(256)");
@@ -59,6 +65,8 @@ class KEditPlugin extends SC_Plugin_Base {
     function uninstall($arrPlugin) {
 		//テーブル削除
 		$objQuery = SC_Query_Ex::getSingletonInstance();
+        $objQuery->query("DROP TABLE IF EXISTS plg_kedit_log");
+       $objQuery->query("DROP TABLE IF EXISTS plg_keditplugin");
         $objQuery->query("ALTER TABLE dtb_products DROP COLUMN plg_kedit_flg");
         $objQuery->query("ALTER TABLE dtb_order DROP COLUMN plg_kedit_flg");
         $objQuery->query("ALTER TABLE dtb_order_detail DROP COLUMN plg_kedit_json_path");
@@ -378,15 +386,6 @@ class KEditPlugin extends SC_Plugin_Base {
                          'upload_picture_url' => $picture,
                          'upload_template_url' => $template)
            );
-        }
-    }
-    
-    // log util using database. 
-    // to use: create table log(msg TEXT);
-    function log($msg) {
-        if (DB_LOG_ENABLE == 1) {
-            $objQuery =& SC_Query_Ex::getSingletonInstance();
-            $objQuery->insert('log', array('msg' => $msg));
         }
     }
 }

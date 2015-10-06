@@ -4,7 +4,7 @@ sudo yum install cairo cairo-devel cairomm-devel libjpeg-turbo-devel pango pango
 
 # in centos some font will not be installed by default, so need install it yourself
 # for example: yum search arial 
-yum install liberation-sans-fonts.noarch
+# yum install liberation-sans-fonts.noarch
 
 # install node fabric
 npm install fabric

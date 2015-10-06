@@ -1,4 +1,7 @@
 var fs = require('fs');
+var util = require('util');
+var url = require('url');
+var PDFDocument = require('pdfkit');
 var path = require('path');
 var f = require('fabric');
 var __fabric = global.fabric = f.fabric;
@@ -36,11 +39,7 @@ var printer = {
                 if (callback) callback(false, error);
                 return;
             }
-            var writePdf = function() {
-                
-            }
-
-            self._toPNG(params, canvas, callback);
+            self._toPDF(params, canvas, callback);
         });
     },
 
@@ -200,23 +199,72 @@ var printer = {
         });
     },
 
-    _toPNG: function(params, canvas, callback) {
+    _toPDF: function(params, canvas, callback) {
         var outpath = params.outpath;
-        var outstream = fs.createWriteStream(outpath);
+        var temppath = params.temppath;
+
+        var outstream = fs.createWriteStream(temppath);
         var stream = canvas.createPNGStream();
+        
+        var w = this.config.template_width;
+        var h = this.config.template_height;
+        console.log("content w:h => " + w + ":" + h);
+
+        
+        var toPDFHandler = function(){
+            // A4: [595.28, 841.89],
+            // DEFAULT_MARGINS = {
+            //   top: 72,
+            //   left: 72,
+            //   bottom: 72,
+            //   right: 72
+            // };
+            // unit: point (1 inch = 72 point)
+            var doc = new PDFDocument({
+                size: 'A4',
+                margins: {
+                  top: 72,
+                  bottom: 72,
+                  left: 72,
+                  right: 72
+                },
+                layout: 'portrait'
+            });
+            try {
+                console.log("== start print pdf ==");
+                console.log("== temp image path: ");
+                console.log(temppath);
+                doc.pipe(fs.createWriteStream(outpath));
+                doc.image(temppath, 10, 10, {
+                        width: 575.28
+                               // scaleToWidth: 
+                               // = page width - (margin left * 2)
+                               // = 595.28 - 10 * 2
+                    }
+                );
+                doc.end();
+                console.log("== end print image ==");
+                callback(outpath);
+            }catch(e) {
+                 callback(false, 'export pdf fail.' + e);
+            }
+        }
+
+
         stream.on('data', function(chunk) {
             outstream.write(chunk);
         });
         stream.on('end', function() {
-            callback(outpath);
             outstream.end();
+            setTimeout(function(){
+                toPDFHandler();
+            }, 100);
         });
         stream.on('error', function(err) {
             callback(false, 'export png fail.');
             outstream.end();
         });
     },
-
 
     _error: function(error) {
 
