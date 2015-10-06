@@ -8,6 +8,8 @@ require_once PLUGIN_UPLOAD_REALDIR . "KEditPlugin/plg_KEditPlugin_Util.php";
  * @author Dungntnew
  * @version $Id: $
  */
+define("KEDIT_NO_CACHE", true);
+
 class KEditPlugin extends SC_Plugin_Base {
 
     /**
@@ -270,7 +272,8 @@ class KEditPlugin extends SC_Plugin_Base {
         $media_path = PLUGIN_HTML_URLPATH . $this->arrSelfInfo['plugin_code'] . "/www/";
         
         $objPage->ui_start_btn =  $media_path . "img/btn/kedit_start_btn.jpg";
-        $objPage->app_path = $media_path . "index.html";
+        $index_file = KEDIT_NO_CACHE ? "index.php": "index.html";
+        $objPage->app_path = $media_path . $index_file;
         $objPage->media_path = $media_path;
     }
 

@@ -13,24 +13,23 @@ then
       exit
 fi
 
-source ${HOMEDIR}/bin/renv.sh;
+source ${HOMEDIR}/bin/lenv.sh;
 case "$1" in
 
 m) 
 echo "====== start upload media ======="
-cd $HOMEDIR
-cp -r $HOMEDIR/www/index.html $HOMEDIR/www/index.php;
-tar cvzf - www | ssh $USER@$HOST "cd $HTML_PLG_DIR/KEditPlugin/; rm -rf www; tar xvzf -";
-
-    ;;
+rm -rf $HTML_PLG_DIR/KEditPlugin/www
+cp -r $HOMEDIR/www/index.html $HOMEDIR/www/index.php
+cp -r $HOMEDIR/www $HTML_PLG_DIR/KEditPlugin/
+;;
 p)  
 echo  "start upload plugin"
-cd $HOMEDIR
-tar cvzf - KEditPlugin | ssh $USER@$HOST "cd $DATA_PLG_DIR; rm -rf KEditPlugin; tar xvzf -";
-    ;;
+rm -rf $DATA_PLG_DIR/KEditPlugin/
+cp -rv $HOMEDIR/KEditPlugin $DATA_PLG_DIR/
+;;
 r)
-  ssh $USER@$HOST "cd $TPL_CACHE_DIR; rm -vrf ./*";
-  ;;
+rm -vrf $TPL_CACHE_DIR/*;
+;;
 z)
   cd $HOMEDIR
   mkdir -p $HOMEDIR/temp;

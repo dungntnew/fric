@@ -85,8 +85,9 @@
 	        		self.isKEditAppLoaded = true;
 	        		console.log("[app: " +  self.appIdentify + "] load success " + self.isKEditAppLoaded);
         		};
-
-        		$(self.iframe).attr('src', self.iFramePath + '?v=1');
+                var unix = Math.round(+new Date()/1000);
+                var appPath = self.iFramePath + '?v=' + unix
+        		$(self.iframe).attr('src', appPath);
         		$(self.iframe).bind('load', onLoadHandler);
         	},
         	start: function() {
