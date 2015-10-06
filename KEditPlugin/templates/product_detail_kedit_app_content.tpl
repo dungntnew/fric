@@ -108,9 +108,12 @@
 
 	        		self.app.setupAppData({
 	        			data: {},
-	        			callback: function(data) {
+	        			onFinishCallback: function(data) {
 	        				self.onFinish(data);
-	        			}
+	        			},
+                        onExitCallback: function(){
+                            self.onExit();
+                        }
 	        		});
 	        		self.isKEditAppLoaded = true;
 	        		console.log("[app: " +  self.appIdentify + "] load success " + self.isKEditAppLoaded);
@@ -146,6 +149,10 @@
 
         		self.app.startup();
         	},
+            onExit: function() {
+                $('body').css('overflowY', 'auto');
+                $(this.wrapper).fadeOut();
+            },
         	onFinish: function(data) {
                 $('body').css('overflowY', 'auto');
         		var self = this;

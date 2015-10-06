@@ -1,4 +1,10 @@
 <ion-view view-title="商品一覧">
+  <ion-nav-buttons side="left">
+      <button id="back-ecc-btn" class="button button-clear" ng-click="backToEcc();">
+         <i class="button button-icon my-back-button"></i>
+      </button>
+  </ion-nav-buttons>
+
   <ion-content>
     <ion-list>
       <ion-item class="item item-thumbnail-left item-complex product-item" ng-repeat="product in products" type="item-text-wrap" href="#/products/{{product.id}}">

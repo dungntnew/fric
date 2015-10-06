@@ -137,6 +137,14 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 })
 
 .controller('ProductListCtrl', function($scope, Products) {
+    $scope.backToEcc = function() {
+        if (window.onAppExitCallback) {
+            window.onAppExitCallback();
+        } else {
+            console.log("onAppExitCallback not set");
+        }
+    };
+
     var handleError = function(err) {
         console.log('ProductListCtrl load product error: ' + err);
         $scope.products = window.products = Products.all();

@@ -1,6 +1,7 @@
 window.setupAppData = function(params) {
   window.appData = params.data;
-  window.onAppFinishCallback = params.callback;
+  window.onAppFinishCallback = params.onFinishCallback;
+  window.onAppExitCallback = params.onExitCallback;
   console.log("iframe:setupdata done..");
 }
 

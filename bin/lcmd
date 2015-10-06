@@ -27,9 +27,16 @@ echo  "start upload plugin"
 rm -rf $DATA_PLG_DIR/KEditPlugin/
 cp -rv $HOMEDIR/KEditPlugin $DATA_PLG_DIR/
 ;;
+
+c)
+echo  "clear media"
+rm -rf $HTML_PLG_DIR/KEditPlugin/www
+;;
+
 r)
 rm -vrf $TPL_CACHE_DIR/*;
 ;;
+
 z)
   cd $HOMEDIR
   mkdir -p $HOMEDIR/temp;
