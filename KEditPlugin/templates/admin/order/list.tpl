@@ -160,7 +160,7 @@
 
          var showTable = function(products) {
             var table = $(".orderDetails > table")[0];
-            $('.orderDetails > table > tr.dynamic').remove();
+            $('table tr.dynamic').remove();
             $('.exportStatus').html("").fadeOut();
             $('.pdfLink').fadeOut();
 
