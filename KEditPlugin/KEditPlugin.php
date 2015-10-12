@@ -129,9 +129,9 @@ class KEditPlugin extends SC_Plugin_Base {
                 if (strpos($filename, 'products/detail.tpl') !== false) {
                     
                     $template_dir = PLUGIN_UPLOAD_REALDIR . $this->arrSelfInfo['plugin_code'] . '/templates/';
-                    $objTransform->select('.normal_price')->insertBefore(file_get_contents($template_dir . 'default/product_detail_kedit_btn_add.tpl'));
+                    $objTransform->select('#kedithook')->insertBefore(file_get_contents($template_dir . 'default/product_detail_kedit_btn_add.tpl'));
 
-                    $objTransform->select('.normal_price')->insertBefore(file_get_contents($template_dir . 'product_detail_kedit_app_content.tpl'));
+                    $objTransform->select('#kedithook')->insertBefore(file_get_contents($template_dir . 'product_detail_kedit_app_content.tpl'));
                 }
 
                 if (strpos($filename, 'frontparts/cart.tpl') !== false) {
@@ -144,14 +144,9 @@ class KEditPlugin extends SC_Plugin_Base {
                 if (strpos($filename, 'products/detail.tpl') !== false) {
                     
                     $template_dir = PLUGIN_UPLOAD_REALDIR . $this->arrSelfInfo['plugin_code'] . '/templates/';
-                    $objTransform->select('.btn_favorite')->insertBefore(file_get_contents($template_dir . 'default/product_detail_kedit_btn_add.tpl'));
+                    $objTransform->select('#kedithook')->insertBefore(file_get_contents($template_dir . 'default/product_detail_kedit_btn_add.tpl'));
 
-                    $objTransform->select('#product_detail')->insertBefore(file_get_contents($template_dir . 'product_detail_kedit_app_content.tpl'));
-                }
-
-                if (strpos($filename, 'frontparts/cart.tpl') !== false) {
-                    $template_dir = PLUGIN_UPLOAD_REALDIR . $this->arrSelfInfo['plugin_code'] . '/templates/';
-                    $objTransform->select('.item')->insertBefore("<h1>Hack Part-Cart</h1>");
+                    $objTransform->select('#kedithook')->insertBefore(file_get_contents($template_dir . 'product_detail_kedit_app_content.tpl'));
                 }
                 break;           
 			case DEVICE_TYPE_MOBILE:
@@ -163,16 +158,16 @@ class KEditPlugin extends SC_Plugin_Base {
                 // 受注管理・編集画面
                 if(strpos($filename, "products/product.tpl") !== false) {
 					if(plg_KEditPlugin_Util::getECCUBEVer() >= 2130){
-                    	$objTransform->select("table.form tr",14)->insertAfter(file_get_contents($template_dir ."products/product.tpl"));
+                    	$objTransform->select("table.form tr",1)->insertAfter(file_get_contents($template_dir ."products/product.tpl"));
 					}else{
-                    	$objTransform->select("table.form tr",13)->insertAfter(file_get_contents($template_dir ."products/product.tpl"));
+                    	$objTransform->select("table.form tr",2)->insertAfter(file_get_contents($template_dir ."products/product.tpl"));
 					}
 				}
                 if(strpos($filename, "products/confirm.tpl") !== false) {
 					if(plg_KEditPlugin_Util::getECCUBEVer() >= 2130){
-                    	$objTransform->select("div.contents-main table tr",12)->insertAfter(file_get_contents($template_dir ."products/confirm.tpl"));
+                    	$objTransform->select("div.contents-main table tr",1)->insertAfter(file_get_contents($template_dir ."products/confirm.tpl"));
 					}else{
-						$objTransform->select("div.contents-main table tr",11)->insertAfter(file_get_contents($template_dir ."products/confirm.tpl"));
+						$objTransform->select("div.contents-main table tr",2)->insertAfter(file_get_contents($template_dir ."products/confirm.tpl"));
 					}
 				}		
                 if(strpos($filename, "order/index.tpl") !== false) {
