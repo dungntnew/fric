@@ -48,7 +48,7 @@ s)
   echo "upload fsever code";
   cd $HOMEDIR;
   mv $HOMEDIR/fserve/node_modules $HOMEDIR/node_module_back;
-  tar cvzf - fserve | ssh $USER@$HOST "cd $WWW_ROOT; mkdirrm -rf fserve; tar xvzf -; chmod -R 777 fserve/";
+  tar cvzf - fserve | ssh $USER@$HOST "cd $WWW_ROOT; rm -rf fserve; tar xvzf -; chmod -R 777 fserve/";
   mv $HOMEDIR/node_module_back $HOMEDIR/fserve/node_modules
   ;;
   

@@ -8,22 +8,13 @@
 	"buffers":
 	[
 		{
-			"file": "fserve/app.js",
+			"contents": "> ",
 			"settings":
 			{
-				"buffer_size": 4656,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": "var fs = require('fs');\nvar path = require('path');\nvar f = require('fabric');\nvar __fabric = global.fabric = f.fabric;\n__fabric.Object.prototype.transparentCorners = false;\nvar fontLoader = require('./font');\n\nvar printer = {\n    config: {},\n    identify: \"KEdit_App_Printer_Server\",\n\n    init: function(config) {\n        this.config = config;\n    },\n\n    handler: function(params, callback) {\n        var self = this;\n        if (this.config.use_direct_png_file) {\n            if (!params.template_path || !params.user_picture_path) {\n                var message = !params.template_path ? 'invalid template path - ': '';\n                message += !params.user_picture_path ? 'invalid picture path': '';\n                callback(false, message);\n                return;\n            }\n        } else {\n            if (!params.json || !params.template_path) {\n                var message = !params.template_path ? 'invalid template path - ': '';\n                message += !params.json ? 'invalid json path': '';\n                callback(false, message);\n                return;\n            }\n        }\n\n        this._blend(params, function(canvas, error) {\n            if (error) {\n                if (callback) callback(false, error);\n                return;\n            }\n            var writePdf = function() {\n                \n            }\n\n            self._toPNG(params, canvas, callback);\n        });\n    },\n\n    _applyFont: function(canvas) {\n        fonts = fontLoader.load();\n        fonts.forEach(function(f) {\n            var font = new canvas.Font(f.family, f.path);\n            f.faces.forEach(function(options) {\n                font.addFace(options.path, options.weight, options.decoration);\n            });\n            //canvas.contextContainer.addFont(font);\n            canvas.contextTop.addFont(font);\n        });\n    },\n\n    _load: function(params, callback) {\n        var self = this;\n        var w = this.config.edit_area_width;\n        var h = this.config.edit_area_height;\n        var json = params.json;\n        var content = __fabric.createCanvasForNode(w, h);\n        self._applyFont(content);\n\n        content.loadFromJSON(json, function() {\n            content.forEachObject(function(obj) {\n                var setCoords = obj.setCoords.bind(obj);\n                obj.on({\n                    moving: setCoords,\n                    scaling: setCoords,\n                    rotating: setCoords\n                });\n            });\n            content.renderAll();\n            content.deactivateAll();\n\n            if (callback) callback(content);\n        });\n    },\n\n    _content: function(params, callback) {\n        var self = this;\n        var _ready = function(canvas, error) {\n            if (error) {\n                self._error({\n                    message: 'fail for load content.',\n                    error: error\n                });\n                return;\n            }\n\n            try {\n                var dataURL = canvas.toDataURL({\n                    format: 'png',\n                    multiplier: self.config.multiplier\n                });\n\n                __fabric.Image.fromURL(dataURL, function(image) {\n                    canvas.centerObject(image);\n                    if (callback) callback(image);\n                });\n            } catch (e) {\n                var error = {\n                    message: 'cannot export content to png image.',\n                    error: e\n                };\n                if (callback) callback(null, error);\n            }\n        }\n        self._load(params, _ready);\n    },\n    _direct_content: function(params, callback) {\n     var dataURL = params.user_picture_path;\n        __fabric.Image.fromURL(dataURL, function(image) {\n            if (callback) callback(image);\n        });\n    },\n    _template: function(params, callback) {\n        var self = this;\n        var src = params.template_path;\n\n        var onload = function(image) {\n            var templateHeight = self.config.template_height;\n            image.scaleToHeight(templateHeight);\n            image.setCoords();\n            if (callback) callback(image);\n        }\n\n        try {\n            __fabric.util.loadImage(src, function(image) {\n                onload(new __fabric.Image(image));\n            });\n        } catch (e) {\n            var error = {\n                message: 'cannot load template image.',\n                error: e\n            };\n            if (callback) callback(null, error);\n        }\n\n    },\n\n\n    _blend: function(params, callback) {\n        var self = this;\n\n        var w = this.config.template_width;\n        var h = this.config.template_height;\n        var canvas = __fabric.createCanvasForNode(w, h);\n        canvas.backgroundColor = 'rgba(255, 255, 255, 0.0)';\n        canvas.selection = false;\n        canvas.renderAll();\n\n       \n        self._template(params, function(background, error) {\n            if (error) {\n                if (callback) callback(null, error);\n                return;\n            }\n\n            var content_fetcher = self.config.use_direct_png_file \n                        ? self._direct_content\n                        : self._content;\n\n            content_fetcher(params, function(content, error) {\n                if (error) {\n                    if (callback) callback(null, error);\n                    return;\n                }\n\n                var contentHeight = self.config.edit_area_height;\n                content.scaleToHeight(contentHeight);\n\n                var left = w / 2 + content.width / 2;\n                var top = h / 2 + content.height / 2;\n\n\n                content.set({\n                    originX: 'center',\n                    originY: 'center',\n                    top: top,\n                    left: left,\n                    scaleX: 0.8,\n                    scaleY: 0.8,\n                    selectable: false\n                });\n\n                canvas.add(content);\n                canvas.centerObject(background);\n                canvas.setBackgroundImage(background,\n                    canvas.renderAll.bind(canvas), {\n                        crossOrigin: 'anonymous'\n                    });\n                setTimeout(function() {\n                    if (callback) callback(canvas);\n                }, 100);\n            });\n        });\n    },\n\n    _toPNG: function(params, canvas, callback) {\n        var outpath = params.outpath;\n        var outstream = fs.createWriteStream(outpath);\n        var stream = canvas.createPNGStream();\n        stream.on('data', function(chunk) {\n            outstream.write(chunk);\n        });\n        stream.on('end', function() {\n            callback(outpath);\n            outstream.end();\n        });\n        stream.on('error', function(err) {\n            callback(false, 'export png fail.');\n            outstream.end();\n        });\n    },\n\n\n    _error: function(error) {\n\n    }\n}\n\nexports.setup = function(config) {\n    printer.init(config);\n}\nexports.handler = function(params, callback) {\n    printer.handler(params, callback);\n}",
-			"file": "fserve/printer.js",
-			"file_size": 6953,
-			"file_write_time": 130882794680000000,
-			"settings":
-			{
-				"buffer_size": 7024,
-				"line_ending": "Unix"
+				"buffer_size": 2,
+				"line_ending": "Unix",
+				"name": "*REPL* [shell]",
+				"scratch": true
 			}
 		}
 	],
@@ -34,10 +25,14 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 93.0,
-		"last_filter": "forma",
+		"height": 335.0,
+		"last_filter": "rename",
 		"selected_items":
 		[
+			[
+				"rename",
+				"File: Rename"
+			],
 			[
 				"forma",
 				"Format: Javascript"
@@ -207,7 +202,7 @@
 				"Snippet: html"
 			]
 		],
-		"width": 578.0
+		"width": 579.0
 	},
 	"console":
 	{
@@ -238,16 +233,51 @@
 	"expanded_folders":
 	[
 		"/Users/dungntnew/vdev/konin-app",
-		"/Users/dungntnew/vdev/konin-app/fserve"
+		"/Users/dungntnew/vdev/konin-app/bin",
+		"/Users/dungntnew/vdev/konin-app/KEditPlugin",
+		"/Users/dungntnew/vdev/konin-app/KEditPlugin/templates",
+		"/Users/dungntnew/vdev/konin-app/KEditPlugin/templates/admin",
+		"/Users/dungntnew/vdev/konin-app/KEditPlugin/templates/admin/order",
+		"/Users/dungntnew/vdev/konin-app/KEditPlugin/templates/admin/products",
+		"/Users/dungntnew/vdev/konin-app/KEditPlugin/templates/default",
+		"/Users/dungntnew/vdev/konin-app/www/img"
 	],
 	"file_history":
 	[
+		"/Users/dungntnew/vdev/konin-app/fserve/app.js",
+		"/Users/dungntnew/vdev/konin-app/fserve/printer.js",
+		"/Users/dungntnew/vdev/konin-app/bin/cmd",
+		"/Users/dungntnew/vdev/konin-app/KEditPlugin/templates/admin/order/list.tpl",
+		"/Users/dungntnew/vdev/konin-app/KEditPlugin/KEditPlugin.php",
+		"/Users/dungntnew/vdev/konin-app/KEditPlugin/templates/admin/products/product.tpl",
+		"/Users/dungntnew/vdev/konin-app/KEditPlugin/templates/admin/products/confirm.tpl",
 		"/Users/dungntnew/vdev/konin-app/www/js/controllers.js",
+		"/Users/dungntnew/vdev/konin-app/untitled",
+		"/Users/dungntnew/vdev/konin-app/bin/lcmd",
+		"/Users/dungntnew/vdev/konin-app/bin/renv.sh",
+		"/Users/dungntnew/vdev/konin-app/bin/reload",
+		"/Users/dungntnew/vdev/konin-app/bin/lenv.sh",
+		"/Users/dungntnew/vdev/konin-app/bin/usedb",
+		"/Users/dungntnew/vdev/konin-app/bin/ssh",
+		"/Users/dungntnew/vdev/konin-app/bin/upload",
+		"/Users/dungntnew/vdev/konin-app/www/templates/products.html",
+		"/Users/dungntnew/vdev/konin-app/KEditPlugin/templates/product_detail_kedit_app_content.tpl",
+		"/Users/dungntnew/vdev/konin-app/bin/u",
+		"/Users/dungntnew/vdev/konin-app/www/js/eccube_hook.js",
+		"/Users/dungntnew/vdev/konin-app/fserve/install_node_server.sh",
+		"/Users/dungntnew/vdev/konin-app/fserve/node_modules/pdfkit/js/page.js",
+		"/Users/dungntnew/vdev/konin-app/fserve/e.js",
+		"/Users/dungntnew/vdev/konin-app/KEditPlugin/plg_KEditPlugin_SC_Helper_Purchase.php",
+		"/Users/dungntnew/vdev/konin-app/KEditPlugin/plg_KEditPlugin_Util.php",
+		"/Users/dungntnew/vdev/konin-app/www/index.html",
+		"/Users/dungntnew/vdev/konin-app/www/index.php",
+		"/Users/dungntnew/vdev/konin-app/bin/r",
+		"/Users/dungntnew/vdev/konin-app/KEditPlugin/templates/default/product_detail_kedit_btn_add.tpl",
+		"/Users/dungntnew/vdev/konin-app/KEditPlugin/plugin_info.php",
 		"/Users/dungntnew/vdev/konin-app/www/js/services.js",
+		"/Users/dungntnew/vdev/konin-app/install_plugin_notes",
 		"/Users/dungntnew/vdev/konin-app/www/js/webcam-controllers.js",
 		"/Users/dungntnew/vdev/konin-app/fserve/config.json",
-		"/Users/dungntnew/vdev/konin-app/fserve/printer.js",
-		"/Users/dungntnew/vdev/konin-app/fserve/app.js",
 		"/Users/dungntnew/vdev/konin-app/fserve/font.js",
 		"/Users/dungntnew/vdev/konin-app/fserve/test.js",
 		"/Users/dungntnew/vdev/konin-app/fserve/server2",
@@ -258,7 +288,6 @@
 		"/Users/dungntnew/vdev/konin-app/fserve/json_data.json",
 		"/Users/dungntnew/vdev/konin-app/www/css/font-face.css",
 		"/Users/dungntnew/vdev/konin-app/fserve/node_modules/fabric/dist/fabric.js",
-		"/Users/dungntnew/vdev/konin-app/www/index.html",
 		"/Users/dungntnew/vdev/konin-app/www/js/upload.js",
 		"/Users/dungntnew/vdev/konin-app/www/js/worker.filter.js",
 		"/Users/dungntnew/vdev/konin-app/www/css/takephoto.css",
@@ -307,13 +336,14 @@
 	],
 	"find":
 	{
-		"height": 37.0
+		"height": 42.0
 	},
 	"find_in_files":
 	{
 		"height": 95.0,
 		"where_history":
 		[
+			"",
 			"<current file>",
 			""
 		]
@@ -323,6 +353,84 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"clear",
+			"maxPreviewHeight",
+			"previewwer",
+			"preivew",
+			"scaleToHeight",
+			"setCoords",
+			"previewWidthToHeight",
+			"viewImageNow",
+			"exportData",
+			"exportDataSVG",
+			"maxPreviewHeight",
+			"widthToHeight",
+			"maxPreviewHeight",
+			"contentHeight",
+			"contentWidth",
+			"contentHeight",
+			"setDimensions",
+			"contentHeight",
+			"maxViewContentHeight",
+			"printHeight",
+			"export",
+			" exec",
+			"onExit exec",
+			"ProductListCtrl",
+			"backToEcc",
+			"onFinish",
+			"finishEdit",
+			"displa",
+			"wrapper",
+			"wrapper\n",
+			"wrapper",
+			"fadeOut",
+			"iframe",
+			"SIZES",
+			"this.size",
+			"size",
+			"addPage",
+			"PDFPage",
+			"page",
+			"width",
+			"image",
+			"msg",
+			"outpath",
+			"printerHandler",
+			"export_path",
+			"params",
+			"_toPNG",
+			"pdf",
+			"uninstall",
+			"this->log",
+			"log",
+			"UTIL",
+			"log",
+			"this->log",
+			"plg_KEditPlugin_Util",
+			"KEDIT_DEV_MODEL",
+			"ecdev.plg_keditplugin",
+			"install",
+			"create table",
+			"plg_keditplugin",
+			"KEditAppData",
+			"productListApi",
+			"uploadApi",
+			"iFramePath",
+			"saveTempData",
+			"app_path",
+			"detail",
+			"action_after",
+			"detail",
+			"iFramePath",
+			"app_path",
+			"kedit_app_fetch_product",
+			"itemListJson",
+			"setupAppData",
+			"preData",
+			"itemListJson",
+			"products",
+			"media",
 			"_toPNG",
 			"toContent",
 			"toDraw",
@@ -372,85 +480,7 @@
 			"$scope.canvas.bac",
 			" console.log(\"",
 			" console.log(\"[",
-			"console.log(",
-			"console.log(\"[painter",
-			"console",
-			"activeFilterIndex",
-			"startUndo",
-			"exported",
-			"content ",
-			"content -",
-			"addTab",
-			"lastUsedTabIndex",
-			"previe",
-			"handler",
-			"addTabselectedHandler",
-			"onSelectedHanlders",
-			"action-take-folder",
-			"upload-picture-btn",
-			"decided-design-btn",
-			"fonts",
-			"disabled",
-			"text-setting",
-			"font",
-			"isWaitReselect",
-			"uploader",
-			"isSelectOther",
-			"addImage",
-			"onPictureLoaded",
-			"onPictureLoaded\nonPictureLoaded",
-			"onPictureLoaded",
-			"uploader",
-			"should",
-			"retake-picture-btn",
-			"action-retake-btn",
-			"shouldShowTakePictureToolBars",
-			"textInput",
-			"$scope.popup",
-			"$scope.alert",
-			"カメラ",
-			"起動",
-			"button",
-			"should for aciton",
-			" console.log(\"should for aciton: \" + actionName + \" - index",
-			" console.log(\"should for aciton: \" + actionName + \" - index: \" + ",
-			"setLastFrame",
-			"setLastFrame(callback)",
-			"onPictureLoaded",
-			"dropChangeHandler",
-			"displayImage",
-			"dropChangeHandler",
-			"uploader",
-			"applyFrame",
-			"applyFa",
-			"applyFrame",
-			"addImage",
-			"content-x ",
-			"Deselect",
-			"image-wrapper",
-			"  setTimeout(function(){\n                            $scope.$apply(function(){\n                                $scope.selectTabWidthIndex(0, true);\n                            })\n                        })",
-			"selectTabWithIndex",
-			"onDesectedHandlers",
-			"addTabDeselectedHandler",
-			"deselectWidget",
-			"addTab",
-			"text-setting",
-			"fade",
-			"selectTabWithIndex",
-			"retake-picture-btn",
-			"fad",
-			"background-color: transparent !important; ",
-			"camera-action-bar",
-			"activeTabIndex",
-			"importScripts",
-			"painter",
-			"addText",
-			"addSticker",
-			"setCoords",
-			"border-",
-			"filter",
-			"\\n",
-			"\""
+			"console.log("
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -486,61 +516,79 @@
 			[
 				{
 					"buffer": 0,
-					"file": "fserve/app.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4656,
+						"buffer_size": 2,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								870,
-								870
+								2,
+								2
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"auto_complete": false,
+							"auto_indent": false,
+							"default_dir": "/Users/dungntnew/vdev/konin-app",
+							"detect_indentation": false,
+							"gutter": false,
+							"history_arrows": true,
+							"indent_subsequent_lines": false,
+							"line_numbers": false,
+							"repl": true,
+							"repl_external_id": "shell",
+							"repl_id": "6624eff08e344f4a9f59e1455031db98",
+							"repl_restart_args":
+							{
+								"cmd":
+								{
+									"linux":
+									[
+										"bash",
+										"-i"
+									],
+									"osx":
+									[
+										"bash",
+										"-i"
+									],
+									"windows":
+									[
+										"cmd.exe"
+									]
+								},
+								"cmd_postfix": "\n",
+								"cwd": "$file_path",
+								"encoding":
+								{
+									"linux": "utf-8",
+									"osx": "utf-8",
+									"windows": "$win_cmd_encoding"
+								},
+								"env":
+								{
+								},
+								"external_id": "shell",
+								"suppress_echo": true,
+								"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage",
+								"type": "subprocess"
+							},
+							"repl_sublime2": false,
+							"smart_indent": false,
+							"spell_check": false,
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 21.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "fserve/printer.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 7024,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								375,
-								381
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 165.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
 					"type": "text"
 				}
 			]
@@ -574,7 +622,7 @@
 		"cols":
 		[
 			0.0,
-			0.186204457732,
+			0.963181148748,
 			1.0
 		],
 		"rows":
@@ -610,6 +658,34 @@
 		"selected_items":
 		[
 			[
+				"products/product.tpl",
+				"KEditPlugin/templates/admin/products/product.tpl"
+			],
+			[
+				"controller",
+				"www/js/controllers.js"
+			],
+			[
+				"hook",
+				"www/js/eccube_hook.js"
+			],
+			[
+				"eccube_hook",
+				"www/js/eccube_hook.js"
+			],
+			[
+				"ecc",
+				"www/js/eccube_hook.js"
+			],
+			[
+				"cmd",
+				"bin/cmd"
+			],
+			[
+				"service",
+				"www/js/services.js"
+			],
+			[
 				"services",
 				"www/js/services.js"
 			],
@@ -640,14 +716,6 @@
 			[
 				"fabric",
 				"fserve/node_modules/fabric/dist/fabric.js"
-			],
-			[
-				"controller",
-				"www/js/controllers.js"
-			],
-			[
-				"service",
-				"www/js/services.js"
 			],
 			[
 				"controll",
@@ -758,7 +826,7 @@
 		],
 		"width": 0.0
 	},
-	"selected_group": 1,
+	"selected_group": 0,
 	"settings":
 	{
 	},
@@ -766,7 +834,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 268.0,
+	"side_bar_width": 274.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
