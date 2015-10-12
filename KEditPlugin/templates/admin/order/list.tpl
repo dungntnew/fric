@@ -242,7 +242,17 @@
             $('.exportStatus').append('<p class="error_detail">' + error + '</p></br>');
             $('.exportStatus').fadeIn(500);
         }
-        var jqxhr = $.get(request_url, function(res) {
+
+        $.ajax({
+          type: 'GET',
+          url: request_url,
+          complete: function(data){
+             if (data.status != 200){
+                handleError('net::ERR_CONNECTION_REFUSED');
+                return;
+             }
+
+             res = JSON.parse(data.response);
             if (res.status) {
                 var pdfLink = res.data;
                 $('.exportStatus').fadeOut(100);
@@ -254,11 +264,7 @@
             }else {
                  handleError(JSON.stringify(res));
             }
-        })
-        .fail(function(e) {
-            handleError(e);
-        });
-
+        }});
     }
 //]]></script>
 
