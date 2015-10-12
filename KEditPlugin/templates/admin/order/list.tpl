@@ -139,10 +139,10 @@
         });
 
         //----- CLOSE
-        $('[data-popup-close]').on('click', function(e)  {
+        $('[data-popup-close]').click(function(e){
             var targeted_popup_class = jQuery(this).attr('data-popup-close');
             $('[data-popup="' + targeted_popup_class + '"]').fadeOut(350);
-            e.preventDefault();
+            if (e) e.preventDefault();
         });
 
     });
@@ -255,7 +255,6 @@
                  handleError(JSON.stringify(res));
             }
         })
-        .done(function(r) {})
         .fail(function(e) {
             handleError(e);
         });
