@@ -188,6 +188,12 @@ class KEditPlugin extends SC_Plugin_Base {
             $classpath = PLUGIN_UPLOAD_REALDIR . "KEditPlugin/plg_KEditPlugin_SC_Helper_Purchase.php";
             $classname = "plg_KEditPlugin_SC_Helper_Purchase";
         }
+
+        if($classname == 'SC_CartSession_Ex'){
+            $classpath = PLUGIN_UPLOAD_REALDIR . "KEditPlugin/plg_KEditPlugin_SC_CartSession.php";
+            $classname = "plg_KEditPlugin_SC_CartSession";
+        }
+
     }
 
     /**
