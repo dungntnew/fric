@@ -20,7 +20,7 @@ class KEditPlugin extends SC_Plugin_Base {
     public function __construct(array $arrSelfInfo) {
         parent::__construct($arrSelfInfo);
     }
-    
+
     /**
      * インストール
      * installはプラグインのインストール時に実行されます.
@@ -30,7 +30,7 @@ class KEditPlugin extends SC_Plugin_Base {
      * @return void
      */
     function install($arrPlugin) {
-		$objQuery =& SC_Query_Ex::getSingletonInstance();
+        $objQuery =& SC_Query_Ex::getSingletonInstance();
 
         if (KEDIT_DEV_MODEL) {
             $objQuery->query("CREATE TABLE plg_kedit_log (msg TEXT, create_date timestamp, update_date TIMESTAMP)");
@@ -44,8 +44,8 @@ class KEditPlugin extends SC_Plugin_Base {
         $objQuery->query("ALTER TABLE dtb_order_detail ADD COLUMN plg_kedit_user_picture_path varchar(256)");
 
 
-        
-        
+
+
 
         // ロゴファイルをhtmlディレクトリにコピーします.
         copy(PLUGIN_UPLOAD_REALDIR . $arrPlugin['plugin_code'] . "/logo.png", PLUGIN_HTML_REALDIR . $arrPlugin['plugin_code'] . "/logo.png");
@@ -53,18 +53,18 @@ class KEditPlugin extends SC_Plugin_Base {
         mkdir(PLUGIN_HTML_REALDIR . $arrPlugin['plugin_code'] . "/www");
         SC_Utils_Ex::sfCopyDir(PLUGIN_UPLOAD_REALDIR . $arrPlugin['plugin_code']."/www/", PLUGIN_HTML_REALDIR . $arrPlugin['plugin_code']."/www/");
     }
-    
+
     /**
      * アンインストール
      * uninstallはアンインストール時に実行されます.
      * 引数にはdtb_pluginのプラグイン情報が渡されます.
-     * 
+     *
      * @param array $arrPlugin プラグイン情報の連想配列(dtb_plugin)
      * @return void
      */
     function uninstall($arrPlugin) {
-		//テーブル削除
-		$objQuery = SC_Query_Ex::getSingletonInstance();
+        //テーブル削除
+        $objQuery = SC_Query_Ex::getSingletonInstance();
         $objQuery->query("DROP TABLE IF EXISTS plg_kedit_log");
        $objQuery->query("DROP TABLE IF EXISTS plg_keditplugin");
         $objQuery->query("ALTER TABLE dtb_products DROP COLUMN plg_kedit_flg");
@@ -73,10 +73,10 @@ class KEditPlugin extends SC_Plugin_Base {
         $objQuery->query("ALTER TABLE dtb_order_detail DROP COLUMN plg_kedit_tpl_path");
         $objQuery->query("ALTER TABLE dtb_order_detail DROP COLUMN plg_kedit_user_picture_path");
     }
-    
+
     /**
      * 稼働
-     * enableはプラグインを有効にした際に実行されます. 
+     * enableはプラグインを有効にした際に実行されます.
      * 引数にはdtb_pluginのプラグイン情報が渡されます.
      *
      * @param array $arrPlugin プラグイン情報の連想配列(dtb_plugin)
@@ -99,14 +99,14 @@ class KEditPlugin extends SC_Plugin_Base {
     /**
      * 処理の介入箇所とコールバック関数を設定
      * registerはプラグインインスタンス生成時に実行されます
-     * 
-     * @param SC_Helper_Plugin $objHelperPlugin 
+     *
+     * @param SC_Helper_Plugin $objHelperPlugin
      */
     function register(SC_Helper_Plugin $objHelperPlugin) {
         $objHelperPlugin->addAction("loadClassFileChange", array(&$this, "loadClassFileChange"), $this->arrSelfInfo['priority']);
 
-		$objHelperPlugin->addAction("prefilterTransform",array(&$this,"prefilterTransform"),$this->arrSelfInfo['priority']);
-		$objHelperPlugin->addAction("SC_FormParam_construct",array(&$this,"addParam"),$this->arrSelfInfo['priority']);
+        $objHelperPlugin->addAction("prefilterTransform",array(&$this,"prefilterTransform"),$this->arrSelfInfo['priority']);
+        $objHelperPlugin->addAction("SC_FormParam_construct",array(&$this,"addParam"),$this->arrSelfInfo['priority']);
 
 
         $objHelperPlugin->addAction("LC_Page_Admin_Products_Product_action_after",array(&$this,"admin_products_product_after"),$this->arrSelfInfo['priority']);
@@ -115,92 +115,87 @@ class KEditPlugin extends SC_Plugin_Base {
 
         $objHelperPlugin->addAction("LC_Page_Products_List_action_after",array(&$this,"front_products_list_after"),$this->arrSelfInfo['priority']);
 
-        
+
 
         $objHelperPlugin->addAction("LC_Page_Admin_Order_action_after",array(&$this,"admin_order_after"),$this->arrSelfInfo['priority']);
     }
 
-	
+
     function prefilterTransform(&$source, LC_Page_Ex $objPage, $filename) {
         $objTransform = new SC_Helper_Transform($source);
-		$template_dir = PLUGIN_UPLOAD_REALDIR . "KEditPlugin/templates/";
+        $template_dir = PLUGIN_UPLOAD_REALDIR . "KEditPlugin/templates/";
         switch($objPage->arrPageLayout['device_type_id']) {
-			case DEVICE_TYPE_PC:
+            case DEVICE_TYPE_PC:
                 if (strpos($filename, 'products/detail.tpl') !== false) {
-                    
+
                     $template_dir = PLUGIN_UPLOAD_REALDIR . $this->arrSelfInfo['plugin_code'] . '/templates/';
                     $objTransform->select('#kedithook')->insertBefore(file_get_contents($template_dir . 'default/product_detail_kedit_btn_add.tpl'));
 
                     $objTransform->select('#kedithook')->insertBefore(file_get_contents($template_dir . 'product_detail_kedit_app_content.tpl'));
-                }
-
-                if (strpos($filename, 'frontparts/cart.tpl') !== false) {
-                    $template_dir = PLUGIN_UPLOAD_REALDIR . $this->arrSelfInfo['plugin_code'] . '/templates/';
-                    $objTransform->select('.item')->insertBefore("<h1>Hack Part-Cart</h1>");
                 }
 
                 break;
-			case DEVICE_TYPE_SMARTPHONE:
+            case DEVICE_TYPE_SMARTPHONE:
                 if (strpos($filename, 'products/detail.tpl') !== false) {
-                    
+
                     $template_dir = PLUGIN_UPLOAD_REALDIR . $this->arrSelfInfo['plugin_code'] . '/templates/';
                     $objTransform->select('#kedithook')->insertBefore(file_get_contents($template_dir . 'default/product_detail_kedit_btn_add.tpl'));
 
                     $objTransform->select('#kedithook')->insertBefore(file_get_contents($template_dir . 'product_detail_kedit_app_content.tpl'));
                 }
-                break;           
-			case DEVICE_TYPE_MOBILE:
-				break;		
+                break;
+            case DEVICE_TYPE_MOBILE:
+                break;
             // 端末種別：管理画面
             case DEVICE_TYPE_ADMIN:
-			default:
-				$template_dir .= "admin/";
+            default:
+                $template_dir .= "admin/";
                 // 受注管理・編集画面
                 if(strpos($filename, "products/product.tpl") !== false) {
-					if(plg_KEditPlugin_Util::getECCUBEVer() >= 2130){
-                    	$objTransform->select("table.form tr",1)->insertAfter(file_get_contents($template_dir ."products/product.tpl"));
-					}else{
-                    	$objTransform->select("table.form tr",2)->insertAfter(file_get_contents($template_dir ."products/product.tpl"));
-					}
-				}
+                    if(plg_KEditPlugin_Util::getECCUBEVer() >= 2130){
+                        $objTransform->select("table.form tr",1)->insertAfter(file_get_contents($template_dir ."products/product.tpl"));
+                    }else{
+                        $objTransform->select("table.form tr",2)->insertAfter(file_get_contents($template_dir ."products/product.tpl"));
+                    }
+                }
                 if(strpos($filename, "products/confirm.tpl") !== false) {
-					if(plg_KEditPlugin_Util::getECCUBEVer() >= 2130){
-                    	$objTransform->select("div.contents-main table tr",1)->insertAfter(file_get_contents($template_dir ."products/confirm.tpl"));
-					}else{
-						$objTransform->select("div.contents-main table tr",2)->insertAfter(file_get_contents($template_dir ."products/confirm.tpl"));
-					}
-				}		
+                    if(plg_KEditPlugin_Util::getECCUBEVer() >= 2130){
+                        $objTransform->select("div.contents-main table tr",1)->insertAfter(file_get_contents($template_dir ."products/confirm.tpl"));
+                    }else{
+                        $objTransform->select("div.contents-main table tr",2)->insertAfter(file_get_contents($template_dir ."products/confirm.tpl"));
+                    }
+                }
                 if(strpos($filename, "order/index.tpl") !== false) {
                     if(plg_KEditPlugin_Util::getECCUBEVer() >= 2130){
                         $objTransform->select("form#form1 table.list")->replaceElement(file_get_contents($template_dir ."order/list.tpl"));
                     }else{
                         $objTransform->select("form#form1 table.list")->replaceElement(file_get_contents($template_dir ."order/list.tpl"));
                     }
-                }   
+                }
                 break;
         }
         $source = $objTransform->getHTML();
     }
-	
-	function addParam($class_name,$param){
-		if(strpos($class_name,'LC_Page_Admin_Products_Product') !== false){
-			$this->addKEditPluginParam($param);
-		}
-	}
-	
-	function loadClassFileChange(&$classname,&$classpath){
-		if($classname == 'SC_Helper_Purchase_Ex'){
-			$classpath = PLUGIN_UPLOAD_REALDIR . "KEditPlugin/plg_KEditPlugin_SC_Helper_Purchase.php";
-			$classname = "plg_KEditPlugin_SC_Helper_Purchase";
-		}
-	}
-	
+
+    function addParam($class_name,$param){
+        if(strpos($class_name,'LC_Page_Admin_Products_Product') !== false){
+            $this->addKEditPluginParam($param);
+        }
+    }
+
+    function loadClassFileChange(&$classname,&$classpath){
+        if($classname == 'SC_Helper_Purchase_Ex'){
+            $classpath = PLUGIN_UPLOAD_REALDIR . "KEditPlugin/plg_KEditPlugin_SC_Helper_Purchase.php";
+            $classname = "plg_KEditPlugin_SC_Helper_Purchase";
+        }
+    }
+
     /**
      * @param LC_Page_Admin_Products_Product $objPage 商品管理のページクラス
      * @return void
      */
     function admin_products_product_after($objPage) {
-		$objFormParam = new SC_FormParam_Ex();
+        $objFormParam = new SC_FormParam_Ex();
         switch($objPage->getMode($objPage)) {
             case "pre_edit":
             case "copy" :
@@ -213,9 +208,9 @@ class KEditPlugin extends SC_Plugin_Base {
             case "delete_down":
             case "recommend_select":
             case "confirm_return":
-				$this->addKEditPluginParam($objFormParam);
+                $this->addKEditPluginParam($objFormParam);
                 $objPage->lfInitFormParam($objFormParam, $_POST);
-				$arrForm = $objFormParam->getHashArray();
+                $arrForm = $objFormParam->getHashArray();
                 $objPage->arrForm['plg_kedit_flg'] = $arrForm['plg_kedit_flg'];
                 break;
             case "complete":
@@ -234,10 +229,10 @@ class KEditPlugin extends SC_Plugin_Base {
 
      /**
      * LC_Page_Products_Detail_action_after hookpoint
-     * 
+     *
      * Modifies the template
      * @param LC_Page_Ex $objPage Page object
-     * 
+     *
      */
     function front_products_detail_after($objPage) {
         if ($_POST['kedit_summit']) {
@@ -275,7 +270,7 @@ class KEditPlugin extends SC_Plugin_Base {
         }
 
         $media_path = PLUGIN_HTML_URLPATH . $this->arrSelfInfo['plugin_code'] . "/www/";
-        
+
         $objPage->ui_start_btn =  $media_path . "img/btn/kedit_start_btn.jpg";
         $index_file = KEDIT_NO_CACHE ? "index.php": "index.html";
         $objPage->app_path = $media_path . $index_file;
@@ -286,10 +281,10 @@ class KEditPlugin extends SC_Plugin_Base {
 
      /**
      * LC_Page_Products_List_action_after hookpoint
-     * 
+     *
      * Modifies the template
      * @param LC_Page_Ex $objPage Page object
-     * 
+     *
      */
     function front_products_list_after($objPage) {
         if ($_GET['kedit_app_fetch_product']) {
@@ -305,20 +300,20 @@ class KEditPlugin extends SC_Plugin_Base {
         }
     }
 
-    
+
 
      /**
      * LC_Page_Admin_Order_action_after hookpoint
-     * 
+     *
      * Modifies the template
      * @param LC_Page_Ex $objPage Page object
-     * 
+     *
      */
     function admin_order_after($objPage) {
         if ($_POST['kedit_summit']) {
 
             $order_id = $_POST['order_id'];
-            
+
             $arrProducts = $this->fetchOrderDetail($order_id);
              $response = array(
                 'success' => true,
@@ -337,10 +332,10 @@ class KEditPlugin extends SC_Plugin_Base {
         return $arrProducts;
     }
 
-	
-	function addKEditPluginParam(&$objFormParam){
-		$objFormParam->addParam("KEdit対象設定", 'plg_kedit_flg', INT_LEN, 'n', array('NUM_CHECK','MAX_LENGTH_CHECK'));
-	}
+
+    function addKEditPluginParam(&$objFormParam){
+        $objFormParam->addParam("KEdit対象設定", 'plg_kedit_flg', INT_LEN, 'n', array('NUM_CHECK','MAX_LENGTH_CHECK'));
+    }
 
     function fetchProducts(){
 
@@ -348,7 +343,7 @@ class KEditPlugin extends SC_Plugin_Base {
         $objQuery->setLimitOffset(10, 0);
         $arrProducts = $objQuery->select('product_id as id, name as name, main_comment as detail, main_large_image as template, main_list_image as thumbnail', 'dtb_products as t1', 't1.del_flg = ? and t1.status = ? and t1.plg_kedit_flg = ?',
             array('0', '1', '1'));
-        
+
         foreach($arrProducts as $key => $val) {
             $arrProducts[$key]['thumbnail'] = SC_Utils_Ex::sfNoImageMainList($val['thumbnail']);
             $arrProducts[$key]['template'] = SC_Utils_Ex::sfNoImageMain($val['template']);
@@ -367,15 +362,15 @@ class KEditPlugin extends SC_Plugin_Base {
 
         $images = $objQuery->select('*', 'plg_keditplugin as t1', 't1.transaction_id = ? and t1.product_id = ?',
             array($transactionid, $product_id));
-        
+
         if (count($images) > 0) {
-            $objQuery->update('plg_keditplugin', 
+            $objQuery->update('plg_keditplugin',
                    array('upload_picture_url' => $picture,
                          'upload_template_url' => $template)
            );
         }
         else {
-            $objQuery->insert('plg_keditplugin', 
+            $objQuery->insert('plg_keditplugin',
                    array('transaction_id' => $transactionid,
                          'product_id' => $product_id,
                          'upload_picture_url' => $picture,
