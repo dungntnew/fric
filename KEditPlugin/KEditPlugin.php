@@ -256,9 +256,16 @@ class KEditPlugin extends SC_Plugin_Base {
                 $this->saveImage($encoded_data, $write_path);
                 $this->saveImageToDB($transactionid, $product_id, $filename, $template_url);
 
+                // auto add to cart & return redirect url
+                $objCartSess = new SC_CartSession_Ex();
+                $objCartSess->addProduct($product_id, 1);
+
                 $response = array(
                     'success' => true,
-                    'url' => urlencode($public_path)
+                    'url' => urlencode($public_path),
+                    'cart_url' => CART_URL,
+                    'product_id' => $product_id,
+                    'transactionid' => $transactionid,
                 );
                 echo SC_Utils_Ex::jsonEncode($response);
                 exit;
