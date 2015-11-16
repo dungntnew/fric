@@ -1417,6 +1417,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 var product = $scope.product;
                 var data = {
                     product_id: product.id,
+                    product_class_id: (product.classId || product.id),
                     template_url: product.relative_tpl_path,
                     exported_data_url: dataURL,
                     preview_data_url: previewDataURL
