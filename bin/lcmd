@@ -17,16 +17,21 @@ fi
 source ${HOMEDIR}/bin/lenv.sh;
 case "$1" in
 
-m) 
+m)
 echo "====== start upload media ======="
 rm -rf $HTML_PLG_DIR/KEditPlugin/www
 cp -r $HOMEDIR/www/index.html $HOMEDIR/www/index.php
 cp -r $HOMEDIR/www $HTML_PLG_DIR/KEditPlugin/
 ;;
-p)  
+p)
 echo  "start upload plugin"
 rm -rf $DATA_PLG_DIR/KEditPlugin/
 cp -rv $HOMEDIR/KEditPlugin $DATA_PLG_DIR/
+;;
+
+d)
+echo "====== del upload media ======="
+rm -rf $HTML_PLG_DIR/KEditPlugin/www
 ;;
 
 c)
@@ -42,7 +47,7 @@ z)
   cd $HOMEDIR
   mkdir -p $HOMEDIR/temp;
   mkdir -p KEditPlugin/www;
-  cd ./KEditPlugin 
+  cd ./KEditPlugin
   mv $HOMEDIR/temp/KEditPlugin.tar.gz $HOMEDIR/temp/KEditPlugin_bk.tar.gz
   tar cvzf $HOMEDIR/temp/KEditPlugin.tar.gz *
   cd $HOMEDIR

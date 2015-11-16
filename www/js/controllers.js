@@ -34,17 +34,17 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
     // height of content when view in app(css only)
     $scope.config.maxViewContentHeight = 320;
-    
+
 
 
     // this number must be pre-set for all
-    // template file to get width / height 
-    // scale ratio 
+    // template file to get width / height
+    // scale ratio
     $scope.config.templateWidth = 765;
     $scope.config.templateHeight = 541;
     $scope.config.previewWidthToHeight = 765 / 541;
 
-    //print pager when view in app(css only) 
+    //print pager when view in app(css only)
     $scope.config.maxPreviewHeight = 420;
 
 
@@ -75,8 +75,8 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         showDelay: 0
     });
 
-    // Set a timeout to clear loader, 
-    // however you would actually call the $ionicLoading.hide(); 
+    // Set a timeout to clear loader,
+    // however you would actually call the $ionicLoading.hide();
     // method whenever everything is ready or loaded.
     $timeout(function() {
         $ionicLoading.hide();
@@ -173,7 +173,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         console.log("auto generated list product api: ");
         console.log(productListApi);
     }
-    
+
     var jqxhr = $.getJSON(productListApi,
             function(res) {
                 if (res.success) {
@@ -573,7 +573,7 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                 var effect = filterNames[index];
                 var data = $(canvas).data('data-filter-name');
 
-                // ignore filter 
+                // ignore filter
                 if (index == 0) {
                     $scope.activeFilterIndex = 0;
 
@@ -1197,15 +1197,15 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
 
                 self.loadBackground(function(background) {
                     painter.toImageContent(function(content) {
-                        
+
                         // all frame haft
                         var fhw = canvas.width / 2;
-                        var fhh = canvas.height / 2; 
-                  
+                        var fhh = canvas.height / 2;
+
                         content.scaleToHeight(fhh * 0.8);
                         content.setCoords();
                         var left = fhw * 1.5;
-                        var top = fhh * 1.5; 
+                        var top = fhh * 1.5;
 
                         content.set({
                             originX: 'center',
@@ -1416,10 +1416,17 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     template_url: product.relative_tpl_path,
                     exported_data_url: dataURL
                 };
-                $scope.hideProcessingLoading();
+
                 if (window.onAppFinishCallback) {
+                    console.log("sending data to server..");
                     window.onAppFinishCallback(data);
+                    console.log("send finishing..wait for redirect..");
                 } else {
+                    $scope.hideProcessingLoading();
+                    $scope.showAlert({
+                        title: 'ラー',
+                        message: "onAppFinishCallback not set"
+                    });
                     console.log("onAppFinishCallback not set");
                 }
 
