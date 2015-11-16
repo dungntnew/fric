@@ -20,10 +20,11 @@ class plg_KEditPlugin_SC_CartSession extends SC_CartSession
 			$cartItems = $this->getCartList($key);
 			foreach ($cartItems as $itemKey => $itemValue) {
 				$cartItem =& $cartItems[$itemKey];
-				$product_id = $cartItem['productsClass']['product_class_id'];
+				$product_id = $cartItem['productsClass']['product_id'];
 				$main_list_image = $cartItem['productsClass']['main_list_image'];
 				$plg_kedit_flg = $cartItem['productsClass']['plg_kedit_flg'];
 				$uploaded_url = $this->loadSavedImage($product_id);
+
 				if (strlen($uploaded_url) > 0 && $plg_kedit_flg){
 					$cartItem['productsClass']['main_list_image'] = $uploaded_url;
 				}
