@@ -23,7 +23,6 @@ class plg_KEditPlugin_SC_CartSession extends SC_CartSession
 				$product_id = $cartItem['productsClass']['product_class_id'];
 				$main_list_image = $cartItem['productsClass']['main_list_image'];
 				$plg_kedit_flg = $cartItem['productsClass']['plg_kedit_flg'];
-				var_dump($cartItem['productsClass']);
 				$uploaded_url = $this->loadSavedImage($product_id);
 				if (strlen($uploaded_url) > 0 && $plg_kedit_flg){
 					$cartItem['productsClass']['main_list_image'] = $uploaded_url;
