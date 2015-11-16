@@ -35,7 +35,7 @@ class KEditPlugin extends SC_Plugin_Base {
         if (KEDIT_DEV_MODEL) {
             $objQuery->query("CREATE TABLE plg_kedit_log (msg TEXT, create_date timestamp, update_date TIMESTAMP)");
         }
-        $objQuery->query("CREATE TABLE plg_keditplugin (transaction_id VARCHAR(255),product_id INT, upload_picture_url VARCHAR(255), upload_template_url VARCHAR(255), create_date timestamp, update_date TIMESTAMP)");
+        $objQuery->query("CREATE TABLE plg_keditplugin (transaction_id VARCHAR(255),product_id INT, upload_picture_url VARCHAR(255), preview_picture_url VARCHAR(255), upload_template_url VARCHAR(255), create_date timestamp, update_date TIMESTAMP)");
 
         $objQuery->query("ALTER TABLE dtb_products ADD COLUMN plg_kedit_flg smallint DEFAULT 0");
         $objQuery->query("ALTER TABLE dtb_order ADD COLUMN plg_kedit_flg smallint DEFAULT 0");
@@ -245,26 +245,46 @@ class KEditPlugin extends SC_Plugin_Base {
             try {
                 $transactionid = $_POST['transactionid'];
                 $product_id = $_POST['kedit_product_id'];
+                $product_class_id = $_POST['kedit_product_class_id'];
                 $template_url = $_POST['kedit_template_url'];
+
                 $encoded_data = $_POST['kedit_exported_data_url'];
                 $encoded_data = urldecode($encoded_data);
+
+                $encoded_preview_data = $_POST['kedit_preview_data_url'];
+                $encoded_preview_data = urldecode($encoded_preview_data);
+
                 $uniqid = SC_Utils_Ex::sfGetUniqRandomId('r');
-                $filename = "kedit_$transactionid";
-                $filename .= "_" . $uniqid . "_".$product_id . ".png";
-                $write_path = IMAGE_SAVE_REALDIR . $filename;
-                $public_path = IMAGE_SAVE_RSS_URL . $filename;
-                $this->saveImage($encoded_data, $write_path);
-                $this->saveImageToDB($transactionid, $product_id, $filename, $template_url);
+                $picture_filename = "kedit_$transactionid";
+                $picture_filename .= "_" . $uniqid . "_".$product_id . ".png";
+                $picture_write_path = IMAGE_SAVE_REALDIR . $picture_filename;
+                $picture_public_path = IMAGE_SAVE_RSS_URL . $picture_filename;
+
+                $preview_filename = "kedit_preview_$transactionid";
+                $preview_filename .= "_" . $uniqid . "_".$product_id . ".png";
+                $preview_write_path = IMAGE_SAVE_REALDIR . $preview_filename;
+                $preview_public_path = IMAGE_SAVE_RSS_URL . $preview_filename;
+
+                $this->saveImage($encoded_data, $picture_write_path);
+                $this->saveImage($encoded_data, $preview_write_path);
+                $this->saveImageToDB($transactionid, $product_id,
+                    $picture_filename,
+                    $preview_filename,
+                    $template_url);
+
 
                 // auto add to cart & return redirect url
                 $objCartSess = new SC_CartSession_Ex();
-                $objCartSess->addProduct($product_id, 1);
+                $objCartSess->addProduct($product_class_id, 1);
+
 
                 $response = array(
                     'success' => true,
-                    'url' => urlencode($public_path),
+                    'url' => urlencode($picture_public_path),
+                    'prev' => urlencode($preview_public_path),
                     'cart_url' => CART_URL,
                     'product_id' => $product_id,
+                    'product_class_id' => $product_class_id,
                     'transactionid' => $transactionid,
                 );
                 echo SC_Utils_Ex::jsonEncode($response);
@@ -357,9 +377,17 @@ class KEditPlugin extends SC_Plugin_Base {
         $arrProducts = $objQuery->select('product_id as id, name as name, main_comment as detail, main_large_image as template, main_list_image as thumbnail', 'dtb_products as t1', 't1.del_flg = ? and t1.status = ? and t1.plg_kedit_flg = ?',
             array('0', '1', '1'));
 
+        $objProduct = new SC_Product_Ex();
+
+
         foreach($arrProducts as $key => $val) {
             $arrProducts[$key]['thumbnail'] = SC_Utils_Ex::sfNoImageMainList($val['thumbnail']);
             $arrProducts[$key]['template'] = SC_Utils_Ex::sfNoImageMain($val['template']);
+
+            $product_id = $arrProducts[$key]['id'];
+            $classes = $objProduct->getProductsClassFullByProductId($product_id);
+            $class_id = $classes[0]['product_class_id'];
+            $arrProducts[$key]['classId'] = $class_id;
         }
         return $arrProducts;
     }
@@ -370,7 +398,7 @@ class KEditPlugin extends SC_Plugin_Base {
         file_put_contents($write_path, $data);
     }
 
-    function saveImageToDB($transactionid, $product_id, $picture, $template) {
+    function saveImageToDB($transactionid, $product_id, $picture, $preview, $template) {
         $objQuery = SC_Query::getSingletonInstance();
 
         $images = $objQuery->select('*', 'plg_keditplugin as t1', 't1.transaction_id = ? and t1.product_id = ?',
@@ -379,6 +407,7 @@ class KEditPlugin extends SC_Plugin_Base {
         if (count($images) > 0) {
             $objQuery->update('plg_keditplugin',
                    array('upload_picture_url' => $picture,
+                         'preview_picture_url' => $preview,
                          'upload_template_url' => $template)
            );
         }
@@ -387,6 +416,7 @@ class KEditPlugin extends SC_Plugin_Base {
                    array('transaction_id' => $transactionid,
                          'product_id' => $product_id,
                          'upload_picture_url' => $picture,
+                         'preview_picture_url' => $preview,
                          'upload_template_url' => $template)
            );
         }

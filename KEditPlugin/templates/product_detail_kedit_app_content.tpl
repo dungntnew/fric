@@ -158,6 +158,7 @@
                 var self = this;
                 var transactionid = $("*[name=transactionid]").val();
                 var product_id = data["product_id"];
+                var product_class_id = data["product_class_id"];
                 var exported_data_url = data['exported_data_url'];
                 var preview_data_url = data['preview_data_url'];
                 var template_url = data['template_url'];
@@ -166,6 +167,7 @@
                 var uploadTempApiUrl = self.uploadApi;
 
                 console.log("transactionid: " + transactionid);
+                console.log("class id: " + product_class_id);
 
                 $.ajax({
 
@@ -174,6 +176,7 @@
                     data: {
                         'transactionid': transactionid,
                         'kedit_product_id': product_id,
+                        'kedit_product_class_id': product_class_id,
                         'kedit_template_url': template_url,
                         'kedit_exported_data_url': encodedContentData,
                         'kedit_preview_data_url': encodedPreviewData,
