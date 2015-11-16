@@ -1410,11 +1410,16 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
                     format: 'png',
                     multiplier: $scope.config.multiplier
                 });
+                var previewDataURL = $scope.previewCanvas.toDataURL({
+                    format: 'png',
+                    multiplier: 0.5
+                });
                 var product = $scope.product;
                 var data = {
                     product_id: product.id,
                     template_url: product.relative_tpl_path,
-                    exported_data_url: dataURL
+                    exported_data_url: dataURL,
+                    preview_data_url: previewDataURL
                 };
 
                 if (window.onAppFinishCallback) {
@@ -1948,22 +1953,3 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
     })
 
 })
-
-
-///
-/// $scope.changeToAction("filter");
-// $(picture).removeAttr("data-caman-id");
-
-
-
-/*
-Try this
-
-$('#remove').click(function(){
-    var object = canvas.getActiveObject();
-    if (!object){
-        alert('Please select the element to remove');
-        return '';
-    }
-    canvas.remove(object);
-});*/

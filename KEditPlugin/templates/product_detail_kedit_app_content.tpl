@@ -159,8 +159,10 @@
                 var transactionid = $("*[name=transactionid]").val();
                 var product_id = data["product_id"];
                 var exported_data_url = data['exported_data_url'];
+                var preview_data_url = data['preview_data_url'];
                 var template_url = data['template_url'];
                 var encodedContentData = encodeURIComponent(exported_data_url);
+                var encodedPreviewData = encodeURIComponent(preview_data_url);
                 var uploadTempApiUrl = self.uploadApi;
 
                 console.log("transactionid: " + transactionid);
@@ -174,6 +176,7 @@
                         'kedit_product_id': product_id,
                         'kedit_template_url': template_url,
                         'kedit_exported_data_url': encodedContentData,
+                        'kedit_preview_data_url': encodedPreviewData,
                         'kedit_summit': true
                     },
                     success: function(data){
