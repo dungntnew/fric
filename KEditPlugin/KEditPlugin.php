@@ -266,7 +266,7 @@ class KEditPlugin extends SC_Plugin_Base {
                 $preview_public_path = IMAGE_SAVE_RSS_URL . $preview_filename;
 
                 $this->saveImage($encoded_data, $picture_write_path);
-                $this->saveImage($encoded_data, $preview_write_path);
+                $this->saveImage($encoded_preview_data, $preview_write_path);
                 $this->saveImageToDB($transactionid, $product_id,
                     $picture_filename,
                     $preview_filename,

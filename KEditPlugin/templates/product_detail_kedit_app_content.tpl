@@ -167,8 +167,6 @@
                 var uploadTempApiUrl = self.uploadApi;
 
                 console.log("transactionid: " + transactionid);
-                console.log("class id: " + product_class_id);
-
                 $.ajax({
 
                     type: "POST",
@@ -189,7 +187,6 @@
                                 console.log("upload success!");
                                 var cart_url = res['cart_url'] + '?product_id=' + product_id + '&transactionid=' + transactionid;
                                 console.log('redirect to cart with url: ');
-                                console.log(cart_url);
                                 window.location.href = cart_url;
                                 $(self.wrapper).fadeOut();
                             }else {
