@@ -168,30 +168,35 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         var protocol = window.location.protocol;
         var hostname = window.location.hostname;
         var api_host = protocol + '//' + hostname;
-        var api_path = api_host + '/products/list.php?kedit_app_fetch_product=true';
+        var api_path = api_host + '/products/list.php';
         console.log("try auto build product list api");
         console.log("auto generated list product api: ");
         console.log(productListApi);
     }
-
-    var jqxhr = $.getJSON(productListApi,
-            function(res) {
-                if (res.success) {
-                    var products = JSON.parse(res.products);
-                    $scope.products = window.products = products;
-                    _.each(products, function(product) {
-                        product.relative_tpl_path = product.template;
-                        product.template = res.image_path + product.template;
-                        product.thumbnail = res.image_path + product.thumbnail;
-                    });
-                } else {
-                    handleError(JSON.stringify(res));
-                }
-            })
-        .done(function(r) {})
-        .fail(function(e) {
-            handleError(e);
-        });
+    window.transactionid = window.parent.$("*[name=transactionid]").val();
+    var jqxhr = $.post(productListApi, {
+        "kedit_app_fetch_product": true,
+        "transactionid": window.transactionid
+      })
+      .done(function(res) {
+        res = JSON.parse(res);
+        if (res.success) {
+            var products = JSON.parse(res.products);
+            $scope.products = window.products = products;
+            _.each(products, function(product) {
+                product.relative_tpl_path = product.template;
+                product.template = res.image_path + product.template;
+                product.thumbnail = res.image_path + product.thumbnail;
+            });
+        } else {
+            handleError(JSON.stringify(res));
+        }
+      })
+      .fail(function(e) {
+         handleError(e);
+      })
+      .always(function() {
+    });
 })
 
 .controller('ProductDetailCtrl', function($scope, $stateParams, Products) {
