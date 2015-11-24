@@ -320,7 +320,7 @@ class KEditPlugin extends SC_Plugin_Base {
      *
      */
     function front_products_list_after($objPage) {
-        if ($_GET['kedit_app_fetch_product']) {
+        if ($_POST['kedit_app_fetch_product']) {
             $products = $this->fetchProducts();
             $response = array(
                 'success' => true,
