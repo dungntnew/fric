@@ -555,19 +555,25 @@ angular.module('app.controllers', ['app.services', 'app.directives'])
         $scope.onPictureLoaded = function(dataURL, image) {
             $scope.activeFilterIndex = 0;
             $scope.showProcessingLoading('処理中');
+
             var canvas = $("#take-picture-canvas")[0];
+            var data = $(canvas).data('data-filter-name');
             $(canvas).data("data-filter-name", "");
 
-            $scope.painter.addImage(dataURL, function(){
-                var w = image.width;
-                var h = image.height;
-                canvas.width = w;
-                canvas.height = h;
-                var ctx = canvas.getContext('2d');
-                ctx.fillRect(0, 0, w, h);
-                ctx.drawImage(image, 0, 0, w, h);
+
+            var w = image.width;
+            var h = image.height;
+            canvas.width = w;
+            canvas.height = h;
+            var ctx = canvas.getContext('2d');
+            ctx.fillRect(0, 0, w, h);
+            ctx.drawImage(image, 0, 0, w, h);
+
+              // revert back to raw image canvas
+            var dataURL = canvas.toDataURL();
+            $scope.painter.addImage(dataURL, function() {
                 setTimeout(function(){
-                   $scope.hideProcessingLoading();
+                    $scope.hideProcessingLoading();                              
                 }, 100);
             });
         }
