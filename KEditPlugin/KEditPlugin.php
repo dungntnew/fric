@@ -374,7 +374,7 @@ class KEditPlugin extends SC_Plugin_Base {
 
         $objQuery =& SC_Query_Ex::getSingletonInstance();
         # $objQuery->setLimitOffset(10, 0);
-        $arrProducts = $objQuery->select('product_id as id, name as name, main_comment as detail, main_large_image as template, main_list_image as thumbnail', 'dtb_products as t1', 't1.del_flg = ? and t1.status = ? and t1.plg_kedit_flg = ?',
+        $arrProducts = $objQuery->select('product_id as id, name as name, main_list_comment as detail, main_large_image as template, main_list_image as thumbnail', 'dtb_products as t1', 't1.del_flg = ? and t1.status = ? and t1.plg_kedit_flg = ?',
             array('0', '1', '1'));
 
         $objProduct = new SC_Product_Ex();
